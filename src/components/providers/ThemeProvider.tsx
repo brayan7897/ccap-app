@@ -8,11 +8,11 @@ import { useUiStore } from "@/store/ui-store";
  * Must be rendered inside the root layout so it runs before any page content.
  */
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const darkMode = useUiStore((s) => s.darkMode);
+	const darkMode = useUiStore((s) => s.darkMode);
 
-  useEffect(() => {
-    document.documentElement.classList.toggle("dark", darkMode);
-  }, [darkMode]);
+	useEffect(() => {
+		document.documentElement.classList.toggle("dark", darkMode);
+	}, [darkMode]);
 
-  return <>{children}</>;
+	return <>{children}</>;
 }
