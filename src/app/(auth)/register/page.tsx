@@ -1,12 +1,19 @@
 import { RegisterForm } from "@/features/auth/components/RegisterForm";
 
 export default function RegisterPage() {
-  return (
-    <main className="flex min-h-screen items-center justify-center bg-background p-4">
-      <div className="w-full max-w-sm">
-        <h1 className="mb-6 text-center text-2xl font-bold">Crear cuenta</h1>
-        <RegisterForm />
-      </div>
-    </main>
-  );
+	return (
+		<div>
+			{/* Header */}
+			<div className="space-y-1 mb-6">
+				<h1 className="text-xl font-bold text-foreground tracking-tight">
+					Crea tu cuenta
+				</h1>
+				<p className="text-sm text-muted-foreground">
+					Completa tus datos para comenzar tu formación profesional.
+				</p>
+			</div>
+
+			<RegisterForm />
+		</div>
+	);
 }

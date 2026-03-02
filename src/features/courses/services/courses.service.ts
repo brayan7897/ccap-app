@@ -12,6 +12,11 @@ export const coursesService = {
     return res.data;
   },
 
+  async getBySlug(slug: string): Promise<Course> {
+    const res = await api.get<Course>(`/courses/slug/${slug}`);
+    return res.data;
+  },
+
   async enroll(courseId: string, studentId: string) {
     const res = await api.post(`/courses/${courseId}/enroll`, { student_id: studentId });
     return res.data;

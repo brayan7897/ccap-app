@@ -1,12 +1,19 @@
 import { LoginForm } from "@/features/auth/components/LoginForm";
 
 export default function LoginPage() {
-  return (
-    <main className="flex min-h-screen items-center justify-center bg-background p-4">
-      <div className="w-full max-w-sm">
-        <h1 className="mb-6 text-center text-2xl font-bold">Iniciar sesión</h1>
-        <LoginForm />
-      </div>
-    </main>
-  );
+	return (
+		<div>
+			{/* Header */}
+			<div className="space-y-1 mb-6">
+				<h1 className="text-xl font-bold text-foreground tracking-tight">
+					Bienvenido de vuelta
+				</h1>
+				<p className="text-sm text-muted-foreground">
+					Ingresa tus credenciales para acceder a tu cuenta.
+				</p>
+			</div>
+
+			<LoginForm />
+		</div>
+	);
 }

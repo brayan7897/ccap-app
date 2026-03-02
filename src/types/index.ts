@@ -60,6 +60,14 @@ export interface Course {
   instructor_id: string;
   category_id: string | null;
   modules?: Module[];
+  created_at: string;
+  updated_at: string;
+  /* ── enriched by API (optional joins) ── */
+  instructor?: Pick<User, 'id' | 'first_name' | 'last_name' | 'avatar_url'>;
+  category?: Pick<Category, 'id' | 'name' | 'slug'>;
+  total_lessons?: number;
+  total_duration_seconds?: number;
+  enrolled_count?: number;
 }
 
 export interface Module {

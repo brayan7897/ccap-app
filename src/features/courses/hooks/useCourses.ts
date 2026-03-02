@@ -8,6 +8,7 @@ export const courseKeys = {
   all:    () => ["courses"] as const,
   list:   (skip: number, limit: number) => ["courses", "list", skip, limit] as const,
   detail: (id: string) => ["courses", id] as const,
+  slug:   (slug: string) => ["courses", "slug", slug] as const,
 };
 
 export function useCourses(skip = 0, limit = 20) {
@@ -22,6 +23,14 @@ export function useCourse(id: string) {
     queryKey: courseKeys.detail(id),
     queryFn:  () => coursesService.getById(id),
     enabled:  !!id,
+  });
+}
+
+export function useCourseBySlug(slug: string) {
+  return useQuery({
+    queryKey: courseKeys.slug(slug),
+    queryFn:  () => coursesService.getBySlug(slug),
+    enabled:  !!slug,
   });
 }
 
