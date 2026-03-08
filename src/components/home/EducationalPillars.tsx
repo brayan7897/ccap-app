@@ -1,4 +1,4 @@
-import { MapPin, ShieldCheck, Globe, ArrowRight } from "lucide-react";
+import { MapPin, ShieldCheck, Globe, Star } from "lucide-react";
 
 const PILLARS = [
 	{
@@ -6,75 +6,69 @@ const PILLARS = [
 		description:
 			"Enfoque hands-on con casos reales del sector construcción y minería para aplicar lo aprendido inmediatamente.",
 		icon: MapPin,
-		accent: "from-primary/20 to-primary/5",
-		iconBg: "bg-primary/10 group-hover:bg-primary",
-		iconColor: "text-primary group-hover:text-primary-foreground",
+		iconBg: "bg-primary/10",
+		iconColor: "text-primary",
 	},
 	{
 		title: "Instructores Expertos",
 		description:
 			"Profesionales activos y líderes en grandes proyectos de infraestructura comparten su experiencia directa.",
 		icon: ShieldCheck,
-		accent: "from-gold/20 to-gold/5",
-		iconBg: "bg-gold/10 group-hover:bg-gold",
-		iconColor: "text-gold group-hover:text-gold-foreground",
+		iconBg: "bg-gold/10",
+		iconColor: "text-gold",
 	},
 	{
 		title: "Certificación Internacional",
 		description:
 			"Validez global con estándares internacionales y convenios con instituciones de prestigio.",
 		icon: Globe,
-		accent: "from-primary/20 to-gold/5",
-		iconBg: "bg-primary/10 group-hover:bg-primary",
-		iconColor: "text-primary group-hover:text-primary-foreground",
+		iconBg: "bg-primary/10",
+		iconColor: "text-primary",
 	},
 ];
 
 export function EducationalPillars() {
 	return (
-		<section className="relative z-10 w-full bg-background py-24 border-b border-border transition-colors">
-			<div className="container mx-auto px-4 max-w-6xl">
+		<section className="relative z-10 w-full bg-transparent py-20 border-b border-border/50 transition-colors">
+			<div className="container mx-auto px-4 max-w-7xl">
 				{/* Section Header */}
-				<div className="text-center mb-16 space-y-3">
-					<p className="text-xs font-bold text-gold tracking-[0.2em] uppercase">
-						Por qué elegirnos
-					</p>
-					<h2 className="text-3xl md:text-4xl font-extrabold text-foreground tracking-tight transition-colors">
-						Nuestros Pilares Educativos
+				<div className="flex flex-col items-center text-center mb-16 space-y-4">
+					<div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gold/10 border border-gold/20 text-gold font-semibold text-xs">
+						<Star className="w-3.5 h-3.5 fill-current" />
+						<span>Por qué elegirnos</span>
+					</div>
+
+					<h2 className="text-4xl md:text-5xl font-extrabold text-foreground tracking-tight max-w-3xl">
+						Nuestros <span className="text-primary">Pilares Educativos</span>
 					</h2>
+
+					<p className="text-muted-foreground text-sm md:text-base max-w-2xl font-medium">
+						Descubre los fundamentos que nos hacen líderes en formación profesional para ingeniería
+					</p>
 				</div>
 
 				{/* Pillars Grid */}
-				<div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+				<div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
 					{PILLARS.map((pillar, index) => (
 						<div
 							key={index}
-							className="group relative flex flex-col items-start p-8 rounded-2xl bg-card border border-border hover:border-primary/20 hover:shadow-2xl hover:shadow-primary/5 transition-all duration-300 overflow-hidden">
-							{/* Gradient accent top */}
-							<div
-								className={`absolute top-0 left-0 right-0 h-1 bg-linear-to-r ${pillar.accent} opacity-0 group-hover:opacity-100 transition-opacity duration-300`}
-							/>
-
+							className="group relative flex flex-col items-start p-8 rounded-2xl bg-card border border-border/50 hover:border-border hover:shadow-md transition-all duration-300 text-left">
+							
 							{/* Icon */}
 							<div
-								className={`w-14 h-14 mb-6 rounded-xl ${pillar.iconBg} flex items-center justify-center transition-all duration-300`}>
+								className={`w-12 h-12 mb-6 rounded-xl ${pillar.iconBg} flex items-center justify-center transition-transform group-hover:-translate-y-1 duration-300`}>
 								<pillar.icon
-									className={`w-6 h-6 ${pillar.iconColor} transition-colors duration-300`}
+									className={`w-5 h-5 ${pillar.iconColor}`}
 								/>
 							</div>
 
 							{/* Text Content */}
-							<h3 className="text-xl font-bold text-foreground mb-3 transition-colors">
+							<h3 className="text-[17px] font-bold text-foreground mb-2">
 								{pillar.title}
 							</h3>
-							<p className="text-sm text-muted-foreground leading-relaxed font-medium mb-6 grow">
+							<p className="text-[14px] text-muted-foreground leading-relaxed font-medium">
 								{pillar.description}
 							</p>
-
-							{/* Learn more hint */}
-							<span className="inline-flex items-center gap-1.5 text-xs font-bold text-primary opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300">
-								Saber más <ArrowRight className="w-3.5 h-3.5" />
-							</span>
 						</div>
 					))}
 				</div>

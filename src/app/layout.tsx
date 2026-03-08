@@ -1,12 +1,23 @@
 import type { Metadata } from "next";
-import { Montserrat } from "next/font/google";
+import { DM_Sans, Libre_Baskerville, JetBrains_Mono } from "next/font/google";
 import { Toaster } from "sonner";
 import { QueryProvider } from "@/components/providers/QueryProvider";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import "./globals.css";
 
-const montserrat = Montserrat({
-	variable: "--font-montserrat",
+const dmSans = DM_Sans({
+	variable: "--font-dm-sans",
+	subsets: ["latin"],
+});
+
+const libreBaskerville = Libre_Baskerville({
+	variable: "--font-libre-baskerville",
+	weight: ["400", "700"],
+	subsets: ["latin"],
+});
+
+const jetbrainsMono = JetBrains_Mono({
+	variable: "--font-jetbrains-mono",
 	subsets: ["latin"],
 });
 
@@ -37,7 +48,7 @@ export default function RootLayout({
 				<script dangerouslySetInnerHTML={{ __html: themeScript }} />
 			</head>
 			<body
-				className={`${montserrat.variable} font-sans antialiased`}>
+				className={`${dmSans.variable} ${libreBaskerville.variable} ${jetbrainsMono.variable} font-sans antialiased`}>
 				<QueryProvider>
 					<ThemeProvider>
 						{children}

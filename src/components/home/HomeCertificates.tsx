@@ -14,6 +14,8 @@ const BENEFITS = [
 		description:
 			"Avalados por los principales Colegios de Ingenieros y Arquitectos.",
 		accent: "primary",
+		iconBg: "bg-primary/10",
+		iconColor: "text-primary",
 	},
 	{
 		icon: Lock,
@@ -21,6 +23,8 @@ const BENEFITS = [
 		description:
 			"Firmas digitales encriptadas y registro seguro para evitar fraudes.",
 		accent: "gold",
+		iconBg: "bg-gold/10",
+		iconColor: "text-gold",
 	},
 	{
 		icon: Briefcase,
@@ -28,77 +32,77 @@ const BENEFITS = [
 		description:
 			"Agrega tu escudo directo a LinkedIn; el 85% de egresados mejora su sueldo.",
 		accent: "gold",
+		iconBg: "bg-gold/10",
+		iconColor: "text-gold",
 	},
 ];
 
 export function HomeCertificates() {
 	return (
-		<section className="py-24 bg-muted/30 dark:bg-muted/10 backdrop-blur-sm border-y border-border relative overflow-hidden z-10 transition-colors">
-			{/* Background Gradients */}
-			<div className="absolute top-1/2 left-0 -translate-y-1/2 w-150 h-150 bg-gold/5 rounded-full blur-[120px] pointer-events-none" />
+		<section className="py-20 bg-muted/20 border-y border-border/50 relative overflow-hidden transition-colors">
+			{/* Background Ambient Glow */}
+			<div className="absolute top-[10%] left-[20%] w-[300px] h-[300px] bg-gold/5 rounded-full blur-[100px] pointer-events-none" />
 
-			<div className="container mx-auto px-4 lg:px-8 relative z-10">
-				<div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-					<div className="space-y-8">
-						<div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gold/10 border border-gold/20 text-gold font-semibold text-xs tracking-wider">
-							<ShieldCheck className="w-4 h-4" />
-							<span>VALIDACIÓN OFICIAL</span>
-						</div>
+			<div className="container mx-auto px-4 lg:px-8 max-w-7xl relative z-10">
+				{/* Section Header */}
+				<div className="flex flex-col items-center text-center mb-16 space-y-4">
+					<div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gold/10 text-gold font-semibold text-xs border border-gold/20">
+						<ShieldCheck className="w-3.5 h-3.5" />
+						<span>VALIDACIÓN OFICIAL</span>
+					</div>
 
-						<h2 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-foreground leading-tight transition-colors">
-							Asegura el <span className="text-gold">valor</span> <br />
-							de tus logros.
-						</h2>
+					<h2 className="text-4xl md:text-5xl font-extrabold text-foreground tracking-tight max-w-3xl">
+						Valida la Autenticidad de tu <span className="text-gold">Certificación</span>
+					</h2>
 
-						<p className="text-muted-foreground text-lg transition-colors max-w-lg">
-							Empresas y reclutadores confían en nuestros certificados. Ingresa
-							tu código único y demuestra instantáneamente tus habilidades
-							validadas por ccap.
-						</p>
+					<p className="text-muted-foreground text-sm md:text-base max-w-2xl font-medium">
+						Empresas y reclutadores confían en nuestros certificados. Ingresa
+						tu código único o DNI para validar instantáneamente tus habilidades.
+					</p>
 
-						{/* Search bar */}
-						<div className="relative max-w-md bg-background p-1.5 rounded-xl border border-border flex items-center shadow-lg focus-within:border-gold/50 transition-colors">
+					{/* Search bar centered directly under subtitle */}
+					<div className="mt-8 relative w-full flex items-center justify-center">
+						<div className="relative w-full max-w-lg bg-card p-1.5 rounded-xl border border-border flex items-center shadow-sm focus-within:border-primary/30 focus-within:ring-2 focus-within:ring-primary/10 transition-all">
 							<div className="pl-3 pr-2 text-muted-foreground">
-								<Search className="w-5 h-5" />
+								<Search className="w-4 h-4" />
 							</div>
 							<input
 								type="text"
-								placeholder="Código ej. ccap-2026-X9"
-								className="flex-1 bg-transparent border-none outline-none text-foreground text-sm placeholder:text-muted-foreground uppercase"
+								placeholder="Ingresa el código de certificado o DNI"
+								className="flex-1 bg-transparent border-none outline-none text-foreground text-sm placeholder:text-muted-foreground uppercase font-medium"
 							/>
-							<button className="bg-gold hover:bg-gold/90 text-gold-foreground px-5 py-2.5 rounded-lg font-bold transition-colors flex items-center gap-2 text-sm">
+							<button className="bg-gold hover:bg-gold/90 text-gold-foreground px-5 py-2 rounded-lg font-semibold transition-colors flex items-center gap-2 text-sm shadow-sm">
 								Verificar
 								<ArrowRight className="w-4 h-4" />
 							</button>
 						</div>
 					</div>
+				</div>
 
-					{/* Benefits Cards Side */}
-					<div className="grid grid-cols-1 gap-4">
-						{BENEFITS.map((benefit, index) => {
-							const isGold = benefit.accent === "gold";
-							return (
+				{/* Benefits Cards Grid */}
+				<div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+					{BENEFITS.map((benefit, index) => {
+						return (
+							<div
+								key={index}
+								className="group bg-card p-6 rounded-2xl flex flex-col items-start gap-4 transition-all duration-300 border border-border/50 shadow-sm hover:shadow-md hover:border-border hover:-translate-y-0.5">
 								<div
-									key={index}
-									className={`group bg-background/80 border border-border p-6 rounded-2xl flex gap-4 transition-all duration-300 shadow-sm hover:shadow-lg hover:shadow-${benefit.accent}/5 hover:border-${benefit.accent}/30`}>
-									<div
-										className={`w-12 h-12 ${isGold ? "bg-gold/10" : "bg-primary/10"} rounded-xl flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform`}>
-										<benefit.icon
-											className={`w-6 h-6 ${isGold ? "text-gold" : "text-primary"}`}
-										/>
-									</div>
-									<div>
-										<h3 className="font-bold text-foreground mb-1">
-											{benefit.title}
-										</h3>
-										<p className="text-sm text-muted-foreground">
-											{benefit.description}
-										</p>
-									</div>
+									className={`w-12 h-12 ${benefit.iconBg} rounded-xl flex items-center justify-center shrink-0`}>
+									<benefit.icon
+										className={`w-5 h-5 ${benefit.iconColor}`}
+									/>
 								</div>
-							);
-						})}
-					</div>
+								<div>
+									<h3 className="text-[17px] font-bold text-foreground mb-1.5">
+										{benefit.title}
+									</h3>
+									<p className="text-[14px] text-muted-foreground font-medium leading-relaxed">
+										{benefit.description}
+									</p>
+								</div>
+							</div>
+						);
+					})}
 				</div>
 			</div>
 		</section>
