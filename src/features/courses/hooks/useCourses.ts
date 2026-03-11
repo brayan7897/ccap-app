@@ -8,7 +8,6 @@ export const courseKeys = {
   all:    () => ["courses"] as const,
   list:   (skip: number, limit: number) => ["courses", "list", skip, limit] as const,
   detail: (id: string) => ["courses", id] as const,
-  slug:   (slug: string) => ["courses", "slug", slug] as const,
 };
 
 export function useCourses(skip = 0, limit = 20) {
@@ -18,17 +17,9 @@ export function useCourses(skip = 0, limit = 20) {
   });
 }
 
-export function useCourse(id: string) {
+export function useCourse(slug: string) {
   return useQuery({
-    queryKey: courseKeys.detail(id),
-    queryFn:  () => coursesService.getById(id),
-    enabled:  !!id,
-  });
-}
-
-export function useCourseBySlug(slug: string) {
-  return useQuery({
-    queryKey: courseKeys.slug(slug),
+    queryKey: courseKeys.detail(slug),
     queryFn:  () => coursesService.getBySlug(slug),
     enabled:  !!slug,
   });
@@ -37,8 +28,8 @@ export function useCourseBySlug(slug: string) {
 export function useEnroll() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: ({ courseId, studentId }: { courseId: string; studentId: string }) =>
-      coursesService.enroll(courseId, studentId),
+    mutationFn: ({ courseId, userId }: { courseId: string; userId: string }) =>
+      coursesService.enroll(courseId, userId),
     onSuccess: () => {
       toast.success("¡Te has inscrito al curso!");
       qc.invalidateQueries({ queryKey: courseKeys.all() });

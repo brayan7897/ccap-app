@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
 import { Search, Sun, Moon, LogIn, Menu, X, ChevronRight } from "lucide-react";
 import { SearchModal } from "@/components/ui/SearchModal";
 import { useUiStore } from "@/store/ui-store";
-import { LogoLight, LogoDark } from "@/assets/images";
+import { Logo } from "@/components/ui/Logo";
 
 const NAV_LINKS = [
 	{ href: "/courses", label: "Cursos" },
@@ -67,13 +67,7 @@ export function Navbar() {
 							className={`relative shrink-0 transition-all duration-400 ease-out ${
 								scrolled ? "h-9 w-32" : "h-10 w-36"
 							}`}>
-							<Image
-								src={darkMode ? LogoDark : LogoLight}
-								alt="CCAP"
-								fill
-								className="object-contain object-left"
-								priority
-							/>
+							<Logo className="w-full h-full text-foreground hover:opacity-90 transition-opacity" />
 						</Link>
 
 						<nav className="hidden lg:flex items-center gap-1">

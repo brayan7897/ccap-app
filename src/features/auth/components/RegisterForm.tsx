@@ -176,8 +176,8 @@ export function RegisterForm() {
 					</div>
 				</div>
 
-				{/* Hidden role_id */}
-				<input type="hidden" {...register("role_id")} value="" />
+				{/* role_id: omitido del formulario — el backend asigna rol estudiante por defecto */}
+				{/* TODO: cargar desde /api/v1/roles/ cuando ese endpoint exista */}
 
 				{/* Terms */}
 				<p className="text-xs text-muted-foreground leading-relaxed">

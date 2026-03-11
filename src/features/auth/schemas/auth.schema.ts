@@ -13,7 +13,7 @@ export const registerSchema = z.object({
   document_type: z.enum(["DNI", "PASSPORT", "RUC"]),
   document_number: z.string().min(6, "Número de documento requerido"),
   phone_number: z.string().optional(),
-  role_id: z.string().uuid("ID de rol inválido"),
+  role_id: z.string().uuid("ID de rol inválido").optional(),
 });
 
 export type LoginInput = z.infer<typeof loginSchema>;

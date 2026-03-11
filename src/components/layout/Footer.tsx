@@ -3,8 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Mail, Facebook, ArrowUpRight } from "lucide-react";
-import { useUiStore } from "@/store/ui-store";
-import { LogoLight, LogoDark } from "@/assets/images";
+import { Logo } from "@/components/ui/Logo";
 
 const LEGAL_LINKS = [
 	{ href: "/terms", label: "Términos y condiciones" },
@@ -12,8 +11,6 @@ const LEGAL_LINKS = [
 ];
 
 export function Footer() {
-	const { darkMode } = useUiStore();
-
 	return (
 		<footer className="w-full bg-muted/20 border-t border-border text-muted-foreground transition-colors">
 			<div className="container mx-auto px-4 lg:px-8">
@@ -22,12 +19,7 @@ export function Footer() {
 					{/* Brand & Socials */}
 					<div className="flex flex-col space-y-6 max-w-sm">
 						<Link href="/" className="relative inline-block h-10 w-32">
-							<Image
-								src={darkMode ? LogoDark : LogoLight}
-								alt="CCAP GLOBAL"
-								fill
-								className="object-contain object-left"
-							/>
+							<Logo className="w-full h-full text-foreground opacity-90 hover:opacity-100 transition-opacity" />
 						</Link>
 						<p className="text-sm leading-relaxed">
 							Somos tu mejor opción en capacitación profesional, garantizando

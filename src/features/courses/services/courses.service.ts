@@ -7,18 +7,21 @@ export const coursesService = {
     return res.data;
   },
 
-  async getById(id: string): Promise<Course> {
-    const res = await api.get<Course>(`/courses/${id}`);
-    return res.data;
-  },
-
   async getBySlug(slug: string): Promise<Course> {
-    const res = await api.get<Course>(`/courses/slug/${slug}`);
-    return res.data;
+    try {
+      console.log(`[coursesService.getBySlug] Fetching course with slug: "${slug}"`);
+      const res = await api.get<Course>(`/courses/slug/${slug}`);
+      console.log(`[coursesService.getBySlug] Success:`, res.data);
+      return res.data;
+    } catch (error: any) {
+      console.error(`[coursesService.getBySlug] Error fetching "${slug}":`, error?.response?.data || error.message || error);
+      throw error;
+    }
   },
 
-  async enroll(courseId: string, studentId: string) {
-    const res = await api.post(`/courses/${courseId}/enroll`, { student_id: studentId });
+  /** Enroll a student — API expects { user_id } */
+  async enroll(courseId: string, userId: string) {
+    const res = await api.post(`/courses/${courseId}/enroll`, { user_id: userId });
     return res.data;
   },
 };

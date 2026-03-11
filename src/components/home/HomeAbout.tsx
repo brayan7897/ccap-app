@@ -53,10 +53,6 @@ export function HomeAbout() {
 						{/* Card 1: Experience */}
 						<div className="bg-linear-to-br from-card to-card/50 border border-border/50 rounded-[2rem] p-8 md:p-10 flex flex-col justify-center hover:border-primary/50 transition-all duration-500 shadow-xl shadow-black/5 relative overflow-hidden group min-h-[320px]">
 							<div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-							
-							<div className="absolute -bottom-6 -right-6 p-6 opacity-10 group-hover:opacity-20 transition-opacity pointer-events-none">
-								<Star className="w-40 h-40 text-orange-500 blur-[2px] rotate-12 translate-x-4 translate-y-4" />
-							</div>
 
 							<div className="relative z-10 mb-4">
 								<div className="w-14 h-14 rounded-2xl bg-orange-500/10 flex items-center justify-center ring-1 ring-orange-500/20 group-hover:scale-110 transition-transform duration-500 mb-6">
@@ -71,9 +67,6 @@ export function HomeAbout() {
 
 						{/* Card 2: Experts */}
 						<div className="bg-card border border-border/50 rounded-[2rem] p-8 md:p-10 flex flex-col justify-center hover:border-primary/50 transition-all duration-500 shadow-xl shadow-black/5 relative overflow-hidden group min-h-[320px]">
-							<div className="absolute -top-10 -right-10 p-6 opacity-10 group-hover:opacity-20 transition-opacity pointer-events-none">
-								<Users className="w-48 h-48 text-primary blur-[2px] -rotate-12 translate-x-4 -translate-y-4" />
-							</div>
 							
 							<div className="relative z-10 mb-4">
 								<div className="w-14 h-14 rounded-2xl bg-blue-500/10 flex items-center justify-center ring-1 ring-blue-500/20 group-hover:scale-110 transition-transform duration-500 mb-6">
@@ -100,12 +93,12 @@ export function HomeAbout() {
 					</div>
 
 					<div className="w-full relative flex pb-8">
-						{/* Interactive Track - slides items slightly and highlights on hover */}
-						<div className="flex w-full justify-center gap-6 md:gap-8 flex-wrap lg:flex-nowrap items-center transition-all duration-700 ease-out group-hover:gap-10">
+						{/* Interactive Track */}
+						<div className="flex w-full justify-center gap-6 md:gap-8 flex-wrap lg:flex-nowrap items-center">
 							{PILARES.map((pilar, index) => (
 								<div 
 									key={index} 
-									className="flex flex-col md:flex-row items-center gap-4 bg-card/80 backdrop-blur-md border border-border/50 rounded-2xl p-6 w-full md:w-[280px] lg:w-[320px] transition-all duration-500 hover:border-primary/50 hover:bg-card hover:-translate-y-3 hover:shadow-xl hover:shadow-primary/10 cursor-default"
+									className="flex flex-col md:flex-row items-center gap-4 bg-card/80 backdrop-blur-md border border-border/50 rounded-2xl p-6 w-full md:w-[280px] lg:w-[320px] transition-all duration-300 hover:border-primary/50 hover:bg-card hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/5 cursor-default"
 								>
 									<div className="w-14 h-14 shrink-0 rounded-full flex items-center justify-center border border-border transition-colors shadow-sm group-hover:border-primary/30">
 										<pilar.icon className="w-6 h-6 text-primary" />
