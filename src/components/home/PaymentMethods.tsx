@@ -1,36 +1,44 @@
 import Image from "next/image";
-import { CreditCard, ShieldCheck } from "lucide-react";
+import { CreditCard, ShieldCheck, Mail } from "lucide-react";
 import { paymentMethodLogos } from "@/assets";
 
 export const PaymentMethods = () => {
 	const methods = [
 		{ 
 			name: "BCP", 
+			description: "Transferencias y depósitos directos con validación rápida.",
 			icon: paymentMethodLogos.logo_bcp,
-			brandGlow: "bg-blue-500/20",
-			shadow: "group-hover:shadow-[0_10px_40px_-10px_rgba(59,130,246,0.3)]",
-			borderColor: "group-hover:border-blue-500/30",
+			brandGlow: "bg-primary/20",
+			shadow: "group-hover:shadow-xl group-hover:shadow-primary/10",
+			borderColor: "group-hover:border-primary/30",
+			textColor: "text-primary",
 		},
 		{ 
 			name: "BBVA", 
+			description: "Pagos a través de banca por internet, app móvil o ventanilla.",
 			icon: paymentMethodLogos.logo_bbva,
-			brandGlow: "bg-indigo-500/20",
-			shadow: "group-hover:shadow-[0_10px_40px_-10px_rgba(99,102,241,0.3)]",
-			borderColor: "group-hover:border-indigo-500/30",
+			brandGlow: "bg-gold/20",
+			shadow: "group-hover:shadow-xl group-hover:shadow-gold/10",
+			borderColor: "group-hover:border-gold/30",
+			textColor: "text-gold",
 		},
 		{ 
 			name: "Banco de la Nación", 
+			description: "Ampliamente disponible en agentes y sucursales a nivel nacional.",
 			icon: paymentMethodLogos.logo_banco_nacion,
-			brandGlow: "bg-red-500/20",
-			shadow: "group-hover:shadow-[0_10px_40px_-10px_rgba(239,68,68,0.3)]",
-			borderColor: "group-hover:border-red-500/30",
+			brandGlow: "bg-primary/20",
+			shadow: "group-hover:shadow-xl group-hover:shadow-primary/10",
+			borderColor: "group-hover:border-primary/30",
+			textColor: "text-primary",
 		},
 		{ 
 			name: "Yape", 
+			description: "Pago instantáneo y sin comisiones escaneando nuestro código QR.",
 			icon: paymentMethodLogos.logo_yape,
-			brandGlow: "bg-purple-500/20",
-			shadow: "group-hover:shadow-[0_10px_40px_-10px_rgba(168,85,247,0.3)]",
-			borderColor: "group-hover:border-purple-500/30",
+			brandGlow: "bg-gold/20",
+			shadow: "group-hover:shadow-xl group-hover:shadow-gold/10",
+			borderColor: "group-hover:border-gold/30",
+			textColor: "text-gold",
 		},
 	];
 
@@ -43,17 +51,17 @@ export const PaymentMethods = () => {
 				
 				{/* Section Header */}
 				<div className="flex flex-col items-center text-center space-y-4 mb-16">
-					<div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 text-primary text-xs font-semibold border border-primary/20">
+					<div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gold/10 text-gold text-xs font-semibold border border-gold/20">
 						<CreditCard className="w-4 h-4" />
-						<span>Proceso de pago fácil y seguro</span>
+						<span>TRANSPARENCIA TOTAL</span>
 					</div>
 
 					<h2 className="text-4xl md:text-5xl font-extrabold text-foreground tracking-tight max-w-3xl">
-						Múltiples <span className="text-primary">Métodos de Pago</span>
+						Diversos <span className="text-gold">Métodos de Pago</span>
 					</h2>
 
 					<p className="text-muted-foreground text-sm md:text-base max-w-2xl font-medium">
-						Facilitamos tu inscripción. Paga de forma segura y rápida a través de las entidades financieras más reconocidas del país.
+						Tu educación es una prioridad. Facilitamos tu inscripción permitiendo abonos mediante las entidades financieras más confiables del país.
 					</p>
 				</div>
 
@@ -62,33 +70,51 @@ export const PaymentMethods = () => {
 					{methods.map((method) => (
 						<div
 							key={method.name}
-							className={`group relative rounded-3xl bg-card border border-border/50 p-8 flex flex-col items-center justify-center gap-6 transition-all duration-500 hover:-translate-y-2 z-10 overflow-hidden ${method.shadow} ${method.borderColor}`}
+							className={`group relative rounded-3xl bg-card border border-border/50 p-6 xl:p-8 flex flex-col items-center text-center gap-4 transition-all duration-500 hover:-translate-y-2 z-10 overflow-hidden ${method.shadow} ${method.borderColor}`}
 						>
 							{/* Dynamic Brand Glow inside the card (Blurred absolute div) */}
-							<div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] rounded-full blur-[50px] opacity-0 transition-opacity duration-700 group-hover:opacity-100 -z-10 ${method.brandGlow}`} />
+							<div className={`absolute top-0 left-1/2 -translate-x-1/2 w-[120%] h-[120%] rounded-full blur-[60px] opacity-0 transition-opacity duration-700 group-hover:opacity-100 -z-10 ${method.brandGlow}`} />
 							
 							{/* Logo Container */}
-							<div className="relative w-32 h-16 md:w-36 md:h-20 flex items-center justify-center transition-transform duration-500 group-hover:scale-110 z-10">
+							<div className="relative w-24 h-12 md:w-32 md:h-16 flex items-center justify-center transition-transform duration-500 group-hover:scale-105 z-10 mb-2">
 								<Image
 									src={method.icon}
-									alt={`Logo de ${method.name}`}
+									alt={`${method.name} — método de pago aceptado para cursos online en CCAP Global Perú`}
 									fill
-									className="object-contain brightness-0 dark:invert opacity-60 dark:opacity-50 transition-all duration-500 group-hover:opacity-100!"
+									className="object-contain brightness-0 dark:invert opacity-60 transition-all duration-500 group-hover:opacity-100"
 								/>
 							</div>
 							
-							{/* Payment Method Name */}
-							<span className="text-sm font-semibold text-muted-foreground transition-colors duration-500 group-hover:text-foreground z-10">
-								{method.name}
-							</span>
+							{/* Details */}
+							<div className="z-10 flex flex-col grow">
+								<h3 className={`text-base font-bold text-foreground transition-colors duration-500 group-hover:${method.textColor} mb-2`}>
+									{method.name}
+								</h3>
+								<p className="text-xs text-muted-foreground font-medium leading-relaxed group-hover:text-foreground/80 transition-colors duration-500">
+									{method.description}
+								</p>
+							</div>
 						</div>
 					))}
 				</div>
 				
-				{/* Trust Badge */}
-				<div className="mt-16 flex items-center justify-center gap-2 text-sm font-semibold text-muted-foreground bg-green-500/5 px-6 py-3 rounded-full w-fit mx-auto border border-green-500/10">
-					<ShieldCheck className="w-5 h-5 text-green-500" />
-					<span>Todas las transacciones están encriptadas y aseguradas</span>
+				{/* Footer Options & Trust Badge */}
+				<div className="mt-16 flex flex-col items-center gap-8">
+					<div className="flex items-center justify-center gap-2 text-sm font-semibold text-muted-foreground bg-green-500/5 px-6 py-3 rounded-full w-fit max-w-full text-center border border-green-500/10 shadow-sm">
+						<ShieldCheck className="w-5 h-5 text-green-500 shrink-0" />
+						<span>Transacciones verificadas, encriptadas y 100% aseguradas</span>
+					</div>
+
+					<div className="flex flex-col items-center gap-3">
+						<span className="text-sm font-medium text-muted-foreground">¿Tienes problemas con el pago o un método diferente?</span>
+						<a 
+							href="/contact" 
+							className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl bg-card hover:bg-muted border border-border hover:border-border/80 text-foreground font-semibold shadow-sm hover:shadow-md transition-all group"
+						>
+							<Mail className="w-5 h-5 text-muted-foreground group-hover:text-gold transition-colors" />
+							Contáctanos
+						</a>
+					</div>
 				</div>
 
 			</div>

@@ -14,7 +14,8 @@ function toCardProps(course: Course): CourseCardProps {
 		course.modules?.reduce(
 			(sum, m) =>
 				sum +
-				(m.lessons?.reduce((s, l) => s + (l.duration_seconds ?? 0), 0) ?? 0),
+				(m.lessons?.reduce((s, l) => s + (l.duration_minutes ?? 0) * 60, 0) ??
+					0),
 			0,
 		);
 	const hours = totalSeconds ? Math.round(totalSeconds / 3600) : undefined;
@@ -31,10 +32,9 @@ function toCardProps(course: Course): CourseCardProps {
 			: undefined,
 		category_name: course.category?.name ?? undefined,
 		tags: course.tags,
-		total_lessons: course.total_lessons ?? course.modules?.reduce(
-			(sum, m) => sum + (m.lessons?.length ?? 0),
-			0,
-		),
+		total_lessons:
+			course.total_lessons ??
+			course.modules?.reduce((sum, m) => sum + (m.lessons?.length ?? 0), 0),
 		total_duration: hours ? `${hours} horas` : undefined,
 		enrolled_count: course.enrolled_count,
 	};

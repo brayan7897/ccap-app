@@ -1,6 +1,23 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { Users, Target, Zap } from "lucide-react";
+
+export const metadata: Metadata = {
+	title: "Sobre Nosotros — Centro de Capacitación Profesional con +5 Años de Experiencia",
+	description:
+		"Conoce a CCAP Global, la plataforma de e-learning líder en Perú especializada en ingenieros y arquitectos. Más de 5 años formando líderes técnicos con certificados avalados por CIP, CAP y Autodesk.",
+	alternates: {
+		canonical: "https://www.ccapglobal.com/about",
+	},
+	openGraph: {
+		title: "Sobre Nosotros | CCAP Global — Plataforma de E-Learning en Perú",
+		description:
+			"Más de 5 años formando ingenieros y arquitectos con certificaciones reconocidas a nivel nacional e internacional.",
+		url: "https://www.ccapglobal.com/about",
+	},
+};
+
 
 const TEAM_MEMBERS = [
 	{

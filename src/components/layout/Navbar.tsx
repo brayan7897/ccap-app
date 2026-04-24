@@ -1,12 +1,23 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { useState, useEffect } from "react";
-import { Search, Sun, Moon, LogIn, Menu, X, ChevronRight } from "lucide-react";
+import {
+	Search,
+	Sun,
+	Moon,
+	LogIn,
+	Menu,
+	X,
+	ChevronRight,
+	Bell,
+} from "lucide-react";
 import { SearchModal } from "@/components/ui/SearchModal";
 import { useUiStore } from "@/store/ui-store";
 import { Logo } from "@/components/ui/Logo";
+import { useUser } from "@/features/auth/hooks/useAuth";
+import { UserMenu } from "@/features/auth/components/UserMenu";
+import { NotificationBell } from "@/components/layout/NotificationBell";
 
 const NAV_LINKS = [
 	{ href: "/courses", label: "Cursos" },
@@ -19,6 +30,7 @@ export function Navbar() {
 	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 	const [scrolled, setScrolled] = useState(false);
 	const { darkMode, toggleDarkMode } = useUiStore();
+	const { data: user } = useUser();
 
 	// Keyboard shortcut to open search (Ctrl+K or Cmd+K)
 	useEffect(() => {
@@ -61,7 +73,7 @@ export function Navbar() {
 						scrolled ? "h-20" : "h-24"
 					}`}>
 					{/* Left: Logo + Nav */}
-					<div className="flex items-center gap-8 lg:gap-12">
+					<div className="flex items-center gap-4 xl:gap-8">
 						<Link
 							href="/"
 							className={`relative shrink-0 transition-all duration-400 ease-out ${
@@ -89,7 +101,7 @@ export function Navbar() {
 						{/* Search Trigger */}
 						<button
 							onClick={() => setIsSearchOpen(true)}
-							className={`hidden md:inline-flex items-center justify-between text-base font-medium text-foreground bg-transparent border border-border hover:border-primary/40 hover:bg-secondary/50 rounded-xl transition-all shadow-sm w-48 lg:w-72 ${
+							className={`hidden md:inline-flex items-center justify-between text-base font-medium text-foreground bg-transparent border border-border hover:border-primary/40 hover:bg-secondary/50 rounded-xl transition-all shadow-sm w-40 lg:w-56 xl:w-72 ${
 								scrolled ? "px-3 py-2" : "px-4 py-2.5"
 							}`}>
 							<div className="flex items-center gap-2.5">
@@ -124,17 +136,26 @@ export function Navbar() {
 
 						{/* Auth buttons */}
 						<div className="hidden sm:flex items-center gap-3">
-							<Link
-								href="/login"
-								className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-bold text-foreground bg-background border border-border hover:bg-accent hover:text-accent-foreground rounded-xl transition-all shadow-sm">
-								<LogIn className="w-4 h-4" />
-								Ingresar
-							</Link>
-							<Link
-								href="/register"
-								className="inline-flex items-center justify-center px-5 py-2.5 text-sm font-bold text-primary-foreground bg-primary hover:bg-primary/90 rounded-xl transition-all shadow-md shadow-primary/25 hover:shadow-lg hover:shadow-primary/40 hover:-translate-y-0.5">
-								Registrarse
-							</Link>
+							{user ? (
+								<>
+									<NotificationBell />
+									<UserMenu />
+								</>
+							) : (
+								<>
+									<Link
+										href="/login"
+										className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-bold text-foreground bg-background border border-border hover:bg-accent hover:text-accent-foreground rounded-xl transition-all shadow-sm">
+										<LogIn className="w-4 h-4" />
+										Ingresar
+									</Link>
+									<Link
+										href="/register"
+										className="hidden lg:inline-flex items-center justify-center px-5 py-2.5 text-sm font-bold text-primary-foreground bg-primary hover:bg-primary/90 rounded-xl transition-all shadow-md shadow-primary/25 hover:shadow-lg hover:shadow-primary/40 hover:-translate-y-0.5">
+										Registrarse
+									</Link>
+								</>
+							)}
 						</div>
 
 						{/* Mobile hamburger */}
@@ -164,20 +185,39 @@ export function Navbar() {
 									<ChevronRight className="w-4 h-4 text-muted-foreground" />
 								</Link>
 							))}
+							{/* Notifications link (mobile, logged-in only) */}
+							{user && (
+								<Link
+									href="/dashboard/notificaciones"
+									onClick={() => setIsMobileMenuOpen(false)}
+									className="flex items-center justify-between px-3 py-3 text-sm font-semibold text-foreground hover:bg-muted/50 rounded-lg transition-colors">
+									<span className="flex items-center gap-2">
+										<Bell className="w-4 h-4" />
+										Notificaciones
+									</span>
+									<ChevronRight className="w-4 h-4 text-muted-foreground" />
+								</Link>
+							)}
 							<div className="pt-4 border-t border-border mt-4 flex flex-col gap-3">
-								<Link
-									href="/register"
-									onClick={() => setIsMobileMenuOpen(false)}
-									className="w-full inline-flex items-center justify-center px-4 py-3.5 text-sm font-bold text-primary-foreground bg-primary hover:bg-primary/90 rounded-xl transition-all shadow-md shadow-primary/25">
-									Registrarse
-								</Link>
-								<Link
-									href="/login"
-									onClick={() => setIsMobileMenuOpen(false)}
-									className="w-full inline-flex items-center justify-center gap-2 px-4 py-3.5 text-sm font-bold text-foreground border border-border bg-background hover:bg-accent rounded-xl transition-colors shadow-sm">
-									<LogIn className="w-4 h-4" />
-									Ingresar
-								</Link>
+								{user ? (
+									<UserMenu />
+								) : (
+									<>
+										<Link
+											href="/register"
+											onClick={() => setIsMobileMenuOpen(false)}
+											className="w-full inline-flex items-center justify-center px-4 py-3.5 text-sm font-bold text-primary-foreground bg-primary hover:bg-primary/90 rounded-xl transition-all shadow-md shadow-primary/25">
+											Registrarse
+										</Link>
+										<Link
+											href="/login"
+											onClick={() => setIsMobileMenuOpen(false)}
+											className="w-full inline-flex items-center justify-center gap-2 px-4 py-3.5 text-sm font-bold text-foreground border border-border bg-background hover:bg-accent rounded-xl transition-colors shadow-sm">
+											<LogIn className="w-4 h-4" />
+											Ingresar
+										</Link>
+									</>
+								)}
 							</div>
 						</div>
 					</div>

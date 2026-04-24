@@ -3,6 +3,8 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { coursesService } from "../services/courses.service";
+import { enrollmentsService } from "@/features/enrollments/services/enrollments.service";
+import { useEnrollmentsStore } from "@/store/enrollments-store";
 
 export const courseKeys = {
   all:    () => ["courses"] as const,
@@ -27,12 +29,15 @@ export function useCourse(slug: string) {
 
 export function useEnroll() {
   const qc = useQueryClient();
+  const addEnrollment = useEnrollmentsStore((s) => s.addEnrollment);
+
   return useMutation({
-    mutationFn: ({ courseId, userId }: { courseId: string; userId: string }) =>
-      coursesService.enroll(courseId, userId),
-    onSuccess: () => {
+    mutationFn: (courseId: string) => enrollmentsService.enroll(courseId),
+    onSuccess: (enrollment) => {
+      addEnrollment(enrollment);
       toast.success("¡Te has inscrito al curso!");
       qc.invalidateQueries({ queryKey: courseKeys.all() });
+      qc.invalidateQueries({ queryKey: ["enrollments", "me"] });
     },
     onError: () => toast.error("Error al inscribirte. Intenta de nuevo."),
   });

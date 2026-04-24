@@ -27,10 +27,15 @@ export function MainHero() {
 							<span className="text-xs font-medium text-foreground">Inscripciones Abiertas 2026</span>
 						</div>
 
-						{/* Main Headline */}
+						{/* Main Headline — H1 includes target SEO keywords for Google */}
 						<h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-foreground leading-[1.1] tracking-tight mb-4 transition-colors">
-							Este 2026,<br />
-							<span className="text-transparent bg-clip-text bg-linear-to-r from-primary to-secondary">Tú eres el Motor.</span>
+							{/* Visually hidden keyword phrase — readable by crawlers */}
+							<span className="sr-only">CCAP Global — Cursos Online con Certificación Avalada en Perú</span>
+							{/* Visible creative headline */}
+							<span aria-hidden="true">
+								Este 2026,<br />
+								<span className="text-transparent bg-clip-text bg-linear-to-r from-primary to-secondary">Tú eres el Motor.</span>
+							</span>
 						</h1>
 
 						{/* Subheadline */}
@@ -61,7 +66,7 @@ export function MainHero() {
 					</div>
 
 					{/* Right Column: Hero Visual - Person & Floating Widgets */}
-					<div className="relative w-full min-h-[500px] lg:min-h-[650px] flex items-end justify-center z-10 mt-16 lg:mt-0">
+					<div className="relative w-full min-h-[400px] sm:min-h-[500px] lg:min-h-[650px] flex items-end justify-center z-10 mt-16 lg:mt-0">
 						
 						{/* Ambient Glow Orbs */}
 						<div className="absolute top-[20%] right-[10%] w-[300px] h-[300px] bg-primary/20 rounded-full blur-[100px] animate-pulse pointer-events-none" style={{ animationDuration: '4s' }} />
@@ -86,10 +91,10 @@ export function MainHero() {
 								}}>
 								<Image
 									src={HeroWoman}
-									alt="Profesional apuntando"
+									alt="Profesional de ingeniería certificada por CCAP Global — plataforma de cursos online en Perú"
 									fill
 									priority
-									className="object-contain object-bottom scale-[1.10] md:scale-[1.15] origin-bottom drop-shadow-[0_20px_40px_rgba(0,0,0,0.2)] dark:drop-shadow-[0_20px_40px_rgba(255,255,255,0.05)]"
+									className="object-contain object-bottom scale-[0.95] sm:scale-[1.10] md:scale-[1.15] origin-bottom drop-shadow-[0_20px_40px_rgba(0,0,0,0.2)] dark:drop-shadow-[0_20px_40px_rgba(255,255,255,0.05)]"
 								/>
 							</div>
 						</div>
@@ -139,7 +144,7 @@ export function MainHero() {
 										className="w-10 h-10 rounded-full border-2 border-background overflow-hidden bg-secondary">
 										<Image
 											src={img}
-											alt="Student"
+											alt={`Estudiante en clase en vivo — CCAP Global ${i + 1}`}
 											width={40}
 											height={40}
 											className="object-cover"

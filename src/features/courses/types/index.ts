@@ -1,5 +1,15 @@
-// Course-feature-specific types (extends global types when needed)
-export type { Course, Module, Lesson, Category, CourseLevel } from "@/types";
+// Course-feature-specific types (re-exports from global types)
+export type {
+  Course,
+  CourseDetail,
+  Module,
+  ModuleWithLessons,
+  Lesson,
+  LessonSummary,
+  Category,
+  CourseLevel,
+  LessonType,
+} from "@/types";
 
 export interface CourseFilters {
   level?: string;

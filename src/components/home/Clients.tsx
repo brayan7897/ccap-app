@@ -73,7 +73,7 @@ export function Clients() {
 								}`}>
 									<Image
 										src={client.logo}
-										alt={`${client.name} logo`}
+										alt={`Logo de ${client.name} — institución que confía en los cursos online de CCAP Global`}
 										fill
 										className="object-contain"
 									/>

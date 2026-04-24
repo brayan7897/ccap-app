@@ -2,7 +2,14 @@
 
 import { useRef, useState, useEffect } from "react";
 import Link from "next/link";
-import { BookOpen, ArrowRight, ChevronLeft, ChevronRight, Loader2, AlertCircle } from "lucide-react";
+import {
+	BookOpen,
+	ArrowRight,
+	ChevronLeft,
+	ChevronRight,
+	Loader2,
+	AlertCircle,
+} from "lucide-react";
 import { CourseCard } from "@/components/courses/CourseCard";
 import type { CourseCardProps } from "@/components/courses/CourseCard";
 import { useCourses } from "@/features/courses/hooks/useCourses";
@@ -15,7 +22,8 @@ function toCardProps(course: Course): CourseCardProps {
 		course.modules?.reduce(
 			(sum, m) =>
 				sum +
-				(m.lessons?.reduce((s, l) => s + (l.duration_seconds ?? 0), 0) ?? 0),
+				(m.lessons?.reduce((s, l) => s + (l.duration_minutes ?? 0) * 60, 0) ??
+					0),
 			0,
 		);
 	const hours = totalSeconds ? Math.round(totalSeconds / 3600) : undefined;
@@ -32,10 +40,9 @@ function toCardProps(course: Course): CourseCardProps {
 			: undefined,
 		category_name: course.category?.name ?? undefined,
 		tags: course.tags,
-		total_lessons: course.total_lessons ?? course.modules?.reduce(
-			(sum, m) => sum + (m.lessons?.length ?? 0),
-			0,
-		),
+		total_lessons:
+			course.total_lessons ??
+			course.modules?.reduce((sum, m) => sum + (m.lessons?.length ?? 0), 0),
 		total_duration: hours ? `${hours} horas` : undefined,
 		enrolled_count: course.enrolled_count,
 	};
@@ -70,7 +77,8 @@ export function HomeCourses() {
 
 	const checkScroll = () => {
 		if (scrollContainerRef.current) {
-			const { scrollLeft, scrollWidth, clientWidth } = scrollContainerRef.current;
+			const { scrollLeft, scrollWidth, clientWidth } =
+				scrollContainerRef.current;
 			setCanScrollLeft(scrollLeft > 1);
 			setCanScrollRight(Math.ceil(scrollLeft + clientWidth) < scrollWidth);
 		}
@@ -78,8 +86,8 @@ export function HomeCourses() {
 
 	useEffect(() => {
 		checkScroll();
-		window.addEventListener('resize', checkScroll);
-		return () => window.removeEventListener('resize', checkScroll);
+		window.addEventListener("resize", checkScroll);
+		return () => window.removeEventListener("resize", checkScroll);
 	}, []);
 
 	// Re-check scroll state whenever courses load
@@ -90,15 +98,20 @@ export function HomeCourses() {
 		}
 	}, [courses]);
 
-	const smoothScroll = (element: HTMLElement, targetPosition: number, duration: number) => {
+	const smoothScroll = (
+		element: HTMLElement,
+		targetPosition: number,
+		duration: number,
+	) => {
 		const startPosition = element.scrollLeft;
 		const distance = targetPosition - startPosition;
 		let startTime: number | null = null;
 
 		const originalSnap = element.style.scrollSnapType;
-		element.style.scrollSnapType = 'none';
+		element.style.scrollSnapType = "none";
 
-		const easeInOutQuad = (t: number) => t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+		const easeInOutQuad = (t: number) =>
+			t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
 
 		const animation = (currentTime: number) => {
 			if (startTime === null) startTime = currentTime;
@@ -118,7 +131,7 @@ export function HomeCourses() {
 		requestAnimationFrame(animation);
 	};
 
-	const scroll = (direction: 'left' | 'right') => {
+	const scroll = (direction: "left" | "right") => {
 		if (scrollContainerRef.current) {
 			const container = scrollContainerRef.current;
 			const firstCard = container.firstElementChild as HTMLElement;
@@ -128,9 +141,10 @@ export function HomeCourses() {
 			const gap = windowWidth >= 768 ? 32 : 24;
 			const scrollAmount = firstCard.getBoundingClientRect().width + gap;
 			const maxScroll = container.scrollWidth - container.clientWidth;
-			let targetPosition = direction === 'left'
-				? container.scrollLeft - scrollAmount
-				: container.scrollLeft + scrollAmount;
+			let targetPosition =
+				direction === "left"
+					? container.scrollLeft - scrollAmount
+					: container.scrollLeft + scrollAmount;
 			targetPosition = Math.max(0, Math.min(targetPosition, maxScroll));
 			smoothScroll(container, targetPosition, 400);
 		}
@@ -148,23 +162,26 @@ export function HomeCourses() {
 					</div>
 
 					<h2 className="text-4xl md:text-5xl font-extrabold text-foreground tracking-tight max-w-3xl">
-						Impulsa tu carrera con <span className="text-primary">nuestros programas</span>
+						Impulsa tu carrera con{" "}
+						<span className="text-primary">nuestros programas</span>
 					</h2>
 
 					<p className="text-muted-foreground text-sm md:text-base max-w-2xl font-medium">
-						Explora nuestros cursos mejor valorados por los estudiantes con contenido de alta calidad impartido por expertos del sector
+						Explora nuestros cursos mejor valorados por los estudiantes con
+						contenido de alta calidad impartido por expertos del sector
 					</p>
 				</div>
 			</div>
 
 			{/* Carousel / States */}
 			<div className="relative w-full max-w-[1500px] mx-auto px-4 md:px-8 lg:px-10 xl:px-12 group/carousel">
-
 				{/* Loading state — skeleton cards */}
 				{isLoading && (
 					<div className="flex gap-6 md:gap-8 pb-12 pt-8 overflow-hidden">
 						{Array.from({ length: 3 }).map((_, i) => (
-							<div key={i} className="shrink-0 w-full md:w-[calc((100%-32px)/2)] lg:w-[calc((100%-64px)/3)]">
+							<div
+								key={i}
+								className="shrink-0 w-full md:w-[calc((100%-32px)/2)] lg:w-[calc((100%-64px)/3)]">
 								<CourseCardSkeleton />
 							</div>
 						))}
@@ -175,15 +192,18 @@ export function HomeCourses() {
 				{isError && !isLoading && (
 					<div className="flex flex-col items-center justify-center py-24 gap-4 text-muted-foreground">
 						<AlertCircle className="w-10 h-10 text-destructive/70" />
-						<p className="font-semibold text-foreground">No se pudieron cargar los cursos</p>
+						<p className="font-semibold text-foreground">
+							No se pudieron cargar los cursos
+						</p>
 						<p className="text-sm text-center max-w-xs">
 							Verifica que la API esté en ejecución en{" "}
-							<code className="bg-muted px-1.5 py-0.5 rounded text-xs">http://localhost:8000</code>
+							<code className="bg-muted px-1.5 py-0.5 rounded text-xs">
+								http://localhost:8000
+							</code>
 						</p>
 						<Link
 							href="/courses"
-							className="mt-2 text-sm text-primary hover:underline font-medium"
-						>
+							className="mt-2 text-sm text-primary hover:underline font-medium">
 							Ir al catálogo completo →
 						</Link>
 					</div>
@@ -201,36 +221,35 @@ export function HomeCourses() {
 				{!isLoading && !isError && !!courses?.length && (
 					<>
 						<button
-							onClick={() => scroll('left')}
+							onClick={() => scroll("left")}
 							className={`absolute -left-1 md:left-0 lg:left-2 xl:left-4 top-1/2 -translate-y-1/2 z-20 bg-background/90 hover:bg-background text-foreground border border-border/50 shadow-lg rounded-full w-10 h-10 md:w-12 md:h-12 flex items-center justify-center backdrop-blur-md transition-all duration-300 ${
 								canScrollLeft
 									? "opacity-0 group-hover/carousel:opacity-100 hover:scale-110"
 									: "opacity-0 pointer-events-none"
 							}`}
-							aria-label="Anterior"
-						>
+							aria-label="Anterior">
 							<ChevronLeft className="w-6 h-6 md:w-7 md:h-7" />
 						</button>
 
 						<button
-							onClick={() => scroll('right')}
+							onClick={() => scroll("right")}
 							className={`absolute -right-1 md:right-0 lg:right-2 xl:right-4 top-1/2 -translate-y-1/2 z-20 bg-background/90 hover:bg-background text-foreground border border-border/50 shadow-lg rounded-full w-10 h-10 md:w-12 md:h-12 flex items-center justify-center backdrop-blur-md transition-all duration-300 ${
 								canScrollRight
 									? "opacity-0 group-hover/carousel:opacity-100 hover:scale-110"
 									: "opacity-0 pointer-events-none"
 							}`}
-							aria-label="Siguiente"
-						>
+							aria-label="Siguiente">
 							<ChevronRight className="w-6 h-6 md:w-7 md:h-7" />
 						</button>
 
 						<div
 							ref={scrollContainerRef}
 							onScroll={checkScroll}
-							className="flex overflow-x-auto gap-6 md:gap-8 pb-12 pt-8 snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
-						>
+							className="flex overflow-x-auto gap-6 md:gap-8 pb-12 pt-8 snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
 							{courses.map((course) => (
-								<div key={course.id} className="snap-start shrink-0 w-full md:w-[calc((100%-32px)/2)] lg:w-[calc((100%-64px)/3)] xl:w-[calc((100%-64px)/3)] 2xl:w-[calc((100%-96px)/4)]">
+								<div
+									key={course.id}
+									className="snap-start shrink-0 w-full md:w-[calc((100%-32px)/2)] lg:w-[calc((100%-64px)/3)] xl:w-[calc((100%-64px)/3)] 2xl:w-[calc((100%-96px)/4)]">
 									<CourseCard {...toCardProps(course)} />
 								</div>
 							))}
@@ -244,25 +263,34 @@ export function HomeCourses() {
 				<div className="mt-16 flex flex-col items-center">
 					<Link
 						href="/courses"
-						className="bg-primary hover:bg-primary/90 text-primary-foreground px-6 py-2.5 rounded-lg font-semibold transition-all flex items-center gap-2 text-sm shadow-sm"
-					>
+						className="bg-primary hover:bg-primary/90 text-primary-foreground px-6 py-2.5 rounded-lg font-semibold transition-all flex items-center gap-2 text-sm shadow-sm">
 						Ver Cursos <ArrowRight className="w-4 h-4" />
 					</Link>
 					{!isLoading && !isError && (
 						<p className="mt-4 text-[13px] text-muted-foreground font-medium text-center">
-							{courses?.length
-								? <>Mostrando <span className="font-semibold text-foreground">{courses.length}</span> cursos destacados</>
-								: "Próximamente nuevos cursos disponibles"
-							}
+							{courses?.length ? (
+								<>
+									Mostrando{" "}
+									<span className="font-semibold text-foreground">
+										{courses.length}
+									</span>{" "}
+									cursos destacados
+								</>
+							) : (
+								"Próximamente nuevos cursos disponibles"
+							)}
 						</p>
 					)}
 					{(isLoading || isError) && (
 						<p className="mt-4 text-[13px] text-muted-foreground font-medium text-center">
 							{isLoading ? (
 								<span className="inline-flex items-center gap-1.5">
-									<Loader2 className="w-3 h-3 animate-spin" /> Cargando cursos...
+									<Loader2 className="w-3 h-3 animate-spin" /> Cargando
+									cursos...
 								</span>
-							) : "Ver todos los cursos disponibles"}
+							) : (
+								"Ver todos los cursos disponibles"
+							)}
 						</p>
 					)}
 				</div>

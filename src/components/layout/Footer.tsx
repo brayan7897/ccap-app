@@ -10,12 +10,19 @@ const LEGAL_LINKS = [
 	{ href: "/privacy", label: "Política de privacidad" },
 ];
 
+const NAV_LINKS = [
+	{ href: "/courses", label: "Cursos Online" },
+	{ href: "/catalog", label: "Catálogo Completo" },
+	{ href: "/certificates", label: "Verificar Certificado" },
+	{ href: "/about", label: "Sobre Nosotros" },
+];
+
 export function Footer() {
 	return (
 		<footer className="w-full bg-muted/20 border-t border-border text-muted-foreground transition-colors">
 			<div className="container mx-auto px-4 lg:px-8">
 				{/* Main grid */}
-				<div className="flex flex-col md:flex-row justify-between items-start gap-10 py-16">
+				<div className="flex flex-col lg:flex-row justify-between items-start gap-12 lg:gap-10 py-16">
 					{/* Brand & Socials */}
 					<div className="flex flex-col space-y-6 max-w-sm">
 						<Link href="/" className="relative inline-block h-10 w-32">
@@ -28,7 +35,26 @@ export function Footer() {
 					</div>
 
 					{/* Links Group */}
-					<div className="flex flex-col sm:flex-row gap-12 sm:gap-24">
+					<div className="flex flex-col sm:flex-row gap-12 sm:gap-16">
+						{/* Navegación */}
+						<div>
+							<h4 className="text-foreground text-sm font-bold mb-5 tracking-wide uppercase">
+								Navegación
+							</h4>
+							<ul className="space-y-3 text-sm">
+								{NAV_LINKS.map((link) => (
+									<li key={link.href}>
+										<Link
+											href={link.href}
+											className="hover:text-foreground transition-colors"
+										>
+											{link.label}
+										</Link>
+									</li>
+								))}
+							</ul>
+						</div>
+
 						{/* Contacto */}
 						<div>
 							<h4 className="text-foreground text-sm font-bold mb-5 tracking-wide uppercase">

@@ -15,7 +15,8 @@ function toCardProps(course: Course): CourseCardProps {
 		course.modules?.reduce(
 			(sum, m) =>
 				sum +
-				(m.lessons?.reduce((s, l) => s + (l.duration_seconds ?? 0), 0) ?? 0),
+				(m.lessons?.reduce((s, l) => s + (l.duration_minutes ?? 0) * 60, 0) ??
+					0),
 			0,
 		);
 	const hours = totalSeconds ? Math.round(totalSeconds / 3600) : undefined;
