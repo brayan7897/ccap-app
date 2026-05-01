@@ -17,16 +17,20 @@ export default function AuthLayout({
 				<div className="absolute -bottom-20 left-1/3 h-72 w-72 animate-[float_18s_ease-in-out_infinite_2s] rounded-full bg-primary-03 blur-[80px]" />
 			</div>
 
-			{/* Back button */}
-			<Link
-				href="/"
-				className="absolute top-6 left-6 z-20 inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors group">
-				<ArrowLeft className="h-4 w-4 group-hover:-translate-x-0.5 transition-transform" />
-				Volver al inicio
-			</Link>
+
 
 			{/* Center card */}
-			<div className="relative z-10 w-full max-w-md">
+			<div className="relative z-10 w-full max-w-md flex flex-col">
+				{/* Back button */}
+				<div className="flex items-center justify-between mb-8">
+					<Link
+						href="/"
+						className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-primary transition-colors group px-3 py-1.5 rounded-full hover:bg-primary/5">
+						<ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
+						Volver al inicio
+					</Link>
+				</div>
+
 				{/* Logo */}
 				<div className="flex justify-center mb-8">
 					<Link href="/" className="relative h-10 w-28">

@@ -13,6 +13,18 @@ export const authService = {
     return res.data;
   },
 
+  /** Check if email is registered */
+  async checkEmail(email: string): Promise<{ exists: boolean }> {
+    const res = await api.post<{ exists: boolean }>("/auth/check-email", { email });
+    return res.data;
+  },
+
+  /** Request password reset */
+  async requestPasswordReset(email: string): Promise<{ detail: string }> {
+    const res = await api.post<{ detail: string }>("/auth/password-reset/request", { email });
+    return res.data;
+  },
+
   /** Register a new user */
   async register(data: RegisterInput): Promise<User> {
     const res = await api.post<User>("/users/", data);
@@ -25,7 +37,7 @@ export const authService = {
     return res.data;
   },
 
-  /** Update current user profile */
+  /** Update current user profile (PUT /users/me) — no document fields */
   async updateMe(data: {
     first_name?: string;
     last_name?: string;
@@ -35,6 +47,35 @@ export const authService = {
   }): Promise<User> {
     const res = await api.put<User>("/users/me", data);
     return res.data;
+  },
+
+  /** Register user document — one-time action (PATCH /users/me/document) */
+  async updateDocument(data: {
+    document_type: string;
+    document_number: string;
+  }): Promise<User> {
+    console.log("[updateDocument] ► Enviando payload:", data);
+    try {
+      const res = await api.patch<User>("/users/me/document", data);
+      console.log("[updateDocument] ✔ Respuesta exitosa:", res.status, res.data);
+      return res.data;
+    } catch (err: unknown) {
+      const axiosErr = err as import("axios").AxiosError;
+      console.error(
+        "[updateDocument] ✘ Error:",
+        axiosErr.response?.status,
+        axiosErr.response?.data
+      );
+      throw err;
+    }
+  },
+
+  /** Change password (requires current password for verification) */
+  async changePassword(data: {
+    current_password: string;
+    new_password: string;
+  }): Promise<void> {
+    await api.post("/auth/change-password", data);
   },
 
   /** Sign in / sign up via Google ID Token */

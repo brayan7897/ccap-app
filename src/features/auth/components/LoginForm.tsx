@@ -5,7 +5,15 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
-import { Eye, EyeOff, Loader2, Mail, Lock } from "lucide-react";
+import {
+	Eye,
+	EyeOff,
+	Loader2,
+	Mail,
+	Lock,
+	CheckCircle2,
+	XCircle,
+} from "lucide-react";
 import { loginSchema, type LoginInput } from "../schemas/auth.schema";
 import { useLogin, useUser } from "../hooks/useAuth";
 import { GoogleLoginButton } from "./GoogleLoginButton";
@@ -20,12 +28,12 @@ export function LoginForm() {
 	const [showPassword, setShowPassword] = useState(false);
 	const { mutate: login, isPending } = useLogin();
 
-	// If the user already has a valid session, redirect them away from the login page.
-	// This runs client-side so it only fires when the token is actually verified.
 	useEffect(() => {
 		if (user) {
 			const params = new URLSearchParams(window.location.search);
-			const destination = params.get("from") || "/dashboard";
+			const raw = params.get("from") ?? "";
+			const destination =
+				raw.startsWith("/") && !raw.startsWith("//") ? raw : "/dashboard";
 			router.replace(destination);
 		}
 	}, [user, router]);
@@ -33,38 +41,68 @@ export function LoginForm() {
 	const {
 		register,
 		handleSubmit,
-		formState: { errors },
-	} = useForm<LoginInput>({ resolver: zodResolver(loginSchema) });
+		formState: { errors, dirtyFields },
+	} = useForm<LoginInput>({
+		resolver: zodResolver(loginSchema),
+		mode: "onChange",
+	});
+
+	const getFieldState = (fieldName: keyof LoginInput) => {
+		const hasError = !!errors[fieldName];
+		const isDirty = !!dirtyFields[fieldName];
+		if (!isDirty) return "idle";
+		return hasError ? "error" : "success";
+	};
+
+	const inputClass = (state: "idle" | "error" | "success") => {
+		const base = "pl-10 h-11 transition-colors pr-10";
+		if (state === "error")
+			return `${base} border-destructive focus-visible:ring-destructive/30 bg-destructive/5`;
+		if (state === "success")
+			return `${base} border-emerald-500 focus-visible:ring-emerald-500/30 bg-emerald-500/5`;
+		return base;
+	};
 
 	return (
-		<div className="space-y-6">
+		<div className="space-y-8">
 			<form
 				onSubmit={handleSubmit((data) => login(data))}
-				className="space-y-5">
+				className="space-y-6"
+				noValidate>
 				{/* Email */}
-				<div className="space-y-2">
-					<Label htmlFor="email">Correo electrónico</Label>
+				<div className="space-y-1.5">
+					<Label htmlFor="login-email">Correo electrónico</Label>
 					<div className="relative">
-						<Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+						<Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground z-10" />
 						<Input
-							id="email"
+							id="login-email"
 							type="email"
 							placeholder="tu@email.com"
-							className="pl-10 h-11"
+							autoComplete="email"
+							className={inputClass(getFieldState("email"))}
 							{...register("email")}
 						/>
+						<div className="absolute right-3 top-1/2 -translate-y-1/2">
+							{getFieldState("email") === "error" && (
+								<XCircle className="h-4 w-4 text-destructive" />
+							)}
+							{getFieldState("email") === "success" && (
+								<CheckCircle2 className="h-4 w-4 text-emerald-500" />
+							)}
+						</div>
 					</div>
 					{errors.email && (
-						<p className="text-xs text-destructive font-medium">
+						<p className="text-xs text-destructive font-medium flex items-center gap-1">
+							<XCircle className="h-3 w-3 shrink-0" />
 							{errors.email.message}
 						</p>
 					)}
 				</div>
 
 				{/* Password */}
-				<div className="space-y-2">
+				<div className="space-y-1.5">
 					<div className="flex items-center justify-between">
-						<Label htmlFor="password">Contraseña</Label>
+						<Label htmlFor="login-password">Contraseña</Label>
 						<Link
 							href="/forgot-password"
 							className="text-xs font-semibold text-primary hover:text-primary/80 transition-colors">
@@ -72,12 +110,13 @@ export function LoginForm() {
 						</Link>
 					</div>
 					<div className="relative">
-						<Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+						<Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground z-10" />
 						<Input
-							id="password"
+							id="login-password"
 							type={showPassword ? "text" : "password"}
 							placeholder="••••••••"
-							className="pl-10 pr-10 h-11"
+							autoComplete="current-password"
+							className={inputClass(getFieldState("password"))}
 							{...register("password")}
 						/>
 						<button
@@ -92,7 +131,8 @@ export function LoginForm() {
 						</button>
 					</div>
 					{errors.password && (
-						<p className="text-xs text-destructive font-medium">
+						<p className="text-xs text-destructive font-medium flex items-center gap-1">
+							<XCircle className="h-3 w-3 shrink-0" />
 							{errors.password.message}
 						</p>
 					)}
@@ -123,18 +163,8 @@ export function LoginForm() {
 			</div>
 
 			{/* Social Login Buttons */}
-			<div className="grid grid-cols-2 gap-3">
+			<div className="flex flex-col gap-3">
 				<GoogleLoginButton />
-				<Button
-					type="button"
-					variant="outline"
-					className="h-11 font-semibold"
-					disabled>
-					<svg className="h-4 w-4 mr-2" fill="currentColor" viewBox="0 0 24 24">
-						<path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-					</svg>
-					X
-				</Button>
 			</div>
 
 			{/* Register Link */}

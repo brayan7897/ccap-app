@@ -2,7 +2,6 @@
 
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { useState, useRef, useEffect } from "react";
 import {
 	ShieldCheck,
 	ShieldX,
@@ -14,9 +13,7 @@ import {
 	Download,
 	Loader2,
 	Code2,
-	Maximize,
-	Minimize,
-	RotateCw,
+	User,
 } from "lucide-react";
 import { useVerifyCertificate } from "@/features/certificates/hooks/useCertificates";
 
@@ -32,31 +29,6 @@ export default function VerifyCertificatePage() {
 	const params = useParams<{ code: string }>();
 	const router = useRouter();
 	const code = decodeURIComponent(params.code ?? "");
-
-	const viewerRef = useRef<HTMLDivElement>(null);
-	const [isFullscreen, setIsFullscreen] = useState(false);
-	const [rotation, setRotation] = useState(0);
-
-	const rotateDocument = () => {
-		setRotation((prev) => (prev + 90) % 360);
-	};
-
-	useEffect(() => {
-		const handleFullscreenChange = () => {
-			setIsFullscreen(!!document.fullscreenElement);
-		};
-		document.addEventListener("fullscreenchange", handleFullscreenChange);
-		return () =>
-			document.removeEventListener("fullscreenchange", handleFullscreenChange);
-	}, []);
-
-	const toggleFullscreen = async () => {
-		if (!document.fullscreenElement) {
-			await viewerRef.current?.requestFullscreen();
-		} else {
-			await document.exitFullscreen();
-		}
-	};
 
 	const {
 		data: certificates,
@@ -143,8 +115,9 @@ export default function VerifyCertificatePage() {
 						{/* Mapping over certificates */}
 						<div className="space-y-8">
 							{certificates.map((cert, index) => {
-								const hasPreviews = cert.pdf_url || cert.drive_file_id || cert.html_content;
-								const showPreviews = certificates.length === 1 && hasPreviews;
+								const viewUrl = cert.drive_file_id
+									? `https://drive.google.com/file/d/${cert.drive_file_id}/view`
+									: cert.pdf_url;
 
 								return (
 									<div key={cert.id || index} className="bg-card border border-border/50 rounded-3xl shadow-xl overflow-hidden flex flex-col">
@@ -170,140 +143,33 @@ export default function VerifyCertificatePage() {
 														label="Fecha de emisión"
 														value={formatDate(cert.issued_at)}
 													/>
+													<DetailRow
+														icon={<User className="w-4 h-4 text-muted-foreground" />}
+														label="Alumno"
+														value={cert.user_full_name ?? cert.user_id}
+													/>
+													<DetailRow
+														icon={<BookOpen className="w-4 h-4 text-muted-foreground" />}
+														label="Curso"
+														value={cert.course_title ?? cert.course_id}
+													/>
 												</div>
 											</div>
 											
 											{/* Actions (if length > 1, show them here or at bottom) */}
-											{(cert.pdf_url || cert.drive_file_id) && (
+											{viewUrl && (
 												<div className="flex flex-col sm:flex-row md:flex-col gap-3 shrink-0">
-													{cert.pdf_url && (
-														<a
-															href={cert.pdf_url}
-															target="_blank"
-															rel="noopener noreferrer"
-															className="flex items-center justify-center gap-2 px-5 py-3 rounded-2xl font-bold text-sm bg-gold/10 text-gold hover:bg-gold/20 border border-gold/30 transition-all shadow-sm">
-															<ExternalLink className="w-4 h-4" />
-															Ver PDF
-														</a>
-													)}
-													{cert.drive_file_id && !cert.pdf_url && (
-														<a
-															href={`https://drive.google.com/file/d/${cert.drive_file_id}/view`}
-															target="_blank"
-															rel="noopener noreferrer"
-															className="flex items-center justify-center gap-2 px-5 py-3 rounded-2xl font-bold text-sm bg-gold/10 text-gold hover:bg-gold/20 border border-gold/30 transition-all shadow-sm">
-															<Download className="w-4 h-4" />
-															Ver en Drive
-														</a>
-													)}
+													<a
+														href={viewUrl}
+														target="_blank"
+														rel="noopener noreferrer"
+														className="flex items-center justify-center gap-2 px-5 py-3 rounded-2xl font-bold text-sm bg-gold/10 text-gold hover:bg-gold/20 border border-gold/30 transition-all shadow-sm">
+														<ExternalLink className="w-4 h-4" />
+														Ver PDF
+													</a>
 												</div>
 											)}
 										</div>
-
-										{/* Previews ONLY if there is ONE certificate */}
-										{showPreviews && (
-											<div className="flex flex-col border-t border-border/50">
-												{cert.html_content && (
-													<div className="bg-card border-b border-border/50">
-														<div className="px-6 py-4 border-b border-border/50 flex items-center gap-2">
-															<BookOpen className="w-4 h-4 text-primary" />
-															<span className="font-bold text-sm text-foreground">
-																Vista del certificado
-															</span>
-														</div>
-														<div className="p-4">
-															<iframe
-																srcDoc={cert.html_content}
-																title="Certificado"
-																className="w-full rounded-xl border border-border"
-																style={{ minHeight: "520px" }}
-																sandbox="allow-same-origin"
-															/>
-														</div>
-													</div>
-												)}
-												
-												{(cert.pdf_url || cert.drive_file_id) && (
-													<div
-														ref={viewerRef}
-														className="bg-card flex flex-col transition-all relative"
-														style={isFullscreen ? { position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', zIndex: 50, borderRadius: 0 } : {}}
-													>
-														<div className="px-6 py-4 border-b border-border/50 flex items-center justify-between shrink-0 bg-card">
-															<div className="flex items-center gap-2">
-																<BookOpen className="w-4 h-4 text-primary" />
-																<span className="font-bold text-sm text-foreground">
-																	Documento Adjunto
-																</span>
-															</div>
-															<div className="flex items-center gap-1">
-																<button
-																	onClick={rotateDocument}
-																	className="p-2 hover:bg-muted text-muted-foreground hover:text-foreground rounded-lg transition-colors flex items-center gap-2 text-xs font-semibold"
-																	title="Rotar documento"
-																>
-																	<RotateCw className="w-4 h-4" />
-																	<span className="hidden sm:inline">Rotar</span>
-																</button>
-																<button
-																	onClick={toggleFullscreen}
-																	className="p-2 hover:bg-muted text-muted-foreground hover:text-foreground rounded-lg transition-colors flex items-center gap-2 text-xs font-semibold"
-																	title={isFullscreen ? "Salir de pantalla completa" : "Pantalla completa"}
-																>
-																	{isFullscreen ? (
-																		<>
-																			<Minimize className="w-4 h-4" />
-																			<span className="hidden sm:inline">Salir</span>
-																		</>
-																	) : (
-																		<>
-																			<Maximize className="w-4 h-4" />
-																			<span className="hidden sm:inline">Pantalla Completa</span>
-																		</>
-																	)}
-																</button>
-															</div>
-														</div>
-														<div 
-															className="w-full flex-1 bg-muted/10 relative overflow-hidden flex items-center justify-center transition-all duration-300"
-															style={!isFullscreen 
-																? { aspectRatio: (rotation % 180 !== 0) ? "1 / 1.4142" : "1.4142 / 1" } 
-																: { height: "100%" }
-															}
-														>
-															<div 
-																className="transition-transform duration-300 origin-center absolute flex items-center justify-center"
-																style={!isFullscreen
-																	? {
-																		width: (rotation % 180 !== 0) ? "calc(100% * 1.4142)" : "100%",
-																		height: (rotation % 180 !== 0) ? "calc(100% / 1.4142)" : "100%",
-																		transform: `rotate(${rotation}deg)`
-																	}
-																	: {
-																		width: (rotation % 180 !== 0) ? "100vh" : "100%",
-																		height: (rotation % 180 !== 0) ? "100vw" : "100%",
-																		transform: `rotate(${rotation}deg) scale(${(rotation % 180 !== 0) ? 0.85 : 1})`
-																	}
-																}
-															>
-																<iframe
-																	src={
-																		cert.pdf_url
-																			? cert.pdf_url.includes("drive.google.com") && cert.pdf_url.includes("/view")
-																				? cert.pdf_url.replace("/view", "/preview")
-																				: cert.pdf_url
-																			: `https://drive.google.com/file/d/${cert.drive_file_id}/preview`
-																	}
-																	title="Documento del Certificado"
-																	className="w-full h-full border-none"
-																	allowFullScreen
-																/>
-															</div>
-														</div>
-													</div>
-												)}
-											</div>
-										)}
 									</div>
 								);
 							})}

@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import type { AxiosError } from "axios";
 import { authService } from "../services/auth.service";
 import { useAuthStore } from "@/store/auth-store";
+import { useEnrollmentsStore } from "@/store/enrollments-store";
 import type { LoginInput, RegisterInput } from "../schemas/auth.schema";
 
 export const USER_QUERY_KEY = ["user", "me"] as const;
@@ -63,8 +64,13 @@ export function useLogin() {
       queryClient.setQueryData(USER_QUERY_KEY, user);
       toast.success(`¡Bienvenido de vuelta, ${user.first_name}!`);
       // Read ?from= safely inside the callback (browser-only, no Suspense needed)
+      // Security: validate that the redirect is a relative path to prevent open-redirect attacks.
+      // Reject absolute URLs (http://...), protocol-relative URLs (//...) and anything
+      // that doesn't start with a single "/".
       const params = new URLSearchParams(window.location.search);
-      const destination = params.get("from") || "/dashboard";
+      const raw = params.get("from") ?? "";
+      const destination =
+        raw.startsWith("/") && !raw.startsWith("//") ? raw : "/dashboard";
       router.push(destination);
     },
     onError: (error) => {
@@ -137,6 +143,9 @@ export function useLogout() {
     } finally {
       authService.clearToken();
       useAuthStore.getState().logout();
+      // Clear enrollment store so stale data is never visible to the next user
+      useEnrollmentsStore.getState().setEnrollments([]);
+      useEnrollmentsStore.getState().setProgress([]);
       queryClient.removeQueries({ queryKey: USER_QUERY_KEY });
       toast.info("Sesión cerrada.");
       router.push("/");
@@ -160,6 +169,8 @@ export function useLogoutAll() {
     } finally {
       authService.clearToken();
       useAuthStore.getState().logout();
+      useEnrollmentsStore.getState().setEnrollments([]);
+      useEnrollmentsStore.getState().setProgress([]);
       queryClient.removeQueries({ queryKey: USER_QUERY_KEY });
       toast.success("Todas las sesiones han sido cerradas.");
       router.push("/login");
@@ -172,7 +183,18 @@ export function useRequestAccess() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: () => authService.requestAccess(),
+    mutationFn: () => {
+      // Defense-in-depth: verify required profile fields before calling the API.
+      // This catches cases where the mutation is triggered programmatically
+      // bypassing the UI guard in the dashboard.
+      const user = useAuthStore.getState().user;
+      if (!user?.document_number?.trim() || !user?.phone_number?.trim()) {
+        return Promise.reject(
+          new Error("Debes completar tu perfil (documento y teléfono) antes de solicitar acceso.")
+        );
+      }
+      return authService.requestAccess();
+    },
     onSuccess: (updatedUser) => {
       useAuthStore.getState().setUser(updatedUser);
       queryClient.setQueryData(USER_QUERY_KEY, updatedUser);
@@ -186,7 +208,7 @@ export function useRequestAccess() {
   });
 }
 
-/** Updates the authenticated user's profile details */
+/** Updates the authenticated user's profile details (PUT /users/me) */
 export function useUpdateProfile() {
   const queryClient = useQueryClient();
 
@@ -206,6 +228,72 @@ export function useUpdateProfile() {
     onError: (error) => {
       toast.error(
         getApiErrorMessage(error, "No se pudo actualizar el perfil. Intenta de nuevo.")
+      );
+    },
+  });
+}
+
+/** Registers the user's document — one-time action (PATCH /users/me/document) */
+export function useUpdateDocument() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: { document_type: string; document_number: string }) => {
+      console.log("[useUpdateDocument] mutationFn llamada con:", data);
+      return authService.updateDocument(data);
+    },
+    onSuccess: (updatedUser) => {
+      console.log("[useUpdateDocument] ✔ onSuccess — usuario actualizado:", updatedUser);
+      useAuthStore.getState().setUser(updatedUser);
+      queryClient.setQueryData(USER_QUERY_KEY, updatedUser);
+      toast.success("Documento registrado correctamente.");
+    },
+    onError: (error) => {
+      const axiosErr = error as import("axios").AxiosError<{ detail: string }>;
+      console.error(
+        "[useUpdateDocument] ✘ onError — status:",
+        axiosErr.response?.status,
+        "| data:",
+        axiosErr.response?.data
+      );
+      toast.error(
+        getApiErrorMessage(error, "No se pudo registrar el documento. Intenta de nuevo.")
+      );
+    },
+  });
+}
+
+/** Changes the authenticated user's password (requires current password) */
+export function useChangePassword() {
+  return useMutation({
+    mutationFn: (data: { current_password: string; new_password: string }) =>
+      authService.changePassword(data),
+    onSuccess: () => {
+      toast.success("Contraseña actualizada correctamente.");
+    },
+    onError: (error) => {
+      toast.error(
+        getApiErrorMessage(error, "No se pudo cambiar la contraseña. Verifica tu contraseña actual.")
+      );
+    },
+  });
+}
+
+export function useCheckEmail() {
+  return useMutation({
+    mutationFn: (email: string) => authService.checkEmail(email),
+  });
+}
+
+export function useRequestPasswordReset() {
+  return useMutation({
+    mutationFn: (email: string) => authService.requestPasswordReset(email),
+    onSuccess: () => {
+      toast.success("Solicitud enviada. El administrador revisará tu petición.");
+    },
+    onError: (error) => {
+      toast.error(
+        getApiErrorMessage(error, "Error al enviar la solicitud. Intenta más tarde.")
       );
     },
   });

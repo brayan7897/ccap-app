@@ -12,6 +12,7 @@ import {
 	AlertCircle,
 	CheckCircle2,
 	UserX,
+	ClipboardList,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { Course } from "@/types";
@@ -56,9 +57,7 @@ export function CourseEnrollCard({ course }: CourseEnrollCardProps) {
 				<div className="flex items-start gap-3 rounded-xl bg-muted border border-border p-4 text-sm">
 					<UserX className="h-5 w-5 mt-0.5 shrink-0 text-muted-foreground" />
 					<div>
-						<p className="font-semibold text-foreground">
-							Cuenta inactiva
-						</p>
+						<p className="font-semibold text-foreground">Cuenta inactiva</p>
 						<p className="text-muted-foreground mt-0.5 leading-relaxed">
 							Tu cuenta aún no ha sido activada. Una vez que un administrador la
 							active podrás inscribirte en los cursos.
@@ -87,8 +86,33 @@ export function CourseEnrollCard({ course }: CourseEnrollCardProps) {
 			);
 		}
 
-		// Access: NONE — needs to request
+		// Access: NONE — check profile completeness first
 		if (courseAccess === "NONE") {
+			// If the user is missing required profile data, guide them to complete it
+			// instead of showing a request button that will fail.
+			const profileComplete =
+				!!user.document_number?.trim() && !!user.phone_number?.trim();
+
+			if (!profileComplete) {
+				return (
+					<div className="space-y-3">
+						<div className="flex items-start gap-2 rounded-xl bg-amber-500/10 border border-amber-500/30 p-3 text-sm">
+							<ClipboardList className="h-4 w-4 mt-0.5 shrink-0 text-amber-600 dark:text-amber-400" />
+							<span className="text-amber-700 dark:text-amber-300">
+								Completa tu perfil (documento y teléfono) para poder solicitar
+								acceso.
+							</span>
+						</div>
+						<Button
+							asChild
+							variant="outline"
+							className="w-full h-12 font-bold rounded-xl border-amber-500/50 text-amber-700 dark:text-amber-300 hover:bg-amber-500/10">
+							<Link href="/dashboard/perfil">Completar mi perfil →</Link>
+						</Button>
+					</div>
+				);
+			}
+
 			return (
 				<div className="space-y-3">
 					<div className="flex items-start gap-2 rounded-xl bg-muted/60 p-3 text-sm text-muted-foreground">

@@ -131,7 +131,9 @@ export default function NotificacionesPage() {
 		return (
 			<div className="p-6 lg:p-8 max-w-3xl mx-auto space-y-6">
 				<div>
-					<h1 className="text-2xl font-black text-foreground">Notificaciones</h1>
+					<h1 className="text-2xl font-black text-foreground">
+						Notificaciones
+					</h1>
 					<p className="text-sm text-muted-foreground mt-1">
 						Activa tu cuenta para recibir notificaciones.
 					</p>

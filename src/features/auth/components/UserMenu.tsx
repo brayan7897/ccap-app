@@ -2,6 +2,7 @@
 
 import { LogOut, UserIcon, LayoutDashboard } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import { useUser, useLogout } from "../hooks/useAuth";
 import {
 	DropdownMenu,
@@ -11,6 +12,28 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+
+/**
+ * Allowed avatar hostnames — must match next.config.ts remotePatterns.
+ * This prevents rendering arbitrary URLs from the API as image sources.
+ */
+const ALLOWED_AVATAR_HOSTS = new Set([
+	"lh3.googleusercontent.com",
+	"i.pravatar.cc",
+	"images.unsplash.com",
+]);
+
+function isSafeAvatarUrl(url: string | null): url is string {
+	if (!url) return false;
+	try {
+		const parsed = new URL(url);
+		return (
+			parsed.protocol === "https:" && ALLOWED_AVATAR_HOSTS.has(parsed.hostname)
+		);
+	} catch {
+		return false;
+	}
+}
 
 function UserAvatar({
 	name,
@@ -22,15 +45,16 @@ function UserAvatar({
 	const initials = name
 		.split(" ")
 		.slice(0, 2)
-		.map((n) => n[0].toUpperCase())
+		.map((n) => n[0]?.toUpperCase() ?? "")
 		.join("");
 
-	if (avatarUrl) {
+	if (isSafeAvatarUrl(avatarUrl)) {
 		return (
-			// eslint-disable-next-line @next/next/no-img-element
-			<img
+			<Image
 				src={avatarUrl}
 				alt={name}
+				width={36}
+				height={36}
 				className="h-9 w-9 rounded-full object-cover border border-border"
 			/>
 		);

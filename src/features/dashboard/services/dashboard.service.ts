@@ -14,7 +14,9 @@ export const dashboardService = {
   async getMyEnrollments(): Promise<EnrollmentWithCourse[]> {
     const [enrollments, coursesRes] = await Promise.all([
       enrollmentsService.listMy(0, 50),
-      api.get<Course[]>("/courses/", { params: { skip: 0, limit: 10 } }),
+      // Fetch enough courses to cover all possible enrollments.
+      // listMy already caps at 50, so limit: 50 is sufficient for the join.
+      api.get<Course[]>("/courses/", { params: { skip: 0, limit: 50 } }),
     ]);
     const courses = coursesRes.data;
     return enrollments.map((e) => ({

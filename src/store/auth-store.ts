@@ -8,18 +8,23 @@ import type { User } from "@/types";
 
 const COOKIE_NAME = "ccap-auth-token";
 
+/** Append '; Secure' only when the page is served over HTTPS. */
+function secureFlag(): string {
+  return typeof location !== "undefined" && location.protocol === "https:" ? "; Secure" : "";
+}
+
 /** Write the JWT into a first-party cookie readable by Next.js middleware. */
 export function setAuthCookie(token: string) {
   if (typeof document === "undefined") return;
   // 7-day expiry — adjust to match your API's token lifetime
   const maxAge = 60 * 60 * 24 * 7;
-  document.cookie = `${COOKIE_NAME}=${token}; path=/; max-age=${maxAge}; SameSite=Lax`;
+  document.cookie = `${COOKIE_NAME}=${token}; path=/; max-age=${maxAge}; SameSite=Lax${secureFlag()}`;
 }
 
 /** Remove the JWT cookie on logout. */
 export function clearAuthCookie() {
   if (typeof document === "undefined") return;
-  document.cookie = `${COOKIE_NAME}=; path=/; max-age=0; SameSite=Lax`;
+  document.cookie = `${COOKIE_NAME}=; path=/; max-age=0; SameSite=Lax${secureFlag()}`;
 }
 
 // ─── Store ────────────────────────────────────────────────────────────────────

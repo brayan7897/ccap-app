@@ -91,6 +91,13 @@ export const metadata: Metadata = {
 		},
 	},
 	category: "education",
+	icons: {
+		icon: [
+			{ url: "/favicon.ico", sizes: "any" },
+		],
+		shortcut: "/favicon.ico",
+		apple: "/favicon.ico",
+	},
 };
 
 // Inline script injected before React hydrates — prevents flash of wrong theme

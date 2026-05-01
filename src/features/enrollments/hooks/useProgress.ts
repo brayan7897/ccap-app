@@ -26,7 +26,11 @@ export function useMyProgress(courseId?: string) {
   return useQuery<LessonProgress[]>({
     queryKey: progressKeys.course(courseId),
     queryFn: () => enrollmentsService.getMyProgress(courseId),
-    enabled: !!token && isActive,
+    // Only run when courseId is defined to avoid a double-query:
+    // the key changes from ["progress", undefined] → ["progress", "real-id"]
+    // as course data loads, creating two separate cache entries.
+    enabled: !!token && isActive && !!courseId,
+    staleTime: 2 * 60 * 1000,
   });
 }
 

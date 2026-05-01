@@ -13,7 +13,9 @@ import {
 	MessageCircle,
 	Mail,
 	UserX,
+	ClipboardList,
 } from "lucide-react";
+import Link from "next/link";
 import { useUser, useRequestAccess } from "@/features/auth/hooks/useAuth";
 import {
 	useMyEnrollments,
@@ -27,9 +29,16 @@ import {
 	type CourseCardProps,
 } from "@/components/courses/CourseCard";
 import { Button } from "@/components/ui/button";
-import type { Course } from "@/types";
+import type { Course, User } from "@/types";
 
-
+/**
+ * Returns true when the user has the minimum data required to request course access:
+ * - document_number filled in (not empty — Google users skip this on signup)
+ * - phone_number filled in (needed by the company for contact)
+ */
+function hasRequiredProfileData(user: User): boolean {
+	return !!user.document_number?.trim() && !!user.phone_number?.trim();
+}
 
 function toCardProps(course: Course): CourseCardProps {
 	return {
@@ -99,7 +108,6 @@ export default function DashboardHomePage() {
 	return (
 		<div className="p-4 lg:p-8 max-w-[1400px] mx-auto min-h-[calc(100vh-4rem)]">
 			<div className="flex flex-col lg:flex-row gap-0">
-				
 				{/* ── MAIN CONTENT (Left Column) ─────────────────────────────────── */}
 				<div className="flex-1 space-y-10 min-w-0 lg:pr-8 lg:border-r border-border">
 					{/* ── Continue learning ──────────────────────────────────────────── */}
@@ -201,50 +209,77 @@ export default function DashboardHomePage() {
 
 				{/* ── SIDEBAR (Right Column) ─────────────────────────────────────── */}
 				<div className="w-full lg:w-[340px] xl:w-[380px] shrink-0 space-y-6 pt-8 lg:pt-0 lg:pl-8">
-					
-				{/* ── Account Inactive Banner (takes priority over everything) ── */}
-				{user && !user.is_active && (
-					<div className="flex items-start gap-3 rounded-2xl border border-border bg-muted p-5">
-						<UserX className="h-5 w-5 mt-0.5 shrink-0 text-muted-foreground" />
-						<div>
-							<p className="font-semibold text-foreground text-sm">
-								Cuenta inactiva
-							</p>
-							<p className="text-xs text-muted-foreground mt-1 leading-relaxed">
-								Tu cuenta aún no ha sido activada por un administrador. Cuando
-								sea activada recibirás una notificación y podrás acceder al
-								contenido de la plataforma.
-							</p>
-						</div>
-					</div>
-				)}
-
-				{/* ── User Course Access Banners (only shown when account is active) ── */}
-				{user?.is_active && user?.course_access === "NONE" && (
-						<div className="flex flex-col items-start gap-4 rounded-2xl border border-primary/30 bg-primary/5 p-5">
-							<div className="flex items-start gap-3">
-								<AlertCircle className="h-5 w-5 mt-0.5 shrink-0 text-primary" />
-								<div>
-									<p className="font-semibold text-foreground text-sm">
-										Activa tu acceso a los cursos
-									</p>
-									<p className="text-xs text-muted-foreground mt-1 tracking-wide">
-										Solicita acceso para poder inscribirte en cualquier curso de la
-										plataforma.
-									</p>
-								</div>
+					{/* ── Account Inactive Banner (takes priority over everything) ── */}
+					{user && !user.is_active && (
+						<div className="flex items-start gap-3 rounded-2xl border border-border bg-muted p-5">
+							<UserX className="h-5 w-5 mt-0.5 shrink-0 text-muted-foreground" />
+							<div>
+								<p className="font-semibold text-foreground text-sm">
+									Cuenta inactiva
+								</p>
+								<p className="text-xs text-muted-foreground mt-1 leading-relaxed">
+									Tu cuenta aún no ha sido activada por un administrador. Cuando
+									sea activada recibirás una notificación y podrás acceder al
+									contenido de la plataforma.
+								</p>
 							</div>
-							<Button
-								size="sm"
-								onClick={() => requestAccessMutation.mutate()}
-								disabled={requestAccessMutation.isPending}
-								className="w-full font-bold shadow-md hover:shadow-lg transition-shadow">
-								{requestAccessMutation.isPending
-									? "Enviando..."
-									: "Solicitar acceso"}
-							</Button>
 						</div>
 					)}
+
+					{/* ── User Course Access Banners (only shown when account is active) ── */}
+					{user?.is_active &&
+						user?.course_access === "NONE" &&
+						(hasRequiredProfileData(user) ? (
+							/* Profile complete → show the request button */
+							<div className="flex flex-col items-start gap-4 rounded-2xl border border-primary/30 bg-primary/5 p-5">
+								<div className="flex items-start gap-3">
+									<AlertCircle className="h-5 w-5 mt-0.5 shrink-0 text-primary" />
+									<div>
+										<p className="font-semibold text-foreground text-sm">
+											Activa tu acceso a los cursos
+										</p>
+										<p className="text-xs text-muted-foreground mt-1 tracking-wide">
+											Solicita acceso para poder inscribirte en cualquier curso
+											de la plataforma.
+										</p>
+									</div>
+								</div>
+								<Button
+									size="sm"
+									onClick={() => requestAccessMutation.mutate()}
+									disabled={requestAccessMutation.isPending}
+									className="w-full font-bold shadow-md hover:shadow-lg transition-shadow">
+									{requestAccessMutation.isPending
+										? "Enviando..."
+										: "Solicitar acceso"}
+								</Button>
+							</div>
+						) : (
+							/* Profile incomplete → guide them to fill in DNI + phone first */
+							<div className="flex flex-col items-start gap-4 rounded-2xl border border-amber-500/30 bg-amber-500/10 p-5">
+								<div className="flex items-start gap-3">
+									<ClipboardList className="h-5 w-5 mt-0.5 shrink-0 text-amber-600 dark:text-amber-400" />
+									<div>
+										<p className="font-semibold text-amber-800 dark:text-amber-200 text-sm">
+											Completa tu perfil para solicitar acceso
+										</p>
+										<p className="text-xs text-amber-700/80 dark:text-amber-300/80 mt-1 leading-relaxed">
+											Para solicitar acceso a los cursos necesitamos tu número
+											de documento (DNI/CE/Pasaporte) y un número de teléfono
+											de contacto. Puedes seguir explorando el catálogo mientras
+											tanto.
+										</p>
+									</div>
+								</div>
+								<Button
+									size="sm"
+									variant="outline"
+									asChild
+									className="w-full font-bold border-amber-500/50 text-amber-700 dark:text-amber-300 hover:bg-amber-500/10">
+									<Link href="/dashboard/perfil">Completar mi perfil →</Link>
+								</Button>
+							</div>
+						))}
 
 					{user?.is_active && user?.course_access === "PENDING" && (
 						<div className="flex items-start gap-3 rounded-2xl border border-yellow-500/30 bg-yellow-500/10 p-5">
@@ -254,8 +289,8 @@ export default function DashboardHomePage() {
 									Solicitud en revisión
 								</p>
 								<p className="text-xs text-yellow-600/80 dark:text-yellow-400/80 mt-1 tracking-wide">
-									Tu solicitud de acceso está siendo revisada por un administrador.
-									Te notificaremos pronto.
+									Tu solicitud de acceso está siendo revisada por un
+									administrador. Te notificaremos pronto.
 								</p>
 							</div>
 						</div>
@@ -269,7 +304,8 @@ export default function DashboardHomePage() {
 									¡Acceso aprobado!
 								</p>
 								<p className="text-xs text-emerald-600/80 dark:text-emerald-400/80 mt-1 tracking-wide">
-									Puedes inscribirte en todos los cursos gratuitos de la plataforma y potenciar tu perfil.
+									Puedes inscribirte en todos los cursos gratuitos de la
+									plataforma y potenciar tu perfil.
 								</p>
 							</div>
 						</div>
@@ -284,8 +320,8 @@ export default function DashboardHomePage() {
 										Solicitud rechazada
 									</p>
 									<p className="text-xs text-muted-foreground mt-1 tracking-wide">
-										Tu solicitud fue rechazada. Puedes volver a solicitarla si crees
-										que fue un error.
+										Tu solicitud fue rechazada. Puedes volver a solicitarla si
+										crees que fue un error.
 									</p>
 								</div>
 							</div>
@@ -316,30 +352,35 @@ export default function DashboardHomePage() {
 								<LifeBuoy className="w-5 h-5 text-primary" />
 							</div>
 							<div>
-								<h3 className="font-bold text-foreground text-sm">Soporte Técnico</h3>
-								<p className="text-xs text-muted-foreground">Estamos para ayudarte</p>
+								<h3 className="font-bold text-foreground text-sm">
+									Soporte Técnico
+								</h3>
+								<p className="text-xs text-muted-foreground">
+									Estamos para ayudarte
+								</p>
 							</div>
 						</div>
 						<div className="space-y-3">
-							<a 
-								href="https://wa.me/51945115998" 
-								target="_blank" 
-								rel="noopener noreferrer" 
-								className="flex items-center gap-3 px-4 py-3.5 bg-muted/50 border border-border hover:border-green-500/50 hover:bg-green-500/10 rounded-xl transition-all duration-300 group"
-							>
+							<a
+								href="https://wa.me/51945115998"
+								target="_blank"
+								rel="noopener noreferrer"
+								className="flex items-center gap-3 px-4 py-3.5 bg-muted/50 border border-border hover:border-green-500/50 hover:bg-green-500/10 rounded-xl transition-all duration-300 group">
 								<MessageCircle className="w-4 h-4 text-green-600 dark:text-green-500 group-hover:scale-110 transition-transform" />
-								<span className="text-sm font-semibold text-foreground group-hover:text-green-700 dark:group-hover:text-green-400">WhatsApp</span>
+								<span className="text-sm font-semibold text-foreground group-hover:text-green-700 dark:group-hover:text-green-400">
+									WhatsApp
+								</span>
 							</a>
-							<a 
-								href="mailto:soporte@ccapglobal.com" 
-								className="flex items-center gap-3 px-4 py-3.5 bg-muted/50 border border-border hover:border-primary/50 hover:bg-primary/10 rounded-xl transition-all duration-300 group"
-							>
+							<a
+								href="mailto:soporte@ccapglobal.com"
+								className="flex items-center gap-3 px-4 py-3.5 bg-muted/50 border border-border hover:border-primary/50 hover:bg-primary/10 rounded-xl transition-all duration-300 group">
 								<Mail className="w-4 h-4 text-primary group-hover:scale-110 transition-transform" />
-								<span className="text-sm font-semibold text-foreground group-hover:text-primary">Correo Electrónico</span>
+								<span className="text-sm font-semibold text-foreground group-hover:text-primary">
+									Correo Electrónico
+								</span>
 							</a>
 						</div>
 					</div>
-
 				</div>
 			</div>
 		</div>

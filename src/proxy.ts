@@ -15,9 +15,9 @@ function isProtected(pathname: string): boolean {
   return PROTECTED_PREFIXES.some((prefix) => pathname.startsWith(prefix));
 }
 
-// ─── Middleware ───────────────────────────────────────────────────────────────
+// ─── Proxy ───────────────────────────────────────────────────────────────────
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const authenticated = hasToken(request);
 
@@ -29,7 +29,7 @@ export function middleware(request: NextRequest) {
   }
 
   // NOTE: We intentionally do NOT redirect authenticated users away from
-  // /login or /register at the middleware level. The middleware can only
+  // /login or /register at the proxy level. The proxy can only
   // check cookie presence — it cannot verify if the token is still valid.
   // Stale cookies (from Zustand rehydration of expired sessions) would cause
   // an infinite loop. Instead, the LoginForm component handles

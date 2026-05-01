@@ -39,7 +39,10 @@ export interface CourseUpdateInput {
 
 export const coursesService = {
   async list(skip = 0, limit = 20): Promise<Course[]> {
-    const res = await api.get<Course[]>("/courses/", { params: { skip, limit } });
+    // Clamp to safe bounds to prevent unintended large queries
+    const safeSkip = Math.max(0, Math.floor(skip));
+    const safeLimit = Math.min(Math.max(1, Math.floor(limit)), 100);
+    const res = await api.get<Course[]>("/courses/", { params: { skip: safeSkip, limit: safeLimit } });
     return res.data;
   },
 

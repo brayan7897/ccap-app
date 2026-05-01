@@ -68,6 +68,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
 						value={query}
 						onChange={(e) => setQuery(e.target.value)}
 						placeholder="Buscar cursos, instructores..."
+						maxLength={200}
 						className="flex-1 bg-transparent border-none outline-none text-base lg:text-lg text-foreground placeholder:text-muted-foreground"
 					/>
 					{query ? (

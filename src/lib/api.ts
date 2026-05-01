@@ -42,14 +42,22 @@ function forceLogout(message: string) {
   localStorage.removeItem("access_token");
 
   // 2. Clear the auth cookie used by Next.js middleware
-  document.cookie = "ccap-auth-token=; path=/; max-age=0; SameSite=Lax";
+  //    Include Secure flag on HTTPS to match how the cookie was originally set.
+  const secure = location.protocol === "https:" ? "; Secure" : "";
+  document.cookie = `ccap-auth-token=; path=/; max-age=0; SameSite=Lax${secure}`;
 
   // 3. Clear Zustand auth store (lazy import avoids circular deps at module load)
   import("@/store/auth-store").then(({ useAuthStore }) => {
     useAuthStore.getState().logout();
   });
 
-  // 4. Clear React Query cache for the user query
+  // 4. Clear enrollments store so stale data is never visible to the next user
+  import("@/store/enrollments-store").then(({ useEnrollmentsStore }) => {
+    useEnrollmentsStore.getState().setEnrollments([]);
+    useEnrollmentsStore.getState().setProgress([]);
+  });
+
+  // 5. Clear React Query cache for the user query
   import("@/components/providers/QueryProvider").then(({ getQueryClient }) => {
     getQueryClient()?.removeQueries({ queryKey: ["user", "me"] });
   });
@@ -64,11 +72,16 @@ function forceLogout(message: string) {
 }
 
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    console.log(`[api] ✔ ${response.config.method?.toUpperCase()} ${response.config.url} → ${response.status}`);
+    return response;
+  },
   (error: AxiosError<ApiErrorBody>) => {
     const status = error.response?.status;
     const errorType = error.response?.data?.type;
     const requestUrl = error.config?.url ?? "";
+
+    console.error(`[api] ✘ ${error.config?.method?.toUpperCase()} ${requestUrl} → ${status}`, error.response?.data);
 
     // Only act on 401 responses
     if (status === 401 && typeof window !== "undefined") {
