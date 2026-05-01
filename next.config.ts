@@ -7,6 +7,8 @@ import path from "path";
 const projectRoot = path.resolve(__dirname);
 
 const nextConfig: NextConfig = {
+  // Genera un servidor Node.js autónomo para despliegue con Docker
+  output: "standalone",
   turbopack: {
     root: projectRoot,
     resolveAlias: {

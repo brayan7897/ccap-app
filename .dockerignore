@@ -1,0 +1,51 @@
+# ──────────────────────────────────────────────────────────────────────────────
+# .dockerignore — ccap-app
+# Excluye archivos innecesarios del contexto de build para acelerar la imagen
+# y evitar filtrar información sensible.
+# ──────────────────────────────────────────────────────────────────────────────
+
+# Control de versiones
+.git
+.gitignore
+
+# Artefactos de build local (se regeneran dentro del container)
+.next
+out
+build
+
+# Dependencias locales (se reinstalan con npm ci)
+node_modules
+
+# Variables de entorno con secretos reales — NUNCA incluir en la imagen
+.env
+.env.local
+.env.development
+.env.production
+.env*.local
+
+# Documentación y archivos de desarrollo
+README.md
+docs/
+*.md
+
+# Logs
+*.log
+npm-debug.log*
+
+# TypeScript incremental cache
+*.tsbuildinfo
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# IDE / editores
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Docker
+Dockerfile*
+docker-compose*
+.dockerignore
