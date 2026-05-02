@@ -218,44 +218,47 @@ export function HomeCourses() {
 				)}
 
 				{/* Carousel with nav buttons */}
-				{!isLoading && !isError && !!courses?.length && (
-					<>
-						<button
-							onClick={() => scroll("left")}
-							className={`absolute -left-1 md:left-0 lg:left-2 xl:left-4 top-1/2 -translate-y-1/2 z-20 bg-background/90 hover:bg-background text-foreground border border-border/50 shadow-lg rounded-full w-10 h-10 md:w-12 md:h-12 flex items-center justify-center backdrop-blur-md transition-all duration-300 ${
-								canScrollLeft
-									? "opacity-0 group-hover/carousel:opacity-100 hover:scale-110"
-									: "opacity-0 pointer-events-none"
-							}`}
-							aria-label="Anterior">
-							<ChevronLeft className="w-6 h-6 md:w-7 md:h-7" />
-						</button>
+				{!isLoading &&
+					!isError &&
+					Array.isArray(courses) &&
+					courses.length > 0 && (
+						<>
+							<button
+								onClick={() => scroll("left")}
+								className={`absolute -left-1 md:left-0 lg:left-2 xl:left-4 top-1/2 -translate-y-1/2 z-20 bg-background/90 hover:bg-background text-foreground border border-border/50 shadow-lg rounded-full w-10 h-10 md:w-12 md:h-12 flex items-center justify-center backdrop-blur-md transition-all duration-300 ${
+									canScrollLeft
+										? "opacity-0 group-hover/carousel:opacity-100 hover:scale-110"
+										: "opacity-0 pointer-events-none"
+								}`}
+								aria-label="Anterior">
+								<ChevronLeft className="w-6 h-6 md:w-7 md:h-7" />
+							</button>
 
-						<button
-							onClick={() => scroll("right")}
-							className={`absolute -right-1 md:right-0 lg:right-2 xl:right-4 top-1/2 -translate-y-1/2 z-20 bg-background/90 hover:bg-background text-foreground border border-border/50 shadow-lg rounded-full w-10 h-10 md:w-12 md:h-12 flex items-center justify-center backdrop-blur-md transition-all duration-300 ${
-								canScrollRight
-									? "opacity-0 group-hover/carousel:opacity-100 hover:scale-110"
-									: "opacity-0 pointer-events-none"
-							}`}
-							aria-label="Siguiente">
-							<ChevronRight className="w-6 h-6 md:w-7 md:h-7" />
-						</button>
+							<button
+								onClick={() => scroll("right")}
+								className={`absolute -right-1 md:right-0 lg:right-2 xl:right-4 top-1/2 -translate-y-1/2 z-20 bg-background/90 hover:bg-background text-foreground border border-border/50 shadow-lg rounded-full w-10 h-10 md:w-12 md:h-12 flex items-center justify-center backdrop-blur-md transition-all duration-300 ${
+									canScrollRight
+										? "opacity-0 group-hover/carousel:opacity-100 hover:scale-110"
+										: "opacity-0 pointer-events-none"
+								}`}
+								aria-label="Siguiente">
+								<ChevronRight className="w-6 h-6 md:w-7 md:h-7" />
+							</button>
 
-						<div
-							ref={scrollContainerRef}
-							onScroll={checkScroll}
-							className="flex overflow-x-auto gap-6 md:gap-8 pb-12 pt-8 snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-							{courses.map((course) => (
-								<div
-									key={course.id}
-									className="snap-start shrink-0 w-full md:w-[calc((100%-32px)/2)] lg:w-[calc((100%-64px)/3)] xl:w-[calc((100%-64px)/3)] 2xl:w-[calc((100%-96px)/4)]">
-									<CourseCard {...toCardProps(course)} />
-								</div>
-							))}
-						</div>
-					</>
-				)}
+							<div
+								ref={scrollContainerRef}
+								onScroll={checkScroll}
+								className="flex overflow-x-auto gap-6 md:gap-8 pb-12 pt-8 snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+								{courses.map((course) => (
+									<div
+										key={course.id}
+										className="snap-start shrink-0 w-full md:w-[calc((100%-32px)/2)] lg:w-[calc((100%-64px)/3)] xl:w-[calc((100%-64px)/3)] 2xl:w-[calc((100%-96px)/4)]">
+										<CourseCard {...toCardProps(course)} />
+									</div>
+								))}
+							</div>
+						</>
+					)}
 			</div>
 
 			{/* Section Footer */}

@@ -42,8 +42,16 @@ export const coursesService = {
     // Clamp to safe bounds to prevent unintended large queries
     const safeSkip = Math.max(0, Math.floor(skip));
     const safeLimit = Math.min(Math.max(1, Math.floor(limit)), 100);
-    const res = await api.get<Course[]>("/courses/", { params: { skip: safeSkip, limit: safeLimit } });
-    return res.data;
+    const res = await api.get("/courses/", { params: { skip: safeSkip, limit: safeLimit } });
+    const raw: unknown = res.data;
+    // Handle both plain array and paginated wrapper ({ items: [...] } or { data: [...] })
+    if (Array.isArray(raw)) return raw as Course[];
+    if (raw && typeof raw === "object") {
+      const obj = raw as Record<string, unknown>;
+      if (Array.isArray(obj.items)) return obj.items as Course[];
+      if (Array.isArray(obj.data)) return obj.data as Course[];
+    }
+    return [];
   },
 
   async getById(courseId: string): Promise<Course> {

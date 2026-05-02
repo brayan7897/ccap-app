@@ -73,15 +73,33 @@ function forceLogout(message: string) {
 
 api.interceptors.response.use(
   (response) => {
-    console.log(`[api] ✔ ${response.config.method?.toUpperCase()} ${response.config.url} → ${response.status}`);
+    const base = response.config.baseURL ?? "";
+    const fullUrl = base + (response.config.url ?? "");
+    console.log(`[api] ✔ ${response.config.method?.toUpperCase()} ${fullUrl} → ${response.status}`);
     return response;
   },
   (error: AxiosError<ApiErrorBody>) => {
     const status = error.response?.status;
     const errorType = error.response?.data?.type;
     const requestUrl = error.config?.url ?? "";
+    const base = error.config?.baseURL ?? "";
+    const fullUrl = base + requestUrl;
+    const isNetworkError = !error.response && (error.code === "ERR_NETWORK" || error.code === "ECONNREFUSED" || error.message === "Network Error");
 
-    console.error(`[api] ✘ ${error.config?.method?.toUpperCase()} ${requestUrl} → ${status}`, error.response?.data);
+    if (isNetworkError) {
+      console.error(
+        `[api] ✘ NETWORK ERROR — ${error.config?.method?.toUpperCase()} ${fullUrl}\n` +
+        `  code: ${error.code ?? "unknown"}\n` +
+        `  message: ${error.message}\n` +
+        `  baseURL: ${base}\n` +
+        `  Possible causes: backend not running, CORS, or wrong API_URL`
+      );
+    } else {
+      console.error(
+        `[api] ✘ ${error.config?.method?.toUpperCase()} ${fullUrl} → ${status}`,
+        error.response?.data
+      );
+    }
 
     // Only act on 401 responses
     if (status === 401 && typeof window !== "undefined") {

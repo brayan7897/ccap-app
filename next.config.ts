@@ -9,6 +9,19 @@ const projectRoot = path.resolve(__dirname);
 const nextConfig: NextConfig = {
   // Genera un servidor Node.js autónomo para despliegue con Docker
   output: "standalone",
+
+  // Proxy all /api/v1/* requests through the Next.js server to avoid CORS.
+  // The destination is resolved at startup from API_URL (set in .env.local or
+  // via Docker / CI environment variables).
+  async rewrites() {
+    const apiBase = process.env.API_URL ?? "http://localhost:8000";
+    return [
+      {
+        source: "/api/v1/:path*",
+        destination: `${apiBase}/api/v1/:path*`,
+      },
+    ];
+  },
   turbopack: {
     root: projectRoot,
     resolveAlias: {
