@@ -126,6 +126,13 @@ export default function RootLayout({
 				<Script
 					src="https://accounts.google.com/gsi/client"
 					strategy="afterInteractive"
+					onLoad={() => console.info("[RootLayout] Google Identity script loaded")}
+					onError={(event) =>
+						console.error(
+							"[RootLayout] failed to load Google Identity script",
+							event,
+						)
+					}
 				/>
 				<QueryProvider>
 					<ThemeProvider>
