@@ -37,17 +37,14 @@ export function GoogleLoginButton() {
 
 	useEffect(() => {
 		const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
-		console.info(
-			"[GoogleLoginButton] checking NEXT_PUBLIC_GOOGLE_CLIENT_ID and Google library",
-		);
-		console.debug(
-			"[GoogleLoginButton] NEXT_PUBLIC_GOOGLE_CLIENT_ID present:",
-			Boolean(clientId),
+		console.log(
+			"[GoogleLoginButton] NEXT_PUBLIC_GOOGLE_CLIENT_ID value:",
+			clientId ?? "(undefined — variable not set in production env)",
 		);
 
 		if (!clientId) {
-			console.error(
-				"[GoogleLoginButton] NEXT_PUBLIC_GOOGLE_CLIENT_ID is not set.",
+			console.warn(
+				"[GoogleLoginButton] NEXT_PUBLIC_GOOGLE_CLIENT_ID is not set. Google button will not render.",
 			);
 			return;
 		}
