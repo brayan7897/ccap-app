@@ -5,7 +5,6 @@ import { Toaster } from "sonner";
 import { QueryProvider } from "@/components/providers/QueryProvider";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import FloatingWhatsAppButton from "@/components/ui/WhatsAppButton";
-import "./globals.css";
 
 const dmSans = DM_Sans({
 	variable: "--font-dm-sans",
@@ -92,9 +91,7 @@ export const metadata: Metadata = {
 	},
 	category: "education",
 	icons: {
-		icon: [
-			{ url: "/favicon.ico", sizes: "any" },
-		],
+		icon: [{ url: "/favicon.ico", sizes: "any" }],
 		shortcut: "/favicon.ico",
 		apple: "/favicon.ico",
 	},
@@ -126,13 +123,6 @@ export default function RootLayout({
 				<Script
 					src="https://accounts.google.com/gsi/client"
 					strategy="afterInteractive"
-					onLoad={() => console.info("[RootLayout] Google Identity script loaded")}
-					onError={(event) =>
-						console.error(
-							"[RootLayout] failed to load Google Identity script",
-							event,
-						)
-					}
 				/>
 				<QueryProvider>
 					<ThemeProvider>
