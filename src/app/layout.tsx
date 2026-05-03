@@ -5,6 +5,7 @@ import { Toaster } from "sonner";
 import { QueryProvider } from "@/components/providers/QueryProvider";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import FloatingWhatsAppButton from "@/components/ui/WhatsAppButton";
+import "./globals.css";
 
 const dmSans = DM_Sans({
 	variable: "--font-dm-sans",
@@ -91,7 +92,9 @@ export const metadata: Metadata = {
 	},
 	category: "education",
 	icons: {
-		icon: [{ url: "/favicon.ico", sizes: "any" }],
+		icon: [
+			{ url: "/favicon.ico", sizes: "any" },
+		],
 		shortcut: "/favicon.ico",
 		apple: "/favicon.ico",
 	},
