@@ -31,17 +31,14 @@ jobs:
         with:
           context: .
           push: true
-          # Las variables NEXT_PUBLIC_* deben inyectarse en build-time
-          # porque Next.js las incrusta en el bundle de JavaScript.
-          # Defínelas como Repository Secrets en GitHub → Settings → Secrets.
-          build-args: |
-            NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}
-            NEXT_PUBLIC_GOOGLE_CLIENT_ID=${{ secrets.NEXT_PUBLIC_GOOGLE_CLIENT_ID }}
-            NEXT_PUBLIC_WHATSAPP_URL=${{ secrets.NEXT_PUBLIC_WHATSAPP_URL }}
-            NEXT_PUBLIC_WHATSAPP_MESSAGE=${{ secrets.NEXT_PUBLIC_WHATSAPP_MESSAGE }}
           tags: |
             ${{ env.IMAGE_NAME }}:latest
             ${{ env.IMAGE_NAME }}:${{ github.sha }}
+          build-args: |
+            NEXT_PUBLIC_API_URL=https://api.ccapglobal.com/api/v1
+            NEXT_PUBLIC_GOOGLE_CLIENT_ID=542932674912-6hg2kkv5mibodjd5pof6nbsq7e471gin.apps.googleusercontent.com
+            NEXT_PUBLIC_WHATSAPP_URL=${{ secrets.NEXT_PUBLIC_WHATSAPP_URL }}
+            NEXT_PUBLIC_WHATSAPP_MESSAGE=${{ secrets.NEXT_PUBLIC_WHATSAPP_MESSAGE }}
 
       - name: Deploy to Kubernetes
         uses: tale/kubectl-action@v1
