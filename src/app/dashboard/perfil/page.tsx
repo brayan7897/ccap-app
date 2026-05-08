@@ -175,9 +175,13 @@ function FieldMsg({ state, error }: { state: FieldState; error?: string }) {
 
 function StatusIcon({ state }: { state: FieldState }) {
 	if (state === "error")
-		return <XCircle className="h-4 w-4 text-destructive absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />;
+		return (
+			<XCircle className="h-4 w-4 text-destructive absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+		);
 	if (state === "success")
-		return <CheckCircle2 className="h-4 w-4 text-emerald-500 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />;
+		return (
+			<CheckCircle2 className="h-4 w-4 text-emerald-500 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+		);
 	return null;
 }
 
@@ -329,7 +333,8 @@ export default function ProfilePage() {
 		return errors[name] ? "error" : "success";
 	};
 
-	const { onChange: onPhoneChange, ...phoneRegister } = register("phone_number");
+	const { onChange: onPhoneChange, ...phoneRegister } =
+		register("phone_number");
 
 	const watchedAvatar = useWatch({ control, name: "avatar_url" }) ?? "";
 	const watchedFirstName = useWatch({ control, name: "first_name" }) ?? "";
@@ -409,16 +414,11 @@ export default function ProfilePage() {
 	const watchedDocType = watchDoc("document_type");
 
 	const onSubmitDocument = (data: DocumentFormValues) => {
-		console.log("[onSubmitDocument] ► Formulario válido, data:", data);
-		console.log("[onSubmitDocument] ► Tipo:", data.document_type, "| Número:", data.document_number);
 		updateDocument.mutate(data, {
 			onSuccess: () => {
-				console.log("[onSubmitDocument] ✔ Documento registrado, cerrando formulario");
 				setIsEditingDoc(false);
 			},
-			onError: (err) => {
-				console.error("[onSubmitDocument] ✘ Error en mutate callback:", err);
-			},
+			onError: () => {},
 		});
 	};
 
@@ -530,7 +530,10 @@ export default function ProfilePage() {
 								placeholder="https://ejemplo.com/foto.jpg"
 								disabled={!isEditing}
 								{...register("avatar_url")}
-								className={getInputClass(profileFieldState("avatar_url"), "h-11 rounded-xl bg-background/50 font-mono text-sm pr-8 disabled:opacity-60 disabled:cursor-not-allowed")}
+								className={getInputClass(
+									profileFieldState("avatar_url"),
+									"h-11 rounded-xl bg-background/50 font-mono text-sm pr-8 disabled:opacity-60 disabled:cursor-not-allowed",
+								)}
 							/>
 							<StatusIcon state={profileFieldState("avatar_url")} />
 						</div>
@@ -561,11 +564,17 @@ export default function ProfilePage() {
 									placeholder="Tus nombres"
 									disabled={!isEditing}
 									{...register("first_name")}
-									className={getInputClass(profileFieldState("first_name"), "h-11 rounded-xl bg-background/50 pr-8 disabled:opacity-60 disabled:cursor-not-allowed")}
+									className={getInputClass(
+										profileFieldState("first_name"),
+										"h-11 rounded-xl bg-background/50 pr-8 disabled:opacity-60 disabled:cursor-not-allowed",
+									)}
 								/>
 								<StatusIcon state={profileFieldState("first_name")} />
 							</div>
-							<FieldMsg state={profileFieldState("first_name")} error={errors.first_name?.message} />
+							<FieldMsg
+								state={profileFieldState("first_name")}
+								error={errors.first_name?.message}
+							/>
 						</div>
 						<div className="space-y-1.5">
 							<Label
@@ -580,11 +589,17 @@ export default function ProfilePage() {
 									placeholder="Tus apellidos"
 									disabled={!isEditing}
 									{...register("last_name")}
-									className={getInputClass(profileFieldState("last_name"), "h-11 rounded-xl bg-background/50 pr-8 disabled:opacity-60 disabled:cursor-not-allowed")}
+									className={getInputClass(
+										profileFieldState("last_name"),
+										"h-11 rounded-xl bg-background/50 pr-8 disabled:opacity-60 disabled:cursor-not-allowed",
+									)}
 								/>
 								<StatusIcon state={profileFieldState("last_name")} />
 							</div>
-							<FieldMsg state={profileFieldState("last_name")} error={errors.last_name?.message} />
+							<FieldMsg
+								state={profileFieldState("last_name")}
+								error={errors.last_name?.message}
+							/>
 						</div>
 					</div>
 
@@ -603,14 +618,23 @@ export default function ProfilePage() {
 								disabled={!isEditing}
 								{...phoneRegister}
 								onChange={(e) => {
-									e.target.value = e.target.value.replace(/[^\d\s\-\+\(\)]/g, "");
+									e.target.value = e.target.value.replace(
+										/[^\d\s\-\+\(\)]/g,
+										"",
+									);
 									onPhoneChange(e);
 								}}
-								className={getInputClass(profileFieldState("phone_number"), "h-11 rounded-xl bg-background/50 pr-8 disabled:opacity-60 disabled:cursor-not-allowed")}
+								className={getInputClass(
+									profileFieldState("phone_number"),
+									"h-11 rounded-xl bg-background/50 pr-8 disabled:opacity-60 disabled:cursor-not-allowed",
+								)}
 							/>
 							<StatusIcon state={profileFieldState("phone_number")} />
 						</div>
-						<FieldMsg state={profileFieldState("phone_number")} error={errors.phone_number?.message} />
+						<FieldMsg
+							state={profileFieldState("phone_number")}
+							error={errors.phone_number?.message}
+						/>
 					</div>
 
 					{/* Biografía */}
@@ -722,10 +746,7 @@ export default function ProfilePage() {
 					</div>
 				) : isEditingDoc ? (
 					<form
-						onSubmit={handleSubmitDoc(
-							onSubmitDocument,
-							(errs) => console.warn("[✘ handleSubmitDoc] Validación fallida:", errs)
-						)}
+						onSubmit={handleSubmitDoc(onSubmitDocument)}
 						className="space-y-5 relative z-10">
 						<div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
 							<div className="space-y-1.5">
@@ -783,16 +804,24 @@ export default function ProfilePage() {
 											if (watchedDocType === "DNI" || watchedDocType === "CE") {
 												e.target.value = e.target.value.replace(/\D/g, "");
 											} else if (watchedDocType === "PASAPORTE") {
-												e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, "");
+												e.target.value = e.target.value
+													.toUpperCase()
+													.replace(/[^A-Z0-9]/g, "");
 											}
 											onDocChange(e);
 										}}
-										className={getInputClass(docFieldState("document_number"), "h-11 rounded-xl bg-background/50 font-mono pr-8")}
+										className={getInputClass(
+											docFieldState("document_number"),
+											"h-11 rounded-xl bg-background/50 font-mono pr-8",
+										)}
 									/>
 									<StatusIcon state={docFieldState("document_number")} />
 								</div>
 								{docFieldState("document_number") === "error" ? (
-									<FieldMsg state="error" error={errorsDoc.document_number?.message} />
+									<FieldMsg
+										state="error"
+										error={errorsDoc.document_number?.message}
+									/>
 								) : (
 									<p className="text-xs text-muted-foreground mt-1">
 										{DOC_RULES[watchedDocType]?.hint}
@@ -865,7 +894,10 @@ export default function ProfilePage() {
 							className={getInputClass(pwdFieldState("current_password"), "")}
 							{...regPwd("current_password")}
 						/>
-						<FieldMsg state={pwdFieldState("current_password")} error={errorsPwd.current_password?.message} />
+						<FieldMsg
+							state={pwdFieldState("current_password")}
+							error={errorsPwd.current_password?.message}
+						/>
 					</div>
 
 					{/* Nueva contraseña */}
@@ -883,7 +915,10 @@ export default function ProfilePage() {
 								{...regPwd("new_password")}
 							/>
 							{pwdFieldState("new_password") === "error" && (
-								<FieldMsg state="error" error={errorsPwd.new_password?.message} />
+								<FieldMsg
+									state="error"
+									error={errorsPwd.new_password?.message}
+								/>
 							)}
 							{pwdFieldState("new_password") === "success" && (
 								<p className="text-xs text-emerald-600 dark:text-emerald-400 font-medium flex items-center gap-1 mt-1">
@@ -904,7 +939,10 @@ export default function ProfilePage() {
 								className={getInputClass(pwdFieldState("confirm_password"), "")}
 								{...regPwd("confirm_password")}
 							/>
-							<FieldMsg state={pwdFieldState("confirm_password")} error={errorsPwd.confirm_password?.message} />
+							<FieldMsg
+								state={pwdFieldState("confirm_password")}
+								error={errorsPwd.confirm_password?.message}
+							/>
 						</div>
 					</div>
 

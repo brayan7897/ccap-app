@@ -62,12 +62,6 @@ export function ContentPlayer({ resources, isLoading }: ContentPlayerProps) {
 				external_url ??
 				(drive_file_id ? getDriveEmbedUrl(drive_file_id) : null);
 			if (!src) return <EmptySlot />;
-			console.debug("[ContentPlayer] VIDEO:", {
-				title,
-				drive_file_id,
-				external_url,
-				src,
-			});
 
 			// NOTE: Google Drive embeds include a "Pop-out" / "Open in new window" button
 			// that lives inside the iframe. Because of Same-Origin Policy we cannot
@@ -83,8 +77,6 @@ export function ContentPlayer({ resources, isLoading }: ContentPlayerProps) {
 						allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
 						allowFullScreen
 						title={title}
-						onLoad={() => console.debug("[ContentPlayer] iframe loaded:", src)}
-						onError={(e) => console.error("[ContentPlayer] iframe error:", e)}
 					/>
 				</div>
 			);

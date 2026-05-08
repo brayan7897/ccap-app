@@ -43,23 +43,21 @@ export function EducationalPillars() {
 					</h2>
 
 					<p className="text-muted-foreground text-sm md:text-base max-w-2xl font-medium">
-						Descubre los fundamentos que nos hacen líderes en formación profesional para ingeniería
+						Descubre los fundamentos que nos hacen líderes en formación
+						profesional para ingeniería
 					</p>
 				</div>
 
 				{/* Pillars Grid */}
-				<div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+				<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
 					{PILLARS.map((pillar, index) => (
 						<div
 							key={index}
 							className="group relative flex flex-col items-start p-8 rounded-2xl bg-card border border-border/50 hover:border-border hover:shadow-md transition-all duration-300 text-left">
-							
 							{/* Icon */}
 							<div
 								className={`w-12 h-12 mb-6 rounded-xl ${pillar.iconBg} flex items-center justify-center transition-transform group-hover:-translate-y-1 duration-300`}>
-								<pillar.icon
-									className={`w-5 h-5 ${pillar.iconColor}`}
-								/>
+								<pillar.icon className={`w-5 h-5 ${pillar.iconColor}`} />
 							</div>
 
 							{/* Text Content */}

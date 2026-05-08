@@ -37,26 +37,15 @@ export function GoogleLoginButton() {
 
 	useEffect(() => {
 		const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
-		console.log(
-			"[GoogleLoginButton] NEXT_PUBLIC_GOOGLE_CLIENT_ID value:",
-			clientId ?? "(undefined — variable not set in production env)",
-		);
 
 		if (!clientId) {
-			console.warn(
-				"[GoogleLoginButton] NEXT_PUBLIC_GOOGLE_CLIENT_ID is not set. Google button will not render.",
-			);
 			return;
 		}
 
 		const init = () => {
-			console.info("[GoogleLoginButton] initializing Google Identity button");
 			window.google.accounts.id.initialize({
 				client_id: clientId,
 				callback: (response: { credential: string }) => {
-					console.info(
-						"[GoogleLoginButton] received credential from Google Identity",
-					);
 					loginRef.current(response.credential);
 				},
 			});
@@ -68,23 +57,12 @@ export function GoogleLoginButton() {
 					text: "signin_with",
 					width: containerRef.current.offsetWidth || 160,
 				});
-				console.info(
-					"[GoogleLoginButton] rendered Google button into container",
-				);
-			} else {
-				console.warn(
-					"[GoogleLoginButton] containerRef.current is null, cannot render button",
-				);
 			}
 		};
 
 		if (typeof window !== "undefined" && window.google) {
-			console.info("[GoogleLoginButton] Google library already loaded");
 			init();
 		} else {
-			console.info(
-				"[GoogleLoginButton] Google library not loaded yet, waiting for onGoogleLibraryLoad",
-			);
 			window.onGoogleLibraryLoad = init;
 		}
 

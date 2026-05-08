@@ -239,25 +239,17 @@ export function useUpdateDocument() {
 
   return useMutation({
     mutationFn: (data: { document_type: string; document_number: string }) => {
-      console.log("[useUpdateDocument] mutationFn llamada con:", data);
       return authService.updateDocument(data);
     },
     onSuccess: (updatedUser) => {
-      console.log("[useUpdateDocument] ✔ onSuccess — usuario actualizado:", updatedUser);
       useAuthStore.getState().setUser(updatedUser);
       queryClient.setQueryData(USER_QUERY_KEY, updatedUser);
       toast.success("Documento registrado correctamente.");
     },
     onError: (error) => {
       const axiosErr = error as import("axios").AxiosError<{ detail: string }>;
-      console.error(
-        "[useUpdateDocument] ✘ onError — status:",
-        axiosErr.response?.status,
-        "| data:",
-        axiosErr.response?.data
-      );
       toast.error(
-        getApiErrorMessage(error, "No se pudo registrar el documento. Intenta de nuevo.")
+        getApiErrorMessage(axiosErr, "No se pudo registrar el documento. Intenta de nuevo.")
       );
     },
   });

@@ -101,14 +101,14 @@ export function Navbar() {
 						{/* Search Trigger */}
 						<button
 							onClick={() => setIsSearchOpen(true)}
-							className={`hidden md:inline-flex items-center justify-between text-base font-medium text-foreground bg-transparent border border-border hover:border-primary/40 hover:bg-secondary/50 rounded-xl transition-all shadow-sm w-40 lg:w-56 xl:w-72 ${
+							className={`hidden md:inline-flex items-center justify-between text-sm lg:text-base font-medium text-foreground bg-transparent border border-border hover:border-primary/40 hover:bg-secondary/50 rounded-xl transition-all shadow-sm w-44 lg:w-56 xl:w-72 ${
 								scrolled ? "px-3 py-2" : "px-4 py-2.5"
 							}`}>
-							<div className="flex items-center gap-2.5">
-								<Search className="w-4 h-4 text-muted-foreground" />
-								<span className="opacity-90">Buscar cursos...</span>
+							<div className="flex items-center gap-2 overflow-hidden">
+								<Search className="w-4 h-4 shrink-0 text-muted-foreground" />
+								<span className="opacity-90 truncate">Buscar cursos...</span>
 							</div>
-							<kbd className="hidden lg:inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-mono bg-background border border-border text-muted-foreground shadow-sm">
+							<kbd className="hidden lg:inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-mono bg-background border border-border text-muted-foreground shadow-sm shrink-0 ml-2">
 								⌘K
 							</kbd>
 						</button>

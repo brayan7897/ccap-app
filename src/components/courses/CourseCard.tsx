@@ -68,7 +68,7 @@ export function CourseCard({
 	return (
 		<Link
 			href={`/courses/${slug}`}
-			className="group flex flex-col bg-card border border-border/60 rounded-[0.5rem] overflow-hidden hover:border-primary/40 transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(var(--primary-rgb),0.15)] h-full relative">
+			className="group flex flex-col bg-card border border-border/60 rounded-[0.5rem] overflow-hidden hover:border-primary/40 transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(var(--primary-rgb),0.15)] h-full relative w-full max-w-sm mx-auto">
 			{/* Thumbnail */}
 			<div className="relative aspect-16/10 w-full overflow-hidden bg-muted">
 				{thumbnail_url ? (

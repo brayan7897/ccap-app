@@ -54,20 +54,8 @@ export const authService = {
     document_type: string;
     document_number: string;
   }): Promise<User> {
-    console.log("[updateDocument] ► Enviando payload:", data);
-    try {
-      const res = await api.patch<User>("/users/me/document", data);
-      console.log("[updateDocument] ✔ Respuesta exitosa:", res.status, res.data);
-      return res.data;
-    } catch (err: unknown) {
-      const axiosErr = err as import("axios").AxiosError;
-      console.error(
-        "[updateDocument] ✘ Error:",
-        axiosErr.response?.status,
-        axiosErr.response?.data
-      );
-      throw err;
-    }
+    const res = await api.patch<User>("/users/me/document", data);
+    return res.data;
   },
 
   /** Change password (requires current password for verification) */

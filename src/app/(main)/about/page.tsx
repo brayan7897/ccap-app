@@ -4,7 +4,8 @@ import Link from "next/link";
 import { Users, Target, Zap } from "lucide-react";
 
 export const metadata: Metadata = {
-	title: "Sobre Nosotros — Centro de Capacitación Profesional con +5 Años de Experiencia",
+	title:
+		"Sobre Nosotros — Centro de Capacitación Profesional con +5 Años de Experiencia",
 	description:
 		"Conoce a CCAP Global, la plataforma de e-learning líder en Perú especializada en ingenieros y arquitectos. Más de 5 años formando líderes técnicos con certificados avalados por CIP, CAP y Autodesk.",
 	alternates: {
@@ -18,34 +19,6 @@ export const metadata: Metadata = {
 	},
 };
 
-
-const TEAM_MEMBERS = [
-	{
-		name: "Ing. Roberto Díaz",
-		role: "Director Académico, ccap",
-		image:
-			"https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&h=400&fit=crop",
-	},
-	{
-		name: "Arq. Sofia Paredes",
-		role: "Líder de Especialidades BIM",
-		image:
-			"https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=400&fit=crop",
-	},
-	{
-		name: "Ing. Carlos Mendoza",
-		role: "Experto en Estructuras",
-		image:
-			"https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop",
-	},
-	{
-		name: "Ing. Laura Jiménez",
-		role: "Gerente de Proyectos PMP",
-		image:
-			"https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&h=400&fit=crop",
-	},
-];
-
 export default function AboutPage() {
 	return (
 		<div className="min-h-screen">
@@ -56,11 +29,11 @@ export default function AboutPage() {
 
 				<div className="container mx-auto px-4 lg:px-8 relative z-10">
 					<div className="max-w-3xl">
-						<h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-foreground mb-6 leading-[1.1] transition-colors">
+						<h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-foreground mb-6 leading-tight transition-colors">
 							Construyendo la próxima generación de{" "}
 							<span className="text-primary">líderes técnicos.</span>
 						</h1>
-						<p className="text-lg md:text-xl text-muted-foreground leading-relaxed font-light mb-10">
+						<p className="text-base sm:text-lg md:text-xl text-muted-foreground leading-relaxed font-light mb-10">
 							En ccap creemos que la ingeniería y la arquitectura son los
 							pilares del progreso humano. Nuestra misión es democratizar el
 							acceso a la educación técnica de más alta calidad, cerrando la
@@ -128,42 +101,6 @@ export default function AboutPage() {
 								talentos hispanos.
 							</p>
 						</div>
-					</div>
-				</div>
-			</section>
-
-			{/* Team Section */}
-			<section className="py-24 bg-muted/30 dark:bg-muted/10 border-y border-border transition-colors">
-				<div className="container mx-auto px-4 lg:px-8">
-					<div className="text-center mb-16 max-w-2xl mx-auto">
-						<h2 className="text-3xl font-extrabold text-foreground mb-4 transition-colors">
-							Conoce a nuestros expertos
-						</h2>
-						<p className="text-muted-foreground">
-							Instructores con años de experiencia real en campo y proyectos
-							internacionales a gran escala.
-						</p>
-					</div>
-
-					<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-						{TEAM_MEMBERS.map((member, idx) => (
-							<div
-								key={idx}
-								className="bg-card rounded-2xl p-6 border border-border text-center hover:border-primary/30 transition-colors">
-								<div className="relative w-24 h-24 mx-auto mb-4 rounded-full overflow-hidden border-2 border-border">
-									<Image
-										src={member.image}
-										alt={member.name}
-										fill
-										className="object-cover"
-									/>
-								</div>
-								<h4 className="text-foreground font-bold text-base mb-1 transition-colors">
-									{member.name}
-								</h4>
-								<p className="text-primary text-sm">{member.role}</p>
-							</div>
-						))}
 					</div>
 				</div>
 			</section>

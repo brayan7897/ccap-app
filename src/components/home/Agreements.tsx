@@ -44,11 +44,11 @@ export function Agreements() {
 	return (
 		<div className="w-full relative py-4 flex justify-center">
 			<div className="w-full relative z-0">
-				<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 px-4">
+				<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 px-4">
                     {AGREEMENTS.map((partner) => (
                         <div 
                             key={partner.name}
-                            className="group relative flex flex-col p-6 rounded-3xl bg-card border border-border/50 shadow-sm hover:shadow-xl hover:border-gold/30 hover:-translate-y-1 transition-all duration-500 overflow-hidden"
+                            className="group relative flex flex-col p-5 sm:p-6 rounded-3xl bg-card border border-border/50 shadow-sm hover:shadow-xl hover:border-gold/30 hover:-translate-y-1 transition-all duration-500 overflow-hidden"
                         >
                             {/* Hover background */}
                             <div className="absolute inset-0 bg-linear-to-br from-gold/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-3xl pointer-events-none" />
@@ -57,7 +57,7 @@ export function Agreements() {
                             <div className={`absolute top-0 left-0 w-full h-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${partner.accentColor}`} />
 
                             {/* Large Logo Block */}
-                            <div className="relative w-full h-14 sm:h-16 mb-5 flex items-center justify-start z-10">
+                            <div className="relative w-full h-12 sm:h-14 md:h-16 mb-4 sm:mb-5 flex items-center justify-start z-10">
                                 <Image
                                     src={partner.logo}
                                     alt={`Logo de ${partner.name} — convenio institucional con CCAP Global para cursos online certificados`}
@@ -68,15 +68,15 @@ export function Agreements() {
 
                             {/* Content */}
                             <div className="z-10 flex flex-col grow">
-                                <h3 className="text-[17px] font-extrabold text-foreground mb-2 transition-colors duration-300">
+                                <h3 className="text-base sm:text-[17px] font-extrabold text-foreground mb-2 transition-colors duration-300">
                                     {partner.name}
                                 </h3>
-                                <p className="text-[13px] text-muted-foreground grow mb-5 font-medium leading-relaxed">
+                                <p className="text-xs sm:text-[13px] text-muted-foreground grow mb-4 sm:mb-5 font-medium leading-relaxed">
                                     {partner.description}
                                 </p>
 
                                 {/* Footer / Meta */}
-                                <div className="flex items-center justify-start mt-auto border-t border-border/40 pt-4">
+                                <div className="flex items-center justify-start mt-auto border-t border-border/40 pt-3 sm:pt-4">
                                     <span className={`px-3 py-1.5 rounded-full text-[10px] uppercase tracking-wider font-bold leading-none ${partner.bgColor} ${partner.color} border border-${partner.accentColor}/20`}>
                                         {partner.category}
                                     </span>

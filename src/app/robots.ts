@@ -5,7 +5,7 @@ import type { MetadataRoute } from "next";
  * Instructs crawlers which routes to index and where the sitemap lives.
  */
 export default function robots(): MetadataRoute.Robots {
-	const baseUrl = "https://www.ccapglobal.com";
+	const baseUrl = "https://ccapglobal.com";
 
 	return {
 		rules: [
@@ -17,6 +17,9 @@ export default function robots(): MetadataRoute.Robots {
 					"/dashboard/",   // Private user dashboard
 					"/api/",         // API routes — not for indexing
 					"/_next/",       // Next.js internals
+					"/login",        // Auth pages
+					"/register",
+					"/forgot-password",
 				],
 			},
 		],
