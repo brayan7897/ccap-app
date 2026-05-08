@@ -67,7 +67,7 @@ export function MainHero() {
 					</div>
 
 					{/* ── Right Column: Hero Visual ── */}
-					<div className="flex relative w-full max-w-md lg:max-w-none mx-auto aspect-[4/4] lg:aspect-[4/3.5] items-end justify-center z-10 self-end lg:-mr-6">
+					<div className="flex relative w-full max-w-md lg:max-w-none mx-auto aspect-4/4 lg:aspect-4/3.5 items-end justify-center z-10 self-end lg:-mr-6">
 
 						{/* Ambient Glow Orbs */}
 						<div
@@ -80,7 +80,7 @@ export function MainHero() {
 						/>
 
 						{/* Background Circle */}
-						<div className="absolute inset-x-[10%] inset-y-[5%] lg:inset-x-[12%] lg:inset-y-[10%] bg-gradient-to-tr from-primary/5 via-primary/10 to-transparent rounded-full z-0 border border-primary/10" />
+						<div className="absolute inset-x-[10%] inset-y-[5%] lg:inset-x-[12%] lg:inset-y-[10%] bg-linear-to-tr from-primary/5 via-primary/10 to-transparent rounded-full z-0 border border-primary/10" />
 
 						{/* Woman Image */}
 						<div className="absolute inset-0 z-10 flex items-end justify-center pointer-events-none">
@@ -96,7 +96,7 @@ export function MainHero() {
 						{/* ── Responsive Floating Widgets ── */}
 						{/* Widget 1: Certificación (Top Left) */}
 						<div className="flex absolute top-[2%] left-[2%] sm:left-[5%] md:top-[8%] md:left-[-5%] lg:top-[10%] lg:left-[-8%] xl:left-[-12%] z-30 bg-card/95 backdrop-blur-xl border border-border shadow-[0_15px_35px_rgba(0,0,0,0.1)] dark:shadow-[0_15px_35px_rgba(0,0,0,0.4)] rounded-full px-3 py-2 md:px-6 md:py-3.5 items-center gap-2 md:gap-3 hover:-translate-y-2 transition-all duration-300 group cursor-default" style={{ animation: "float 6s ease-in-out infinite" }}>
-							<div className="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-br from-gold/20 to-gold/5 dark:from-gold/30 dark:to-gold/10 rounded-full flex items-center justify-center border border-gold/20 shrink-0 group-hover:scale-110 transition-transform duration-300">
+							<div className="w-8 h-8 md:w-10 md:h-10 bg-linear-to-br from-gold/20 to-gold/5 dark:from-gold/30 dark:to-gold/10 rounded-full flex items-center justify-center border border-gold/20 shrink-0 group-hover:scale-110 transition-transform duration-300">
 								<Award className="w-4 h-4 md:w-5 md:h-5 text-gold group-hover:scale-110 transition-transform" />
 							</div>
 							<p className="text-foreground font-bold text-xs md:text-sm whitespace-nowrap">Certificación Oficial</p>
@@ -104,7 +104,7 @@ export function MainHero() {
 
 						{/* Widget 2: Clases en Vivo (Top Right) */}
 						<div className="flex absolute top-[15%] right-[2%] sm:right-[5%] md:top-[25%] md:right-[-5%] lg:top-[25%] lg:right-[-8%] xl:right-[-12%] z-30 bg-card/95 backdrop-blur-xl border border-border shadow-[0_15px_35px_rgba(0,0,0,0.1)] dark:shadow-[0_15px_35px_rgba(0,0,0,0.4)] rounded-full px-3 py-2 md:px-6 md:py-3.5 items-center gap-2 md:gap-3 hover:-translate-y-2 transition-all duration-300 group cursor-default" style={{ animation: "float 7s ease-in-out infinite reverse" }}>
-							<div className="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-br from-blue-500/20 to-blue-500/5 dark:from-blue-500/30 dark:to-blue-500/10 rounded-full flex items-center justify-center border border-blue-500/20 shrink-0 group-hover:scale-110 transition-transform duration-300">
+							<div className="w-8 h-8 md:w-10 md:h-10 bg-linear-to-br from-blue-500/20 to-blue-500/5 dark:from-blue-500/30 dark:to-blue-500/10 rounded-full flex items-center justify-center border border-blue-500/20 shrink-0 group-hover:scale-110 transition-transform duration-300">
 								<div className="relative flex h-2.5 w-2.5 md:h-3 md:w-3">
 									<span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75" />
 									<span className="relative inline-flex rounded-full h-2.5 w-2.5 md:h-3 md:w-3 bg-blue-500" />
@@ -115,7 +115,7 @@ export function MainHero() {
 
 						{/* Widget 3: Experiencia (Bottom Left) */}
 						<div className="flex absolute bottom-[25%] left-[2%] sm:left-[5%] md:bottom-[30%] md:left-[-5%] lg:bottom-[35%] lg:left-[-8%] xl:left-[-12%] z-30 bg-card/95 backdrop-blur-xl border border-border shadow-[0_15px_35px_rgba(0,0,0,0.1)] dark:shadow-[0_15px_35px_rgba(0,0,0,0.4)] rounded-full px-3 py-2 md:px-6 md:py-3.5 items-center gap-2 md:gap-3 hover:-translate-y-2 transition-all duration-300 group cursor-default" style={{ animation: "float 8s ease-in-out infinite 1s" }}>
-							<div className="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-br from-primary/20 to-primary/5 dark:from-primary/30 dark:to-primary/10 rounded-full flex items-center justify-center border border-primary/20 shrink-0 group-hover:scale-110 transition-transform duration-300">
+							<div className="w-8 h-8 md:w-10 md:h-10 bg-linear-to-br from-primary/20 to-primary/5 dark:from-primary/30 dark:to-primary/10 rounded-full flex items-center justify-center border border-primary/20 shrink-0 group-hover:scale-110 transition-transform duration-300">
 								<Briefcase className="w-4 h-4 md:w-5 md:h-5 text-primary group-hover:rotate-12 transition-transform" />
 							</div>
 							<p className="text-foreground font-bold text-xs md:text-sm whitespace-nowrap">+5 Años de Experiencia</p>
