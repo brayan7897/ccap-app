@@ -74,6 +74,7 @@ export function HomeCourses() {
 
 	// Fetch only the first 8 courses for the homepage carousel
 	const { data: courses, isLoading, isError } = useCourses(0, 8);
+	const publishedCourses = courses?.filter(c => c.is_published) || [];
 
 	const checkScroll = () => {
 		if (scrollContainerRef.current) {
@@ -210,7 +211,7 @@ export function HomeCourses() {
 				)}
 
 				{/* Empty state */}
-				{!isLoading && !isError && !courses?.length && (
+				{!isLoading && !isError && publishedCourses.length === 0 && (
 					<div className="flex flex-col items-center justify-center py-24 text-muted-foreground gap-3">
 						<BookOpen className="w-10 h-10 opacity-40" />
 						<p className="text-sm">No hay cursos publicados aún.</p>
@@ -220,8 +221,7 @@ export function HomeCourses() {
 				{/* Carousel with nav buttons */}
 				{!isLoading &&
 					!isError &&
-					Array.isArray(courses) &&
-					courses.length > 0 && (
+					publishedCourses.length > 0 && (
 						<>
 							<button
 								onClick={() => scroll("left")}
@@ -249,7 +249,7 @@ export function HomeCourses() {
 								ref={scrollContainerRef}
 								onScroll={checkScroll}
 								className="flex overflow-x-auto gap-6 md:gap-8 pb-12 pt-8 snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-								{courses.map((course) => (
+								{publishedCourses.map((course) => (
 									<div
 										key={course.id}
 										className="snap-start shrink-0 w-full md:w-[calc((100%-32px)/2)] lg:w-[calc((100%-64px)/3)] xl:w-[calc((100%-64px)/3)] 2xl:w-[calc((100%-96px)/4)]">
@@ -271,11 +271,11 @@ export function HomeCourses() {
 					</Link>
 					{!isLoading && !isError && (
 						<p className="mt-4 text-[13px] text-muted-foreground font-medium text-center">
-							{courses?.length ? (
+							{publishedCourses.length > 0 ? (
 								<>
 									Mostrando{" "}
 									<span className="font-semibold text-foreground">
-										{courses.length}
+										{publishedCourses.length}
 									</span>{" "}
 									cursos destacados
 								</>

@@ -108,6 +108,38 @@ export default function LessonViewerPage() {
 		);
 	}
 
+	// ── Guard: course is in draft (not published) ───────────────────────────────
+	if (course && !course.is_published) {
+		return (
+			<div className="flex h-full flex-col items-center justify-center gap-4 text-center px-4">
+				<AlertCircle className="w-12 h-12 text-yellow-500" />
+				<p className="font-bold text-foreground text-lg">Curso en borrador</p>
+				<p className="text-sm text-muted-foreground max-w-sm">
+					Este curso aún no está publicado y no es posible acceder a su contenido.
+				</p>
+				<Button asChild variant="outline">
+					<Link href="/dashboard/mis-cursos">← Mis cursos</Link>
+				</Button>
+			</div>
+		);
+	}
+
+	// ── Guard: course has no content ────────────────────────────────────────────
+	if (course && flatLessons.length === 0) {
+		return (
+			<div className="flex h-full flex-col items-center justify-center gap-4 text-center px-4">
+				<AlertCircle className="w-12 h-12 text-muted-foreground" />
+				<p className="font-bold text-foreground text-lg">Curso sin contenido</p>
+				<p className="text-sm text-muted-foreground max-w-sm">
+					Este curso aún no tiene lecciones publicadas. Vuelve más tarde.
+				</p>
+				<Button asChild variant="outline">
+					<Link href={`/courses/${slug}`}>← Volver al curso</Link>
+				</Button>
+			</div>
+		);
+	}
+
 	// ── Access guard: course_access must be APPROVED ────────────────────────────
 	if (user && user.course_access !== "APPROVED") {
 		return (
@@ -162,7 +194,19 @@ export default function LessonViewerPage() {
 					</div>
 
 					{/* Content player */}
-					<ContentPlayer resources={resources} isLoading={isResourcesLoading} />
+					{!isResourcesLoading && resources.length === 0 ? (
+						<div className="w-full aspect-video bg-muted/20 border border-border rounded-xl flex flex-col items-center justify-center text-center p-6">
+							<AlertCircle className="w-12 h-12 text-muted-foreground mb-4" />
+							<p className="font-bold text-foreground text-lg">
+								Lección sin contenido
+							</p>
+							<p className="text-sm text-muted-foreground max-w-md mt-1">
+								Esta lección aún no tiene recursos o videos publicados. Por favor, continúa con la siguiente lección.
+							</p>
+						</div>
+					) : (
+						<ContentPlayer resources={resources} isLoading={isResourcesLoading} />
+					)}
 
 					{/* Lesson title & duration */}
 					{currentLesson && (

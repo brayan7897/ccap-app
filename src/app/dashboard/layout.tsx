@@ -10,6 +10,7 @@ import { DashboardSidebar } from "@/features/dashboard/components/DashboardSideb
 import { useUiStore } from "@/store/ui-store";
 import { Logo } from "@/components/ui/Logo";
 import { NotificationBell } from "@/components/layout/NotificationBell";
+import { HeaderUserAvatar } from "@/components/layout/HeaderUserAvatar";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -78,8 +79,8 @@ export default function DashboardLayout({
 
 				{/* Main area */}
 				<div className="flex flex-1 flex-col min-w-0 overflow-hidden relative z-10">
-					{/* Top header */}
-					<header className="flex items-center justify-between h-16 px-4 lg:px-6 border-b border-border bg-background/90 backdrop-blur-sm shrink-0">
+					{/* ── Top header — unified tokens with Navbar.tsx ── */}
+					<header className="flex items-center justify-between h-16 px-4 lg:px-6 border-b border-border bg-background/90 backdrop-blur-xl shrink-0">
 						{/* Logo */}
 						<div className="flex items-center h-full">
 							<Link href="/dashboard" className="flex items-center gap-2">
@@ -90,13 +91,19 @@ export default function DashboardLayout({
 						{/* Spacer */}
 						<div className="flex-1" />
 
-						{/* Header actions */}
-						<div className="flex items-center gap-2 lg:gap-4">
+						{/* Header actions — same order & styles as Navbar */}
+						<div className="flex items-center gap-2 lg:gap-3">
+							{/* Notification bell */}
 							<NotificationBell />
+
+							{/* Divider */}
+							<div className="hidden sm:block w-px h-5 bg-border mx-0.5" />
+
+							{/* Dark mode toggle */}
 							<button
 								onClick={toggleDarkMode}
 								aria-label={darkMode ? "Modo claro" : "Modo oscuro"}
-								className="p-2 rounded-xl text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors">
+								className="p-2 rounded-xl text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors border border-transparent hover:border-border">
 								{darkMode ? (
 									<Sun className="w-5 h-5" />
 								) : (
@@ -104,23 +111,20 @@ export default function DashboardLayout({
 								)}
 							</button>
 
+							{/* User avatar dropdown */}
 							{user && (
 								<DropdownMenu>
-									<DropdownMenuTrigger className="focus:outline-none overflow-hidden rounded-full border-2 border-border shadow-sm hover:border-primary/50 transition-colors shrink-0">
-										{user?.avatar_url ? (
-											// eslint-disable-next-line @next/next/no-img-element
-											<img
-												src={user?.avatar_url || undefined}
-												alt={fullName || ""}
-												className="w-9 h-9 object-cover"
-											/>
-										) : (
-											<div className="w-9 h-9 bg-primary text-primary-foreground flex items-center justify-center text-xs font-black select-none">
-												{user?.first_name?.[0]?.toUpperCase()}
-												{user?.last_name?.[0]?.toUpperCase()}
-											</div>
-										)}
+									<DropdownMenuTrigger className="flex items-center gap-2 rounded-xl px-2 py-1.5 hover:bg-secondary transition-colors border border-transparent hover:border-border focus:outline-none">
+										<HeaderUserAvatar
+											avatarUrl={user.avatar_url}
+											firstName={user.first_name}
+											lastName={user.last_name}
+										/>
+										<span className="hidden lg:block text-sm font-semibold text-foreground max-w-[8rem] truncate">
+											{user.first_name}
+										</span>
 									</DropdownMenuTrigger>
+
 									<DropdownMenuContent
 										align="end"
 										className="w-64 p-2 rounded-2xl">

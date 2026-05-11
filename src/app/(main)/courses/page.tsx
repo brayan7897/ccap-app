@@ -54,6 +54,7 @@ export default function CoursesPage() {
 	const [skip] = useState(0);
 	const limit = 20;
 	const { data: courses, isLoading, isError } = useCourses(skip, limit);
+	const publishedCourses = courses?.filter(c => c.is_published) || [];
 
 	return (
 		<div className="min-h-screen pt-8 pb-20">
@@ -135,7 +136,7 @@ export default function CoursesPage() {
 									<>
 										Mostrando{" "}
 										<span className="text-foreground font-bold">
-											{courses?.length ?? 0}
+											{publishedCourses.length}
 										</span>{" "}
 										resultados
 									</>
@@ -177,23 +178,23 @@ export default function CoursesPage() {
 						)}
 
 						{/* Empty state */}
-						{!isLoading && !isError && !courses?.length && (
+						{!isLoading && !isError && publishedCourses.length === 0 && (
 							<div className="flex flex-col items-center justify-center py-24 text-muted-foreground">
 								<p className="text-sm">No hay cursos publicados aún.</p>
 							</div>
 						)}
 
 						{/* Course Grid */}
-						{!isLoading && !isError && !!courses?.length && (
+						{!isLoading && !isError && publishedCourses.length > 0 && (
 							<div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-								{courses.map((course) => (
+								{publishedCourses.map((course) => (
 									<CourseCard key={course.id} {...toCardProps(course)} />
 								))}
 							</div>
 						)}
 
 						{/* Pagination (only when data loaded) */}
-						{!isLoading && !isError && !!courses?.length && (
+						{!isLoading && !isError && publishedCourses.length > 0 && (
 							<div className="mt-12 flex items-center justify-center gap-2">
 								<button className="w-10 h-10 rounded-lg border border-border flex items-center justify-center text-muted-foreground hover:bg-card hover:text-foreground transition-colors">
 									&lt;

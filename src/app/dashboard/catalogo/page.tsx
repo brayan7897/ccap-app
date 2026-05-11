@@ -31,6 +31,7 @@ function toCardProps(course: Course): CourseCardProps {
 
 export default function CatalogoPage() {
 	const { data: courses, isLoading } = useCourses(0, 50);
+	const publishedCourses = courses?.filter(c => c.is_published) || [];
 
 	return (
 		<div className="p-6 lg:p-8 max-w-7xl mx-auto space-y-8">
@@ -44,9 +45,9 @@ export default function CatalogoPage() {
 						Descubre todos los cursos disponibles y amplía tus habilidades.
 					</p>
 				</div>
-				{!isLoading && courses && (
+				{!isLoading && publishedCourses.length > 0 && (
 					<span className="text-sm font-semibold text-muted-foreground bg-muted/60 px-3 py-1.5 rounded-xl">
-						{courses.length} curso{courses.length !== 1 ? "s" : ""}
+						{publishedCourses.length} curso{publishedCourses.length !== 1 ? "s" : ""}
 					</span>
 				)}
 			</div>
@@ -68,9 +69,9 @@ export default function CatalogoPage() {
 						</div>
 					))}
 				</div>
-			) : courses && courses.length > 0 ? (
+			) : publishedCourses.length > 0 ? (
 				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-					{courses.map((course) => (
+					{publishedCourses.map((course) => (
 						<CourseCard key={course.id} {...toCardProps(course)} />
 					))}
 				</div>
