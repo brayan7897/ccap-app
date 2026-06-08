@@ -200,10 +200,7 @@ export function HomeCourses() {
 							No se pudieron cargar los cursos
 						</p>
 						<p className="text-sm text-center max-w-xs">
-							Verifica que la API esté en ejecución en{" "}
-							<code className="bg-muted px-1.5 py-0.5 rounded text-xs">
-								http://localhost:8000
-							</code>
+							Por favor, intenta recargar la página o verifica tu conexión a internet. Si el problema persiste, contacta a soporte.
 						</p>
 						<Link
 							href="/courses"
