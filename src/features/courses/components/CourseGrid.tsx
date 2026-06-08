@@ -52,30 +52,7 @@ export function CourseGrid() {
 	return (
 		<div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
 			{courses.map((course) => (
-				<CourseCard
-					key={course.id}
-					id={course.id}
-					slug={course.slug}
-					title={course.title}
-					short_description={course.short_description}
-					thumbnail_url={course.thumbnail_url}
-					course_level={course.course_level}
-					instructor_name={
-						course.instructor
-							? `${course.instructor.first_name} ${course.instructor.last_name}`
-							: undefined
-					}
-					category_name={course.category_name || course.category?.name || undefined}
-					category_color={course.category_color || course.category?.color || undefined}
-					tags={course.tags}
-					total_lessons={course.total_lessons}
-					total_duration={
-						course.total_duration_seconds
-							? `${Math.round(course.total_duration_seconds / 3600)} horas`
-							: undefined
-					}
-					enrolled_count={course.enrolled_count}
-				/>
+				<CourseCard key={course.id} course={course} />
 			))}
 		</div>
 	);
