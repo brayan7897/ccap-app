@@ -15,6 +15,8 @@ import type { CourseCardProps } from "@/components/courses/CourseCard";
 import { useCourses } from "@/features/courses/hooks/useCourses";
 import type { Course } from "@/types";
 
+import { ScrollReveal } from "@/components/ui/ScrollReveal";
+
 /** Maps backend Course → presentational CourseCardProps */
 function toCardProps(course: Course): CourseCardProps {
 	const totalSeconds =
@@ -38,7 +40,8 @@ function toCardProps(course: Course): CourseCardProps {
 		instructor_name: course.instructor
 			? `${course.instructor.first_name} ${course.instructor.last_name}`
 			: undefined,
-		category_name: course.category?.name ?? undefined,
+		category_name: course.category_name || course.category?.name || undefined,
+		category_color: course.category_color || course.category?.color || undefined,
 		tags: course.tags,
 		total_lessons:
 			course.total_lessons ??
@@ -155,23 +158,23 @@ export function HomeCourses() {
 		<section className="py-20 relative z-10 bg-transparent">
 			{/* Section Header */}
 			<div className="container mx-auto px-4 lg:px-8 max-w-7xl">
-				<div className="flex flex-col items-center text-center mb-16 space-y-4">
-					{/* Badge */}
-					<div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 text-primary text-xs font-semibold border border-primary/20">
-						<BookOpen className="w-3.5 h-3.5" />
-						<span>Cursos destacados</span>
+				<ScrollReveal animation="fade-in-up" duration={700} threshold={0.15}>
+					<div className="flex flex-col items-center text-center mb-16 space-y-4">
+						{/* Badge */}
+						<div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-secondary/10 text-secondary text-xs font-semibold border border-secondary/20">
+							<BookOpen className="w-3.5 h-3.5" />
+							<span>Cursos destacados</span>
+						</div>
+
+						<h2 className="text-4xl md:text-5xl font-black text-foreground tracking-tight max-w-3xl uppercase">
+							Cursos <span className="text-secondary">DESTACADOS</span>
+						</h2>
+
+						<p className="text-muted-foreground text-sm md:text-base max-w-2xl font-medium">
+							Estudia de forma flexible y certifícate con garantía legal.
+						</p>
 					</div>
-
-					<h2 className="text-4xl md:text-5xl font-extrabold text-foreground tracking-tight max-w-3xl">
-						Impulsa tu carrera con{" "}
-						<span className="text-primary">nuestros programas</span>
-					</h2>
-
-					<p className="text-muted-foreground text-sm md:text-base max-w-2xl font-medium">
-						Explora nuestros cursos mejor valorados por los estudiantes con
-						contenido de alta calidad impartido por expertos del sector
-					</p>
-				</div>
+				</ScrollReveal>
 			</div>
 
 			{/* Carousel / States */}
@@ -182,7 +185,7 @@ export function HomeCourses() {
 						{Array.from({ length: 3 }).map((_, i) => (
 							<div
 								key={i}
-								className="shrink-0 w-full md:w-[calc((100%-32px)/2)] lg:w-[calc((100%-64px)/3)]">
+								className="shrink-0 w-full sm:w-[calc((100%-24px)/2)] md:w-[calc((100%-32px)/2)] lg:w-[calc((100%-64px)/3)]">
 								<CourseCardSkeleton />
 							</div>
 						))}
@@ -249,12 +252,19 @@ export function HomeCourses() {
 								ref={scrollContainerRef}
 								onScroll={checkScroll}
 								className="flex overflow-x-auto gap-6 md:gap-8 pb-12 pt-8 snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-								{publishedCourses.map((course) => (
-									<div
+								{publishedCourses.map((course, index) => (
+									<ScrollReveal
 										key={course.id}
-										className="snap-start shrink-0 w-full md:w-[calc((100%-32px)/2)] lg:w-[calc((100%-64px)/3)] xl:w-[calc((100%-64px)/3)] 2xl:w-[calc((100%-96px)/4)]">
-										<CourseCard {...toCardProps(course)} />
-									</div>
+										animation="fade-in-up"
+										duration={800}
+										delay={index * 120 + 100}
+										threshold={0.1}
+										className="snap-start shrink-0 w-full sm:w-[calc((100%-24px)/2)] md:w-[calc((100%-32px)/2)] lg:w-[calc((100%-64px)/3)] 2xl:w-[calc((100%-96px)/4)]"
+									>
+										<div className="h-full">
+											<CourseCard {...toCardProps(course)} />
+										</div>
+									</ScrollReveal>
 								))}
 							</div>
 						</>

@@ -78,7 +78,7 @@ export default function MisCursosPage() {
 								className={[
 									"text-xs px-1.5 py-0.5 rounded-full font-bold",
 									isActive
-										? "bg-primary/10 text-primary"
+										? "bg-secondary text-secondary-foreground"
 										: "bg-muted text-muted-foreground",
 								].join(" ")}>
 								{counts[key]}
@@ -128,7 +128,7 @@ export default function MisCursosPage() {
 					</p>
 					<a
 						href="/dashboard/catalogo"
-						className="mt-5 px-5 py-2.5 rounded-xl bg-primary text-primary-foreground text-sm font-bold hover:bg-primary/90 transition-colors">
+						className="mt-5 px-5 py-2.5 rounded-xl bg-secondary text-secondary-foreground text-sm font-bold hover:bg-secondary/90 transition-colors">
 						Ir al catálogo
 					</a>
 				</div>

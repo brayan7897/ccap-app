@@ -29,7 +29,7 @@ const TYPE_CONFIG: Record<
 	{ icon: React.ElementType; color: string; bg: string }
 > = {
 	SYSTEM: { icon: Shield, color: "text-blue-500", bg: "bg-blue-500/10" },
-	COURSE_UPDATE: { icon: BookOpen, color: "text-primary", bg: "bg-primary/10" },
+	COURSE_UPDATE: { icon: BookOpen, color: "text-cyan-500", bg: "bg-cyan-500/10" },
 	ACHIEVEMENT: {
 		icon: Award,
 		color: "text-yellow-500",
@@ -75,7 +75,7 @@ function NotificationItem({
 		<div
 			className={[
 				"flex items-start gap-3 px-4 py-3 hover:bg-secondary/50 transition-colors cursor-pointer",
-				!notif.is_read ? "bg-primary/5" : "",
+				!notif.is_read ? "bg-muted/50" : "",
 			].join(" ")}
 			onClick={handleClick}
 			role="button"
@@ -90,7 +90,7 @@ function NotificationItem({
 					<p className="text-sm font-semibold text-foreground leading-snug line-clamp-1">
 						{notif.title}
 						{!notif.is_read && (
-							<span className="ml-1.5 inline-block w-1.5 h-1.5 rounded-full bg-primary align-middle" />
+							<span className="ml-1.5 inline-block w-1.5 h-1.5 rounded-full bg-ring align-middle" />
 						)}
 					</p>
 					<span className="text-[11px] text-muted-foreground shrink-0 mt-0.5">
@@ -191,7 +191,7 @@ export function NotificationBell() {
 								Notificaciones
 							</span>
 							{unread > 0 && (
-								<span className="inline-flex items-center justify-center h-5 min-w-5 rounded-full bg-primary/10 text-[11px] font-bold text-primary px-1">
+								<span className="inline-flex items-center justify-center h-5 min-w-5 rounded-full bg-ring/10 text-[11px] font-bold text-ring px-1">
 									{unread}
 								</span>
 							)}
@@ -255,7 +255,7 @@ export function NotificationBell() {
 						<div className="border-t border-border">
 							<button
 								onClick={handleSeeAll}
-								className="flex items-center justify-center gap-1.5 w-full py-3 text-sm font-semibold text-primary hover:text-primary/80 hover:bg-primary/5 transition-colors">
+								className="flex items-center justify-center gap-1.5 w-full py-3 text-sm font-semibold text-ring hover:text-ring/80 hover:bg-muted transition-colors">
 								Ver todas las notificaciones
 								<ArrowRight className="w-3.5 h-3.5" />
 							</button>

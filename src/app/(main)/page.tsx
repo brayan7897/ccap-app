@@ -1,10 +1,14 @@
 import type { Metadata } from "next";
 import { MainHero } from "@/components/home/MainHero";
 import { HomeCourses } from "@/components/home/HomeCourses";
+import { HomeCategories } from "@/components/home/HomeCategories";
 import { HomeCertificates } from "@/components/home/HomeCertificates";
 import { HomeAbout } from "@/components/home/HomeAbout";
+import { EducationalPillars } from "@/components/home/EducationalPillars";
 import { MainBackground } from "@/components/home/MainBackground";
 import { TrustedBy } from "@/components/home/TrustedBy";
+import { Teachers } from "@/components/home/Teachers";
+import { Testimonials } from "@/components/home/Testimonials";
 import { PaymentMethods } from "@/components/home/PaymentMethods";
 
 // ─── Homepage-specific SEO metadata ──────────────────────────────────────────
@@ -136,7 +140,12 @@ const schemaOrg = {
 	],
 };
 
-export default function HomePage() {
+import { publicService } from "@/services/public.service";
+import { ScrollReveal } from "@/components/ui/ScrollReveal";
+
+export default async function HomePage() {
+	const testimonials = await publicService.getTestimonials();
+
 	return (
 		<>
 			{/* Schema.org JSON-LD — not visible, only for search engines */}
@@ -144,15 +153,43 @@ export default function HomePage() {
 				type="application/ld+json"
 				dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaOrg) }}
 			/>
-			<div className="flex flex-col min-h-screen relative selection:bg-primary/20">
+			<div className="flex flex-col min-h-screen relative selection:bg-primary/20 overflow-x-hidden">
 				<MainBackground />
 				<MainHero />
-				<TrustedBy />
-				<HomeCourses />
-				<HomeAbout />
-				<HomeCertificates />
-				<PaymentMethods />
+				
+				<ScrollReveal animation="fade-in-up" duration={800}>
+					<HomeCategories />
+				</ScrollReveal>
+				
+				<ScrollReveal animation="fade-in-up" duration={850} delay={100}>
+					<HomeCourses />
+				</ScrollReveal>
+				
+				<ScrollReveal animation="fade-in-up" duration={800}>
+					<EducationalPillars />
+				</ScrollReveal>
+				
+				<ScrollReveal animation="scale-in" duration={800}>
+					<TrustedBy />
+				</ScrollReveal>
+				
+				<ScrollReveal animation="fade-in-up" duration={800}>
+					<Teachers />
+				</ScrollReveal>
+				
+				<ScrollReveal animation="fade-in-right" duration={850}>
+					<Testimonials testimonials={testimonials} />
+				</ScrollReveal>
+				
+				<ScrollReveal animation="fade-in-up" duration={800}>
+					<HomeCertificates />
+				</ScrollReveal>
+				
+				<ScrollReveal animation="fade-in-up" duration={800}>
+					<PaymentMethods />
+				</ScrollReveal>
 			</div>
 		</>
 	);
 }
+

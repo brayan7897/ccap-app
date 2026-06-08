@@ -79,7 +79,7 @@ export function CourseEnrollCard({ course }: CourseEnrollCardProps) {
 						<CheckCircle2 className="h-5 w-5" />
 						<span>Ya estás inscrito</span>
 					</div>
-					<Button asChild className="w-full h-12 font-bold rounded-xl">
+					<Button asChild className="w-full h-12 font-bold rounded-xl bg-ring text-primary-foreground hover:bg-ring/90">
 						<Link href={lessonHref}>Ver contenido del curso</Link>
 					</Button>
 				</div>
@@ -124,7 +124,7 @@ export function CourseEnrollCard({ course }: CourseEnrollCardProps) {
 					<Button
 						onClick={() => requestAccessMutation.mutate()}
 						disabled={requestAccessMutation.isPending}
-						className="w-full h-12 font-bold rounded-xl">
+						className="w-full h-12 font-bold rounded-xl bg-ring text-primary-foreground hover:bg-ring/90">
 						{requestAccessMutation.isPending
 							? "Enviando solicitud..."
 							: "Solicitar acceso"}
@@ -189,7 +189,7 @@ export function CourseEnrollCard({ course }: CourseEnrollCardProps) {
 				<Button
 					onClick={() => enrollMutation.mutate(course.id)}
 					disabled={enrollMutation.isPending}
-					className="w-full h-14 text-base font-bold rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground shadow-[0_8px_30px_-10px_rgba(var(--primary-rgb),0.5)] transition-all hover:-translate-y-1">
+					className="w-full h-14 text-base font-bold rounded-xl bg-secondary hover:bg-secondary/90 text-secondary-foreground shadow-lg transition-all hover:-translate-y-1">
 					{enrollMutation.isPending ? "Inscribiendo..." : "Inscribirme Ahora"}
 				</Button>
 			);
@@ -229,19 +229,19 @@ export function CourseEnrollCard({ course }: CourseEnrollCardProps) {
 					</h4>
 					<ul className="space-y-3">
 						<li className="flex items-center gap-3 text-sm text-muted-foreground">
-							<Video className="w-4 h-4 text-primary" />
+							<Video className="w-4 h-4 text-ring" />
 							<span>{course.total_lessons || 0} lecciones en video/texto</span>
 						</li>
 						<li className="flex items-center gap-3 text-sm text-muted-foreground">
-							<InfinityIcon className="w-4 h-4 text-primary" />
+							<InfinityIcon className="w-4 h-4 text-ring" />
 							<span>Acceso de por vida</span>
 						</li>
 						<li className="flex items-center gap-3 text-sm text-muted-foreground">
-							<Smartphone className="w-4 h-4 text-primary" />
+							<Smartphone className="w-4 h-4 text-ring" />
 							<span>Acceso en dispositivos móviles y TV</span>
 						</li>
 						<li className="flex items-center gap-3 text-sm text-muted-foreground">
-							<Trophy className="w-4 h-4 text-primary" />
+							<Trophy className="w-4 h-4 text-ring" />
 							<span>Certificado de finalización</span>
 						</li>
 					</ul>

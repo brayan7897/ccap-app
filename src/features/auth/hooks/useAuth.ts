@@ -68,7 +68,7 @@ export function useLogin() {
       // Reject absolute URLs (http://...), protocol-relative URLs (//...) and anything
       // that doesn't start with a single "/".
       const params = new URLSearchParams(window.location.search);
-      const raw = params.get("from") ?? "";
+      const raw = params.get("next") ?? params.get("from") ?? "";
       const destination =
         raw.startsWith("/") && !raw.startsWith("//") ? raw : "/dashboard";
       router.push(destination);

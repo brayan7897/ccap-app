@@ -1,153 +1,71 @@
 import {
-	ShieldCheck,
+	Globe2,
+	Video,
 	Award,
-	Star,
-	BookOpen,
-	Users,
+	UserCheck,
 	TrendingUp,
-	CheckCircle,
 } from "lucide-react";
 
-const PILARES = [
+const REASONS = [
 	{
-		icon: BookOpen,
-		text: "Rigurosidad académica",
-		desc: "Contenidos actualizados y exigentes.",
+		id: "01",
+		icon: Globe2,
+		title: "APRENDE DESDE CUALQUIER LUGAR",
+		desc: "Estudia donde y cuando quieras.",
 	},
 	{
-		icon: Users,
-		text: "Integridad absoluta",
-		desc: "Transparencia en todo el proceso.",
+		id: "02",
+		icon: Video,
+		title: "CLASES EN VIVO Y GRABADAS",
+		desc: "Accede a las clases en tiempo real o revísalas cuando necesites.",
 	},
 	{
+		id: "03",
 		icon: Award,
-		text: "Calidad garantizada",
-		desc: "Altos estándares de enseñanza.",
+		title: "CERTIFICACIÓN VERIFICABLE",
+		desc: "Obtén tu certificado con código QR.",
 	},
 	{
+		id: "04",
+		icon: UserCheck,
+		title: "DOCENTES ESPECIALIZADOS",
+		desc: "Aprende con profesionales con experiencia en el sector.",
+	},
+	{
+		id: "05",
 		icon: TrendingUp,
-		text: "Innovación constante",
-		desc: "Métodos y técnicas de vanguardia.",
+		title: "ACTUALIZACIÓN",
+		desc: "Programas alineados a las nuevas tendencias.",
 	},
 ];
 
 export function HomeAbout() {
 	return (
-		<section className="pt-24 pb-16 relative z-10 overflow-hidden">
-			<style>{`
-				@keyframes marquee {
-					0% { transform: translateX(0); }
-					100% { transform: translateX(-50%); }
-				}
-				.animate-marquee {
-					animation: marquee 30s linear infinite;
-				}
-				.animate-marquee:hover {
-					animation-play-state: paused;
-				}
-			`}</style>
-
-			{/* Decorative Background Elements */}
-			<div className="absolute top-0 right-0 -translate-y-12 translate-x-1/3 w-[600px] h-[600px] bg-primary/10 rounded-full blur-[120px] pointer-events-none z-0" />
-			<div className="absolute bottom-0 left-0 translate-y-1/3 -translate-x-1/3 w-[500px] h-[500px] bg-blue-500/10 rounded-full blur-[100px] pointer-events-none z-0" />
-
-			<div className="container mx-auto px-4 lg:px-8 max-w-7xl relative z-10">
-				<div className="flex flex-col items-center justify-center gap-10 lg:gap-16">
-					{/* Top Header Centered */}
-					<div className="flex flex-col items-center text-center space-y-4 md:space-y-6 max-w-3xl px-2 sm:px-0">
-						<div className="inline-flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-primary/10 text-primary text-xs sm:text-sm font-semibold border border-primary/20 backdrop-blur-md">
-							<ShieldCheck className="w-4 h-4" />
-							<span>Nuestro Compromiso Institucional</span>
-						</div>
-
-						<h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold text-foreground tracking-tight leading-tight md:leading-[1.15]">
-							Formando la{" "}
-							<span className="text-transparent bg-clip-text bg-linear-to-r from-primary to-blue-600">
-								generación de líderes
-							</span>{" "}
-							competitivos.
-						</h2>
-
-						<p className="text-sm sm:text-base md:text-lg text-muted-foreground leading-relaxed font-medium">
-							Somos una empresa de capacitación especialista en entidades
-							públicas, privadas y público en general. Transformamos el
-							potencial en excelencia a través de formación rigurosa.
-						</p>
-					</div>
-
-					{/* Centered Cards Grid */}
-					<div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-4xl mx-auto">
-						{/* Card 1: Experience */}
-						<div className="bg-linear-to-br from-card to-card/50 border border-border/50 rounded-[2rem] p-8 md:p-10 flex flex-col justify-center hover:border-primary/50 transition-all duration-500 shadow-xl shadow-black/5 relative overflow-hidden group min-h-[320px]">
-							<div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-
-							<div className="relative z-10 mb-4">
-								<div className="w-14 h-14 rounded-2xl bg-orange-500/10 flex items-center justify-center ring-1 ring-orange-500/20 group-hover:scale-110 transition-transform duration-500 mb-6">
-									<Star className="w-7 h-7 text-orange-500" />
-								</div>
-								<h3 className="text-3xl md:text-4xl font-black text-foreground mb-4">
-									+5 Años
-								</h3>
-							</div>
-							<p className="relative z-10 text-sm md:text-base text-muted-foreground font-medium leading-relaxed">
-								Trayectoria sólida en el sector educativo, brindando programas
-								de alta calidad que responden a las exigencias del mercado
-								laboral actual.
-							</p>
-						</div>
-
-						{/* Card 2: Experts */}
-						<div className="bg-card border border-border/50 rounded-[2rem] p-8 md:p-10 flex flex-col justify-center hover:border-primary/50 transition-all duration-500 shadow-xl shadow-black/5 relative overflow-hidden group min-h-[320px]">
-							<div className="relative z-10 mb-4">
-								<div className="w-14 h-14 rounded-2xl bg-blue-500/10 flex items-center justify-center ring-1 ring-blue-500/20 group-hover:scale-110 transition-transform duration-500 mb-6">
-									<Award className="w-7 h-7 text-blue-500" />
-								</div>
-								<h3 className="text-2xl md:text-3xl font-black text-foreground mb-4 leading-tight">
-									Plana Docente
-								</h3>
-							</div>
-							<p className="relative z-10 text-sm md:text-base text-muted-foreground font-medium leading-relaxed">
-								Profesionales y expertos altamente calificados, activos en el
-								sector público y privado listos para compartir su experiencia.
-							</p>
-						</div>
-					</div>
+		<section className="py-20 relative z-10 bg-white">
+			<div className="container mx-auto px-4 lg:px-8 max-w-7xl">
+				<div className="text-center mb-16">
+					<h2 className="text-xl md:text-2xl font-black text-secondary tracking-wider uppercase">
+						¿Por qué elegirnos?
+					</h2>
 				</div>
 
-				{/* Animated Pillars Banner */}
-				<div className="mt-20 pt-16 border-t border-border/50 w-full relative overflow-hidden group">
-					<div className="text-center mb-10 relative z-10 transition-transform duration-700 ease-in-out group-hover:-translate-y-2">
-						<h4 className="text-2xl font-bold text-foreground inline-flex items-center gap-2">
-							<CheckCircle className="w-6 h-6 text-primary" />
-							Pilares de Excelencia
-						</h4>
-						<p className="text-muted-foreground mt-2 font-medium">
-							Principios fundamentales de nuestra metodología
-						</p>
-					</div>
-
-					<div className="w-full relative pb-8">
-						{/* Interactive Track */}
-						<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 w-full">
-							{PILARES.map((pilar, index) => (
-								<div
-									key={index}
-									className="flex flex-col sm:flex-row items-center gap-4 bg-card/80 backdrop-blur-md border border-border/50 rounded-2xl p-6 w-full transition-all duration-300 hover:border-primary/50 hover:bg-card hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/5 cursor-default">
-									<div className="w-14 h-14 shrink-0 rounded-full flex items-center justify-center border border-border transition-colors shadow-sm group-hover:border-primary/30">
-										<pilar.icon className="w-6 h-6 text-primary" />
-									</div>
-									<div className="flex flex-col text-center sm:text-left">
-										<p className="text-base font-black text-foreground mb-1">
-											{pilar.text}
-										</p>
-										<p className="text-sm text-muted-foreground font-medium md:text-[13px] lg:text-sm">
-											{pilar.desc}
-										</p>
-									</div>
+				<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 md:gap-8 lg:gap-4">
+					{REASONS.map((reason) => (
+						<div key={reason.id} className="flex flex-col items-center text-center group">
+							<div className="relative mb-6 flex justify-center items-center w-24 h-24">
+								<span className="absolute text-7xl font-black text-muted-foreground/10 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 -z-10 group-hover:scale-110 transition-transform">{reason.id}</span>
+								<div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-primary flex items-center justify-center shadow-lg transform group-hover:-translate-y-1 transition-transform relative z-10">
+									<reason.icon className="w-8 h-8 text-white" />
 								</div>
-							))}
+							</div>
+							<h3 className="font-bold text-[13px] text-foreground uppercase mb-2 tracking-tight">
+								{reason.title}
+							</h3>
+							<p className="text-muted-foreground text-xs leading-relaxed max-w-full">
+								{reason.desc}
+							</p>
 						</div>
-					</div>
+					))}
 				</div>
 			</div>
 		</section>

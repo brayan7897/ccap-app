@@ -20,9 +20,9 @@ export default function MisCertificadosPage() {
 					</p>
 				</div>
 				{!isLoading && certificates && certificates.length > 0 && (
-					<div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-yellow-500/10 border border-yellow-500/20">
-						<Award className="w-4 h-4 text-yellow-500" />
-						<span className="text-sm font-bold text-yellow-600 dark:text-yellow-400">
+					<div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-secondary/10 border border-secondary/20">
+						<Award className="w-4 h-4 text-secondary" />
+						<span className="text-sm font-bold text-secondary">
 							{certificates.length} certificado
 							{certificates.length !== 1 ? "s" : ""}
 						</span>
@@ -54,9 +54,9 @@ export default function MisCertificadosPage() {
 					))}
 				</div>
 			) : (
-				<div className="flex flex-col items-center justify-center py-24 rounded-2xl border border-dashed border-yellow-500/30 bg-yellow-500/5">
-					<div className="w-20 h-20 rounded-full bg-yellow-500/10 border border-yellow-500/20 flex items-center justify-center mb-5">
-						<Award className="w-10 h-10 text-yellow-500/50" />
+				<div className="flex flex-col items-center justify-center py-24 rounded-2xl border border-dashed border-secondary/30 bg-secondary/5">
+					<div className="w-20 h-20 rounded-full bg-secondary/10 border border-secondary/20 flex items-center justify-center mb-5">
+						<Award className="w-10 h-10 text-secondary/50" />
 					</div>
 					<p className="text-lg font-black text-foreground">
 						Aún no tienes certificados
@@ -67,7 +67,7 @@ export default function MisCertificadosPage() {
 					</p>
 					<a
 						href="/dashboard/mis-cursos"
-						className="mt-6 px-5 py-2.5 rounded-xl bg-yellow-500 text-white text-sm font-bold hover:bg-yellow-600 transition-colors">
+						className="mt-6 px-5 py-2.5 rounded-xl bg-secondary text-secondary-foreground text-sm font-bold hover:bg-secondary/90 transition-colors">
 						Ver mis cursos
 					</a>
 				</div>

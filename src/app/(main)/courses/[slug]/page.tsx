@@ -223,7 +223,7 @@ export default function CourseDetailsPage() {
 						{/* What you'll learn */}
 						{course.what_you_will_learn &&
 							course.what_you_will_learn.length > 0 && (
-								<div className="p-6 rounded-2xl border border-border bg-muted/10">
+								<div className="p-6 rounded-2xl border border-border bg-muted">
 									<h3 className="text-xl font-bold text-foreground mb-4">
 										Lo que aprenderás
 									</h3>
@@ -264,7 +264,7 @@ export default function CourseDetailsPage() {
 										<li
 											key={idx}
 											className="flex items-center gap-2.5 text-muted-foreground text-sm">
-											<div className="w-1.5 h-1.5 rounded-full bg-primary/60 shrink-0" />
+											<div className="w-1.5 h-1.5 rounded-full bg-foreground/60 shrink-0" />
 											{req}
 										</li>
 									))}
@@ -306,7 +306,7 @@ export default function CourseDetailsPage() {
 				{isEnrolled ? (
 					<Link
 						href="/dashboard/mis-cursos"
-						className="flex-1 bg-primary text-primary-foreground h-12 rounded-xl font-bold shadow-lg text-center flex items-center justify-center">
+						className="flex-1 bg-ring text-primary-foreground h-12 rounded-xl font-bold shadow-lg text-center flex items-center justify-center">
 						Ir a mis cursos
 					</Link>
 				) : (
@@ -316,7 +316,7 @@ export default function CourseDetailsPage() {
 								.getElementById("mobile-enroll")
 								?.scrollIntoView({ behavior: "smooth" })
 						}
-						className="flex-1 bg-primary text-primary-foreground h-12 rounded-xl font-bold shadow-lg shadow-primary/25">
+						className="flex-1 bg-secondary text-secondary-foreground h-12 rounded-xl font-bold shadow-lg">
 						Inscribirme
 					</button>
 				)}

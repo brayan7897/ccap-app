@@ -93,10 +93,10 @@ export const metadata: Metadata = {
 	category: "education",
 	icons: {
 		icon: [
-			{ url: "/favicon.ico", sizes: "any" },
+			{ url: "/icon.svg", type: "image/svg+xml" },
 		],
-		shortcut: "/favicon.ico",
-		apple: "/favicon.ico",
+		shortcut: "/icon.svg",
+		apple: "/icon.svg",
 	},
 };
 
@@ -130,8 +130,7 @@ export default function RootLayout({
 				<QueryProvider>
 					<ThemeProvider>
 						{children}
-						{/* botón flotante de WhatsApp */}
-						<FloatingWhatsAppButton />
+						{/* botón flotante de WhatsApp eliminado - movido al Navbar */}
 						<Toaster
 							position="top-right"
 							richColors

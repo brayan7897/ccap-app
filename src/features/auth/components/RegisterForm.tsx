@@ -28,12 +28,12 @@ import { Separator } from "@/components/ui/separator";
 type FieldState = "idle" | "error" | "success";
 
 const inputClass = (state: FieldState, extra = "") => {
-	const base = `h-11 transition-colors ${extra}`;
+	const base = `h-12 text-base transition-all rounded-xl ${extra}`;
 	if (state === "error")
 		return `${base} border-destructive focus-visible:ring-destructive/30 bg-destructive/5`;
 	if (state === "success")
 		return `${base} border-emerald-500 focus-visible:ring-emerald-500/30 bg-emerald-500/5`;
-	return base;
+	return `${base} focus-visible:border-secondary focus-visible:ring-secondary/20`;
 };
 
 function FieldFeedback({ state, error }: { state: FieldState; error?: string }) {
@@ -82,37 +82,37 @@ export function RegisterForm() {
 		<div className="space-y-8">
 			<form
 				onSubmit={handleSubmit((data) => register_(data))}
-				className="space-y-6"
+				className="space-y-7"
 				noValidate>
 
 				{/* Name Row */}
 				<div className="grid grid-cols-2 gap-3">
-					<div className="space-y-1.5">
-						<Label htmlFor="reg-first_name">Nombre</Label>
+					<div className="space-y-2">
+						<Label htmlFor="reg-first_name" className="text-sm font-semibold ml-1">Nombre</Label>
 						<div className="relative">
-							<User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground z-10" />
+							<User className="absolute left-3.5 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground z-10" />
 							<Input
 								id="reg-first_name"
 								type="text"
 								placeholder="Juan"
 								autoComplete="given-name"
-								className={inputClass(fieldState("first_name"), "pl-10 pr-8")}
+								className={inputClass(fieldState("first_name"), "pl-11 pr-8")}
 								{...register("first_name")}
 							/>
 							<StatusIcon state={fieldState("first_name")} />
 						</div>
 						<FieldFeedback state={fieldState("first_name")} error={errors.first_name?.message} />
 					</div>
-					<div className="space-y-1.5">
-						<Label htmlFor="reg-last_name">Apellido</Label>
+					<div className="space-y-2">
+						<Label htmlFor="reg-last_name" className="text-sm font-semibold ml-1">Apellido</Label>
 						<div className="relative">
-							<User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground z-10" />
+							<User className="absolute left-3.5 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground z-10" />
 							<Input
 								id="reg-last_name"
 								type="text"
 								placeholder="Pérez"
 								autoComplete="family-name"
-								className={inputClass(fieldState("last_name"), "pl-10 pr-8")}
+								className={inputClass(fieldState("last_name"), "pl-11 pr-8")}
 								{...register("last_name")}
 							/>
 							<StatusIcon state={fieldState("last_name")} />
@@ -122,16 +122,16 @@ export function RegisterForm() {
 				</div>
 
 				{/* Email */}
-				<div className="space-y-1.5">
-					<Label htmlFor="reg-email">Correo electrónico</Label>
+				<div className="space-y-2">
+					<Label htmlFor="reg-email" className="text-sm font-semibold ml-1">Correo electrónico</Label>
 					<div className="relative">
-						<Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground z-10" />
+						<Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground z-10" />
 						<Input
 							id="reg-email"
 							type="email"
 							placeholder="tu@email.com"
 							autoComplete="email"
-							className={inputClass(fieldState("email"), "pl-10 pr-8")}
+							className={inputClass(fieldState("email"), "pl-11 pr-8")}
 							{...register("email")}
 						/>
 						<StatusIcon state={fieldState("email")} />
@@ -140,23 +140,23 @@ export function RegisterForm() {
 				</div>
 
 				{/* Password */}
-				<div className="space-y-1.5">
-					<Label htmlFor="reg-password">Contraseña</Label>
+				<div className="space-y-2">
+					<Label htmlFor="reg-password" className="text-sm font-semibold ml-1">Contraseña</Label>
 					<div className="relative">
-						<Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground z-10" />
+						<Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground z-10" />
 						<Input
 							id="reg-password"
 							type={showPassword ? "text" : "password"}
 							placeholder="Mínimo 8 caracteres, mayúscula y número"
 							autoComplete="new-password"
-							className={inputClass(fieldState("password"), "pl-10 pr-10")}
+							className={inputClass(fieldState("password"), "pl-11 pr-11")}
 							{...register("password")}
 						/>
 						<button
 							type="button"
 							onClick={() => setShowPassword(!showPassword)}
 							className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors z-10">
-							{showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+							{showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
 						</button>
 					</div>
 					{fieldState("password") === "error" && errors.password?.message && (
@@ -175,22 +175,22 @@ export function RegisterForm() {
 
 				{/* Document Row */}
 				<div className="grid grid-cols-5 gap-3">
-					<div className="col-span-2 space-y-1.5">
-						<Label htmlFor="reg-document_type">Tipo doc.</Label>
+					<div className="col-span-2 space-y-2">
+						<Label htmlFor="reg-document_type" className="text-sm font-semibold ml-1">Tipo doc.</Label>
 						<div className="relative">
-							<FileText className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground z-10" />
+							<FileText className="absolute left-3.5 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground z-10" />
 							<select
 								id="reg-document_type"
 								{...register("document_type")}
-								className="flex h-11 w-full rounded-md border border-input bg-background pl-10 pr-3 py-1 text-sm shadow-xs transition-colors outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] appearance-none cursor-pointer dark:bg-input/30">
+								className="flex h-12 w-full rounded-xl border border-input bg-background pl-11 pr-3 py-1 text-sm shadow-xs transition-all outline-none focus-visible:border-secondary focus-visible:ring-secondary/20 focus-visible:ring-[3px] appearance-none cursor-pointer dark:bg-input/30">
 								<option value="DNI">DNI</option>
-								<option value="CE">Carné de Extranjería</option>
+								<option value="CE">C.E.</option>
 								<option value="PASAPORTE">Pasaporte</option>
 							</select>
 						</div>
 					</div>
-					<div className="col-span-3 space-y-1.5">
-						<Label htmlFor="reg-document_number">Nro. documento</Label>
+					<div className="col-span-3 space-y-2">
+						<Label htmlFor="reg-document_number" className="text-sm font-semibold ml-1">Nro. documento</Label>
 						<div className="relative">
 							<Input
 								id="reg-document_number"
@@ -216,29 +216,29 @@ export function RegisterForm() {
 							</p>
 						)}
 						{fieldState("document_number") === "idle" && (
-							<p className="text-xs text-muted-foreground mt-1">
+							<p className="text-xs text-muted-foreground mt-1 ml-1">
 								{docType === "DNI" && "8 dígitos numéricos"}
 								{docType === "CE" && "9 dígitos numéricos"}
-								{docType === "PASAPORTE" && "6–12 caracteres alfanuméricos"}
+								{docType === "PASAPORTE" && "6–12 caracteres"}
 							</p>
 						)}
 					</div>
 				</div>
 
 				{/* Phone (optional) */}
-				<div className="space-y-1.5">
-					<Label htmlFor="reg-phone_number">
+				<div className="space-y-2">
+					<Label htmlFor="reg-phone_number" className="text-sm font-semibold ml-1">
 						Teléfono{" "}
 						<span className="text-muted-foreground font-normal">(opcional)</span>
 					</Label>
 					<div className="relative">
-						<Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground z-10" />
+						<Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground z-10" />
 						<Input
 							id="reg-phone_number"
 							type="tel"
 							placeholder="+51 999 999 999"
 							autoComplete="tel"
-							className={inputClass(fieldState("phone_number"), "pl-10 pr-8")}
+							className={inputClass(fieldState("phone_number"), "pl-11 pr-8")}
 							{...phoneRegister}
 							onChange={(e) => {
 								e.target.value = e.target.value.replace(/[^\d\s\-\+\(\)]/g, "");
@@ -251,17 +251,17 @@ export function RegisterForm() {
 				</div>
 
 				{/* Terms */}
-				<p className="text-xs text-muted-foreground leading-relaxed">
+				<p className="text-xs text-muted-foreground leading-relaxed ml-1">
 					Al crear tu cuenta, aceptas nuestros{" "}
 					<Link
 						href="/terms"
-						className="font-semibold text-primary hover:text-primary/80 underline underline-offset-2">
+						className="font-semibold text-secondary hover:text-secondary/80 underline underline-offset-2">
 						Términos de Servicio
 					</Link>{" "}
 					y{" "}
 					<Link
 						href="/privacy"
-						className="font-semibold text-primary hover:text-primary/80 underline underline-offset-2">
+						className="font-semibold text-secondary hover:text-secondary/80 underline underline-offset-2">
 						Política de Privacidad
 					</Link>
 					.
@@ -270,11 +270,11 @@ export function RegisterForm() {
 				{/* Submit Button */}
 				<Button
 					type="submit"
-					className="w-full h-11 font-bold"
+					className="w-full h-12 text-base font-bold bg-secondary hover:bg-secondary/90 text-secondary-foreground shadow-lg shadow-secondary/20 rounded-xl"
 					disabled={isPending}>
 					{isPending ? (
 						<>
-							<Loader2 className="h-4 w-4 animate-spin" />
+							<Loader2 className="h-5 w-5 animate-spin mr-2" />
 							Creando cuenta...
 						</>
 					) : (
@@ -297,11 +297,11 @@ export function RegisterForm() {
 			</div>
 
 			{/* Login Link */}
-			<p className="text-center text-sm text-muted-foreground">
+			<p className="text-center text-sm md:text-base text-muted-foreground pt-2">
 				¿Ya tienes cuenta?{" "}
 				<Link
 					href="/login"
-					className="font-bold text-primary hover:text-primary/80 transition-colors">
+					className="font-bold text-secondary hover:text-secondary/80 transition-colors">
 					Inicia sesión
 				</Link>
 			</p>

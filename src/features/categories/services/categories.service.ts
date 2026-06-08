@@ -5,6 +5,7 @@ export interface CategoryInput {
   name: string;
   slug: string;
   description?: string;
+  image_url?: string;
 }
 
 export const categoriesService = {

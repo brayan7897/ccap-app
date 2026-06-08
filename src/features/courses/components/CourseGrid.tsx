@@ -3,6 +3,7 @@
 import { useCourses } from "../hooks/useCourses";
 import { CourseCard } from "./CourseCard";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useSearchParams } from "next/navigation";
 
 function CourseSkeleton() {
 	return (
@@ -16,7 +17,9 @@ function CourseSkeleton() {
 }
 
 export function CourseGrid() {
-	const { data: courses, isLoading, isError } = useCourses();
+	const searchParams = useSearchParams();
+	const category = searchParams.get("category") || undefined;
+	const { data: courses, isLoading, isError } = useCourses(0, 20, category);
 
 	if (isLoading) {
 		return (

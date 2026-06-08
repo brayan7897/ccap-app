@@ -7,6 +7,7 @@ import { Sun, Moon, LogOut, UserCircle } from "lucide-react";
 import { useUser, useLogout } from "@/features/auth/hooks/useAuth";
 import { useAuthStore } from "@/store/auth-store";
 import { DashboardSidebar } from "@/features/dashboard/components/DashboardSidebar";
+import { MobileBottomNav } from "@/features/dashboard/components/MobileBottomNav";
 import { useUiStore } from "@/store/ui-store";
 import { Logo } from "@/components/ui/Logo";
 import { NotificationBell } from "@/components/layout/NotificationBell";
@@ -61,16 +62,7 @@ export default function DashboardLayout({
 	return (
 		<div className="min-h-screen bg-background flex justify-center">
 			<div className="flex h-screen w-full max-w-[1600px] bg-background relative overflow-hidden">
-				{/* Mobile overlay */}
-				{sidebarOpen && (
-					<div
-						className="fixed inset-0 z-40 bg-black/50 lg:hidden"
-						onClick={() => setSidebarOpen(false)}
-						aria-hidden
-					/>
-				)}
-
-				{/* Sidebar */}
+				{/* Sidebar (Desktop/Tablet Only) */}
 				<DashboardSidebar
 					isOpen={sidebarOpen}
 					onToggle={() => setSidebarOpen(!sidebarOpen)}
@@ -139,7 +131,7 @@ export default function DashboardLayout({
 										<DropdownMenuSeparator />
 										<Link href="/dashboard/perfil">
 											<DropdownMenuItem className="cursor-pointer rounded-xl px-3 py-2.5">
-												<UserCircle className="mr-2 w-4 h-4 text-primary" />
+												<UserCircle className="mr-2 w-4 h-4 text-muted-foreground" />
 												<span className="font-medium">Mi Perfil</span>
 											</DropdownMenuItem>
 										</Link>
@@ -156,12 +148,15 @@ export default function DashboardLayout({
 					</header>
 
 					{/* Page content */}
-					<main className="flex-1 overflow-y-auto">
-						<div className="w-full max-w-[1400px] mx-auto min-h-full">
+					<main className="flex-1 overflow-y-auto pb-[4.5rem] lg:pb-0">
+						<div className="w-full max-w-[1400px] mx-auto min-h-full pb-8 lg:pb-0">
 							{children}
 						</div>
 					</main>
 				</div>
+				
+				{/* Mobile Bottom Navigation */}
+				<MobileBottomNav />
 			</div>
 		</div>
 	);

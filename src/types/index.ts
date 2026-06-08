@@ -81,6 +81,8 @@ export interface Category {
   name: string;
   slug: string;
   description: string | null;
+  image_url: string | null;
+  color?: string;
   created_at: string;
 }
 
@@ -101,9 +103,12 @@ export interface Course {
   is_published: boolean;
   instructor_id: string;
   category_id: string | null;
+  category_name?: string | null;
+  category_slug?: string | null;
+  category_color?: string | null;
   // Runtime fields returned by the API (may be absent on minimal list endpoints)
   instructor?: { first_name: string; last_name: string; bio: string | null; avatar_url: string | null };
-  category?: { name: string; slug: string };
+  category?: { name: string; slug: string; color?: string };
   total_lessons?: number;
   total_duration_seconds?: number;
   enrolled_count?: number;

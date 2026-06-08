@@ -38,11 +38,13 @@ export interface CourseUpdateInput {
 }
 
 export const coursesService = {
-  async list(skip = 0, limit = 20): Promise<Course[]> {
+  async list(skip = 0, limit = 20, categorySlug?: string): Promise<Course[]> {
     // Clamp to safe bounds to prevent unintended large queries
     const safeSkip = Math.max(0, Math.floor(skip));
     const safeLimit = Math.min(Math.max(1, Math.floor(limit)), 100);
-    const res = await api.get("/courses/", { params: { skip: safeSkip, limit: safeLimit } });
+    const params: any = { skip: safeSkip, limit: safeLimit };
+    if (categorySlug) params.category = categorySlug;
+    const res = await api.get("/courses/", { params });
     const raw: unknown = res.data;
     // Handle both plain array and paginated wrapper ({ items: [...] } or { data: [...] })
     if (Array.isArray(raw)) return raw as Course[];

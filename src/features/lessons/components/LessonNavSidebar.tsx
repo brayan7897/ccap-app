@@ -26,7 +26,7 @@ interface LessonNavSidebarProps {
 function getLessonIcon(type: LessonType) {
 	switch (type) {
 		case "VIDEO":
-			return <PlayCircle className="w-4 h-4 text-primary shrink-0" />;
+			return <PlayCircle className="w-4 h-4 text-sky-500 shrink-0" />;
 		case "PDF":
 			return <FileText className="w-4 h-4 text-rose-500 shrink-0" />;
 		case "TEXT":
@@ -84,7 +84,7 @@ export function LessonNavSidebar({
 					<div className="flex items-center justify-between">
 						<Link
 							href={`/courses/${courseSlug}`}
-							className="text-xs text-primary hover:text-primary/80 font-bold flex items-center gap-1 transition-colors">
+							className="text-xs text-ring hover:text-ring/80 font-bold flex items-center gap-1 transition-colors">
 							<ChevronLeft className="w-4 h-4" /> Volver al curso
 						</Link>
 						{onClose && (
@@ -103,11 +103,11 @@ export function LessonNavSidebar({
 					<div className="space-y-2 pt-1">
 						<div className="flex items-center justify-between text-xs font-bold">
 							<span className="text-muted-foreground">Progreso</span>
-							<span className="text-primary">{progressPercent}%</span>
+							<span className="text-foreground">{progressPercent}%</span>
 						</div>
 						<div className="h-2 w-full bg-muted overflow-hidden rounded-full">
 							<div
-								className="h-full bg-primary rounded-full transition-all duration-500 ease-out"
+								className="h-full bg-ring rounded-full transition-all duration-500 ease-out"
 								style={{ width: `${progressPercent}%` }}
 							/>
 						</div>
@@ -130,7 +130,7 @@ export function LessonNavSidebar({
 							<button
 								onClick={() => setOpenModuleId(isModuleOpen ? null : module.id)}
 								className={`w-full flex items-start justify-between gap-3 px-4 py-4 text-left transition-colors ${
-									isModuleOpen ? "bg-muted/30" : "hover:bg-muted/30"
+									isModuleOpen ? "bg-muted" : "hover:bg-muted/80"
 								}`}>
 								<div className="min-w-0">
 									<p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-1.5 flex items-center gap-2">
@@ -178,11 +178,11 @@ export function LessonNavSidebar({
 													}}
 													className={`relative flex items-start gap-3 px-3 py-3 text-sm rounded-xl transition-all duration-200 ${
 														isCurrent
-															? "bg-primary/10 text-primary font-semibold shadow-sm"
-															: "hover:bg-muted/60 text-muted-foreground hover:text-foreground"
+															? "bg-sidebar-accent text-sidebar-accent-foreground font-semibold shadow-sm ring-1 ring-border/50"
+															: "hover:bg-muted text-muted-foreground hover:text-foreground"
 													}`}>
 													{isCurrent && (
-														<div className="absolute left-0 top-3 bottom-3 w-1 bg-primary rounded-r-md" />
+														<div className="absolute left-0 top-3 bottom-3 w-1 bg-sidebar-ring rounded-r-md" />
 													)}
 													
 													{/* Status icon */}
@@ -202,7 +202,7 @@ export function LessonNavSidebar({
 														{lesson.duration_minutes ? (
 															<p
 																className={`text-[11px] mt-1 font-medium ${
-																	isCurrent ? "text-primary/70" : "text-muted-foreground/60"
+																	isCurrent ? "text-sidebar-accent-foreground/70" : "text-muted-foreground/60"
 																}`}>
 																{lesson.duration_minutes} min
 															</p>

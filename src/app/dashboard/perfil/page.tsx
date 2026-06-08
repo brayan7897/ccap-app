@@ -19,6 +19,7 @@ import {
 	EyeOff,
 	CheckCircle2,
 	XCircle,
+	AlertCircle,
 } from "lucide-react";
 import {
 	useUser,
@@ -58,13 +59,13 @@ const profileSchema = z.object({
 		.string()
 		.trim()
 		.refine(
-			(val) =>
-				val === "" ||
-				/^(\+?\d{1,3}[\s\-]?)?\(?(\d{2,4})\)?[\s\-]?\d{3,4}[\s\-]?\d{3,4}$/.test(
-					val,
-				),
+			(val) => {
+				if (!val) return true;
+				const clean = val.replace(/[\s\-]/g, "");
+				return /^(?:\+51)?9\d{8}$/.test(clean);
+			},
 			{
-				message: "Teléfono inválido (ej. +51 987654321 o 987654321)",
+				message: "Debe ser un celular de Perú válido (Ej. +51 987654321 o 987654321)",
 			},
 		)
 		.optional()
@@ -468,8 +469,31 @@ export default function ProfilePage() {
 	const access = (user?.course_access ?? "NONE") as CourseAccess;
 	const accessInfo = ACCESS_LABELS[access];
 
+	const missingDoc = !user?.document_number?.trim();
+	const missingPhone = !user?.phone_number?.trim();
+	let missingText = "tu número de documento (DNI/CE/Pasaporte) y un número de teléfono de contacto";
+	if (missingDoc && !missingPhone) missingText = "tu número de documento (DNI/CE/Pasaporte)";
+	if (!missingDoc && missingPhone) missingText = "un número de teléfono de contacto";
+
+	const showProfileWarning = user?.is_active && user?.course_access === "NONE" && (missingDoc || missingPhone);
+
 	return (
 		<div className="p-6 lg:p-8 max-w-3xl mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+			{/* ── Aviso de perfil incompleto ────────────────────────────── */}
+			{showProfileWarning && (
+				<div className="flex items-start gap-3 rounded-3xl border border-amber-500/30 bg-amber-500/10 p-5 shadow-sm">
+					<AlertCircle className="h-5 w-5 mt-0.5 shrink-0 text-amber-600 dark:text-amber-400" />
+					<div>
+						<p className="font-semibold text-amber-800 dark:text-amber-200 text-sm">
+							Completa tu perfil para solicitar acceso
+						</p>
+						<p className="text-xs text-amber-700/80 dark:text-amber-300/80 mt-1 leading-relaxed">
+							Para poder matricularte en los cursos, primero necesitamos {missingText}. Asegúrate de completar los datos faltantes y guardar los cambios.
+						</p>
+					</div>
+				</div>
+			)}
+
 			{/* ── Header: avatar + name + badges ───────────────────────────── */}
 			<div className="bg-card border border-border shadow-md rounded-3xl p-6 lg:p-8 flex flex-col sm:flex-row items-center sm:items-start gap-6">
 				<AvatarPreview
@@ -724,7 +748,7 @@ export default function ProfilePage() {
 				</div>
 				<p className="text-xs text-muted-foreground mb-5 relative z-10">
 					{hasDocument
-						? "El documento ya está registrado. Contacta al soporte si necesitas corregirlo."
+						? "Tu documento de identidad está verificado y registrado en tu cuenta. Por razones de seguridad, contacta a soporte técnico si necesitas actualizarlo."
 						: "Debes registrar tu documento para solicitar acceso al catálogo de cursos. Esta acción solo puede realizarse una vez."}
 				</p>
 

@@ -31,7 +31,8 @@ function toCardProps(course: Course): CourseCardProps {
 		instructor_name: course.instructor
 			? `${course.instructor.first_name} ${course.instructor.last_name}`
 			: undefined,
-		category_name: course.category?.name ?? undefined,
+		category_name: course.category_name || course.category?.name || undefined,
+		category_color: course.category_color || course.category?.color || undefined,
 		tags: course.tags,
 		total_lessons: course.total_lessons ?? totalLessons,
 		total_duration: hours ? `${hours} horas` : undefined,

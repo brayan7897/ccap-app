@@ -51,7 +51,8 @@ function toCardProps(course: Course): CourseCardProps {
 		instructor_name: course.instructor
 			? `${course.instructor.first_name} ${course.instructor.last_name}`
 			: undefined,
-		category_name: course.category?.name,
+		category_name: course.category_name || course.category?.name || undefined,
+		category_color: course.category_color || course.category?.color || undefined,
 		tags: course.tags,
 		total_lessons: course.total_lessons,
 		total_duration: course.total_duration_seconds
@@ -68,6 +69,12 @@ export default function DashboardHomePage() {
 	const { data: certificates, isLoading: loadingCerts } = useMyCertificates();
 	const { data: courses, isLoading: loadingCourses } = useCourses(0, 6);
 	const requestAccessMutation = useRequestAccess();
+
+	const missingDoc = !user?.document_number?.trim();
+	const missingPhone = !user?.phone_number?.trim();
+	let missingText = "tu número de documento (DNI/CE/Pasaporte) y un número de teléfono de contacto";
+	if (missingDoc && !missingPhone) missingText = "tu número de documento (DNI/CE/Pasaporte)";
+	if (!missingDoc && missingPhone) missingText = "un número de teléfono de contacto";
 
 	const activeEnrollments =
 		enrollments?.filter((e) => e.status === "ACTIVE") ?? [];
@@ -264,10 +271,7 @@ export default function DashboardHomePage() {
 											Completa tu perfil para solicitar acceso
 										</p>
 										<p className="text-xs text-amber-700/80 dark:text-amber-300/80 mt-1 leading-relaxed">
-											Para solicitar acceso a los cursos necesitamos tu número
-											de documento (DNI/CE/Pasaporte) y un número de teléfono
-											de contacto. Puedes seguir explorando el catálogo mientras
-											tanto.
+											Para solicitar acceso a los cursos necesitamos {missingText}. Puedes seguir explorando el catálogo mientras tanto.
 										</p>
 									</div>
 								</div>

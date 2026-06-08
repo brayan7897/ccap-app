@@ -1,7 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { useParams } from "next/navigation";
+import { useMemo, useState, useEffect } from "react";
+import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import {
 	Loader2,
@@ -36,25 +36,41 @@ export default function LessonViewerPage() {
 	const lessonId = params.lessonId as string;
 	const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
 
+	const router = useRouter();
+
 	// ── Data fetching ───────────────────────────────────────────────────────────
 	const {
 		data: course,
 		isLoading: isCourseLoading,
 		isError: isCourseError,
 	} = useCourse(slug);
-	const { data: resources = [], isLoading: isResourcesLoading } =
-		useResources(lessonId);
-	// Only fetch progress once the course ID is known to avoid a double-query
-	// (["progress", undefined] then ["progress", "real-id"]).
-	const { data: progressList = [] } = useMyProgress(course?.id ?? undefined);
-	const { data: user } = useUser();
+
 	// Populate the enrollments store so isEnrolled() below is accurate.
 	const { isLoading: isEnrollmentsLoading } = useMyEnrollments();
 	const isEnrolled = useEnrollmentsStore((s) => s.isEnrolled(course?.id ?? ""));
 
+	// Only fetch resources if the user is enrolled, to prevent unauthorized data fetching via direct URL access
+	const { data: resources = [], isLoading: isResourcesLoading } =
+		useResources(isEnrolled ? lessonId : undefined);
+
+	// Only fetch progress once the course ID is known to avoid a double-query
+	// (["progress", undefined] then ["progress", "real-id"]).
+	const { data: progressList = [] } = useMyProgress(course?.id ?? undefined);
+	const { data: user } = useUser();
+
 	const secondaryResources = useMemo(() => {
 		return resources.filter((r) => r.resource_type === "SECONDARY");
 	}, [resources]);
+
+	// Redirect if not enrolled after a short delay
+	useEffect(() => {
+		if (!isEnrollmentsLoading && course && !isEnrolled) {
+			const timer = setTimeout(() => {
+				router.replace(`/courses/${slug}`);
+			}, 4000);
+			return () => clearTimeout(timer);
+		}
+	}, [isEnrollmentsLoading, course, isEnrolled, router, slug]);
 
 	// ── Derived lesson navigation ──────────────────────────────────────────────
 	const flatLessons = useMemo(() => {
@@ -195,7 +211,7 @@ export default function LessonViewerPage() {
 
 					{/* Content player */}
 					{!isResourcesLoading && resources.length === 0 ? (
-						<div className="w-full aspect-video bg-muted/20 border border-border rounded-xl flex flex-col items-center justify-center text-center p-6">
+						<div className="w-full aspect-video bg-muted border border-border rounded-xl flex flex-col items-center justify-center text-center p-6 shadow-sm">
 							<AlertCircle className="w-12 h-12 text-muted-foreground mb-4" />
 							<p className="font-bold text-foreground text-lg">
 								Lección sin contenido
@@ -242,7 +258,8 @@ export default function LessonViewerPage() {
 						{nextLesson ? (
 							<Button
 								asChild
-								className={`gap-2 ${isNextLessonNewModule ? "bg-primary/10 text-primary hover:bg-primary/20 border border-primary/20" : ""} max-w-[45%]`}>
+								variant="outline"
+								className="gap-2 max-w-[45%] bg-card hover:bg-accent hover:text-accent-foreground">
 								<Link
 									href={`/dashboard/cursos/${slug}/leccion/${nextLesson.id}`}>
 									<span className="hidden sm:inline truncate">
@@ -266,7 +283,7 @@ export default function LessonViewerPage() {
 						<div className="mt-8 pt-8 border-t border-border">
 							<h3 className="text-xl font-extrabold text-foreground mb-6 flex items-center gap-2">
 								Recursos Complementarios
-								<span className="flex items-center justify-center bg-primary/10 text-primary text-xs w-6 h-6 rounded-full">
+								<span className="flex items-center justify-center bg-muted text-foreground border border-border/50 text-xs w-6 h-6 rounded-full">
 									{secondaryResources.length}
 								</span>
 							</h3>
@@ -288,8 +305,8 @@ export default function LessonViewerPage() {
 
 									// Color themes based on format
 									let themeClasses =
-										"border-border/60 bg-card hover:border-primary/40 hover:bg-primary/5";
-									let iconBoxClasses = "bg-primary/10 text-primary";
+										"border-border/60 bg-card hover:border-ring/40 hover:bg-accent/50";
+									let iconBoxClasses = "bg-muted text-foreground";
 									let icon = <ExternalLink className="w-6 h-6" />;
 									let actionText = "Visitar Enlace";
 									let actionIcon = <ExternalLink className="w-3.5 h-3.5" />;
@@ -380,18 +397,18 @@ export default function LessonViewerPage() {
 									<img
 										src={course.instructor.avatar_url}
 										alt={course.instructor.first_name}
-										className="w-20 h-20 rounded-full object-cover shrink-0 border-2 border-primary/20"
+										className="w-20 h-20 rounded-full object-cover shrink-0 border border-border"
 									/>
 								) : (
-									<div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center shrink-0 border-2 border-primary/20">
-										<UserCircle className="w-10 h-10 text-primary" />
+									<div className="w-20 h-20 rounded-full bg-muted flex items-center justify-center shrink-0 border border-border">
+										<UserCircle className="w-10 h-10 text-muted-foreground" />
 									</div>
 								)}
 								<div>
 									<h3 className="text-xl font-extrabold text-foreground mb-1">
 										{course.instructor.first_name} {course.instructor.last_name}
 									</h3>
-									<p className="text-sm text-primary font-semibold mb-3">
+									<p className="text-sm text-ring font-semibold mb-3">
 										Instructor del Curso
 									</p>
 									<p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-line">
@@ -403,9 +420,9 @@ export default function LessonViewerPage() {
 						) : null}
 
 						{/* Course description snippet */}
-						<div className="p-6 rounded-2xl border border-border/50 bg-muted/20 shadow-sm">
+						<div className="p-6 rounded-2xl border border-border/50 bg-muted/50 shadow-sm">
 							<h4 className="font-bold text-foreground mb-3 flex items-center gap-2">
-								<FileText className="w-5 h-5 text-primary" /> Acerca de este
+								<FileText className="w-5 h-5 text-ring" /> Acerca de este
 								curso
 							</h4>
 							<p className="text-sm text-muted-foreground/90 leading-relaxed max-w-none">

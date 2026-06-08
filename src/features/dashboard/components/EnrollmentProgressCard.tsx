@@ -24,13 +24,24 @@ export function EnrollmentProgressCard({ enrollment }: Props) {
 			? `/courses/${courseSlug}`
 			: "/dashboard/mis-cursos";
 
+	const thumbnail = enrollment.course?.thumbnail_url ?? courseDetail?.thumbnail_url;
+
 	return (
 		<div className="group flex flex-col rounded-2xl border border-border bg-card overflow-hidden hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300">
 			{/* Thumbnail placeholder */}
 			<div className="relative aspect-video w-full bg-muted overflow-hidden">
-				<div className="flex h-full items-center justify-center">
-					<BookOpen className="w-10 h-10 text-muted-foreground/40" />
-				</div>
+				{thumbnail ? (
+					// eslint-disable-next-line @next/next/no-img-element
+					<img
+						src={thumbnail}
+						alt={course_title ?? "Course Cover"}
+						className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+					/>
+				) : (
+					<div className="flex h-full items-center justify-center">
+						<BookOpen className="w-10 h-10 text-muted-foreground/40" />
+					</div>
+				)}
 
 				{/* Status badge */}
 				<div
@@ -45,7 +56,7 @@ export function EnrollmentProgressCard({ enrollment }: Props) {
 						</>
 					) : (
 						<>
-							<PlayCircle className="w-3 h-3 text-primary" /> En curso
+							<PlayCircle className="w-3 h-3 text-ring" /> En curso
 						</>
 					)}
 				</div>
@@ -53,7 +64,7 @@ export function EnrollmentProgressCard({ enrollment }: Props) {
 
 			{/* Content */}
 			<div className="p-4 flex flex-col flex-1">
-				<h3 className="font-bold text-foreground text-sm leading-snug line-clamp-2 group-hover:text-primary transition-colors mb-3">
+				<h3 className="font-bold text-foreground text-sm leading-snug line-clamp-2 group-hover:text-ring transition-colors mb-3">
 					{course_title ?? "Curso"}
 				</h3>
 
@@ -62,14 +73,14 @@ export function EnrollmentProgressCard({ enrollment }: Props) {
 					<div className="flex items-center justify-between text-xs">
 						<span className="text-muted-foreground font-medium">Progreso</span>
 						<span
-							className={`font-bold ${isCompleted ? "text-emerald-500" : "text-primary"}`}>
+							className={`font-bold ${isCompleted ? "text-emerald-500" : "text-ring"}`}>
 							{progress}%
 						</span>
 					</div>
 					<div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
 						<div
 							className={`h-full rounded-full transition-all duration-700 ${
-								isCompleted ? "bg-emerald-500" : "bg-primary"
+								isCompleted ? "bg-emerald-500" : "bg-ring"
 							}`}
 							style={{ width: `${progress}%` }}
 						/>
@@ -82,7 +93,7 @@ export function EnrollmentProgressCard({ enrollment }: Props) {
 					className={`mt-4 w-full flex items-center justify-center gap-2 py-2 rounded-xl text-sm font-bold transition-all ${
 						isCompleted
 							? "bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500/20 border border-emerald-500/20"
-							: "bg-primary/10 text-primary hover:bg-primary/20 border border-primary/20"
+							: "bg-secondary text-secondary-foreground hover:bg-secondary/90 border border-secondary"
 					}`}>
 					<PlayCircle className="w-4 h-4" />
 					{isCompleted ? "Ver curso" : "Continuar"}

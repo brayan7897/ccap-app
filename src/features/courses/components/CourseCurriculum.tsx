@@ -8,6 +8,7 @@ import {
 	FileText,
 	HelpCircle,
 	Clock,
+	Lock,
 } from "lucide-react";
 import type { ModuleWithLessons, LessonType } from "@/types";
 import { useEnrollmentsStore } from "@/store/enrollments-store";
@@ -22,7 +23,7 @@ interface CourseCurriculumProps {
 const getLessonIcon = (type: LessonType) => {
 	switch (type) {
 		case "VIDEO":
-			return <PlayCircle className="w-4 h-4 text-primary" />;
+			return <PlayCircle className="w-4 h-4 text-sky-500" />;
 		case "PDF":
 			return <FileText className="w-4 h-4 text-rose-500" />;
 		case "TEXT":
@@ -79,7 +80,7 @@ export function CourseCurriculum({
 							key={module.id}
 							className={`border border-border/60 rounded-2xl overflow-hidden transition-all duration-300 ${
 								isOpen
-									? "bg-card shadow-lg ring-1 ring-primary/20"
+									? "bg-card shadow-lg ring-1 ring-border"
 									: "bg-card/50 hover:bg-card hover:border-border"
 							}`}>
 							{/* Header */}
@@ -88,7 +89,7 @@ export function CourseCurriculum({
 								className="w-full flex items-center justify-between p-5 text-left focus:outline-none">
 								<div className="flex flex-col gap-1">
 									<h4 className="font-bold text-foreground flex items-center gap-3 text-base md:text-lg">
-										<span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 text-primary text-sm font-black">
+										<span className="flex items-center justify-center w-8 h-8 rounded-full bg-muted text-foreground border border-border/50 text-sm font-black">
 											{index + 1}
 										</span>
 										{module.title}
@@ -112,7 +113,7 @@ export function CourseCurriculum({
 									</div>
 									<ChevronDown
 										className={`w-5 h-5 transition-transform duration-300 ${
-											isOpen ? "rotate-180 text-primary" : ""
+											isOpen ? "rotate-180 text-foreground" : ""
 										}`}
 									/>
 								</div>
@@ -139,7 +140,7 @@ export function CourseCurriculum({
 															<div className="flex items-center justify-center w-8 h-8 rounded-full bg-card shadow-sm border border-border/50 group-hover:scale-110 transition-transform">
 																{getLessonIcon(lesson.lesson_type)}
 															</div>
-															<span className="text-sm font-medium text-foreground/80 group-hover:text-foreground transition-colors flex-1">
+															<span className={`text-sm font-medium transition-colors flex-1 ${canNavigate ? "text-foreground/80 group-hover:text-foreground" : "text-muted-foreground"}`}>
 																{lesson.title}
 															</span>
 															{lesson.duration_minutes ? (
@@ -147,16 +148,19 @@ export function CourseCurriculum({
 																	{formatDuration(lesson.duration_minutes)}
 																</span>
 															) : null}
+															{!canNavigate && (
+																<Lock className="w-4 h-4 text-muted-foreground/50 ml-2 shrink-0" />
+															)}
 														</>
 													);
 													const cls =
-														"flex items-center gap-3 p-3 ml-2 rounded-xl hover:bg-muted/50 transition-colors group";
+														"flex items-center gap-3 p-3 ml-2 rounded-xl transition-colors group";
 													if (canNavigate) {
 														return (
 															<Link
 																key={lesson.id}
 																href={`/dashboard/cursos/${courseSlug}/leccion/${lesson.id}`}
-																className={cls}>
+																className={`${cls} hover:bg-muted/50`}>
 																{rowContent}
 															</Link>
 														);
@@ -164,7 +168,7 @@ export function CourseCurriculum({
 													return (
 														<div
 															key={lesson.id}
-															className={`${cls} cursor-default`}>
+															className={`${cls} cursor-not-allowed`}>
 															{rowContent}
 														</div>
 													);

@@ -55,25 +55,25 @@ export function LoginForm() {
 	};
 
 	const inputClass = (state: "idle" | "error" | "success") => {
-		const base = "pl-10 h-11 transition-colors pr-10";
+		const base = "pl-11 h-12 text-base transition-all pr-11 rounded-xl";
 		if (state === "error")
 			return `${base} border-destructive focus-visible:ring-destructive/30 bg-destructive/5`;
 		if (state === "success")
 			return `${base} border-emerald-500 focus-visible:ring-emerald-500/30 bg-emerald-500/5`;
-		return base;
+		return `${base} focus-visible:border-secondary focus-visible:ring-secondary/20`;
 	};
 
 	return (
 		<div className="space-y-8">
 			<form
 				onSubmit={handleSubmit((data) => login(data))}
-				className="space-y-6"
+				className="space-y-7"
 				noValidate>
 				{/* Email */}
-				<div className="space-y-1.5">
-					<Label htmlFor="login-email">Correo electrónico</Label>
+				<div className="space-y-2">
+					<Label htmlFor="login-email" className="text-sm font-semibold ml-1">Correo electrónico</Label>
 					<div className="relative">
-						<Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground z-10" />
+						<Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground z-10" />
 						<Input
 							id="login-email"
 							type="email"
@@ -100,17 +100,17 @@ export function LoginForm() {
 				</div>
 
 				{/* Password */}
-				<div className="space-y-1.5">
-					<div className="flex items-center justify-between">
-						<Label htmlFor="login-password">Contraseña</Label>
+				<div className="space-y-2">
+					<div className="flex items-center justify-between ml-1">
+						<Label htmlFor="login-password" className="text-sm font-semibold">Contraseña</Label>
 						<Link
 							href="/forgot-password"
-							className="text-xs font-semibold text-primary hover:text-primary/80 transition-colors">
+							className="text-sm font-bold text-secondary hover:text-secondary/80 transition-colors">
 							¿Olvidaste tu contraseña?
 						</Link>
 					</div>
 					<div className="relative">
-						<Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground z-10" />
+						<Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground z-10" />
 						<Input
 							id="login-password"
 							type={showPassword ? "text" : "password"}
@@ -141,7 +141,7 @@ export function LoginForm() {
 				{/* Submit Button */}
 				<Button
 					type="submit"
-					className="w-full h-11 font-bold"
+					className="w-full h-12 text-base font-bold bg-secondary hover:bg-secondary/90 text-secondary-foreground shadow-lg shadow-secondary/20 rounded-xl"
 					disabled={isPending}>
 					{isPending ? (
 						<>
@@ -168,11 +168,11 @@ export function LoginForm() {
 			</div>
 
 			{/* Register Link */}
-			<p className="text-center text-sm text-muted-foreground">
+			<p className="text-center text-sm md:text-base text-muted-foreground pt-2">
 				¿No tienes cuenta?{" "}
 				<Link
 					href="/register"
-					className="font-bold text-primary hover:text-primary/80 transition-colors">
+					className="font-bold text-secondary hover:text-secondary/80 transition-colors">
 					Crea tu cuenta gratis
 				</Link>
 			</p>
