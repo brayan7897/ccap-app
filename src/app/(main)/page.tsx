@@ -10,6 +10,7 @@ import { TrustedBy } from "@/components/home/TrustedBy";
 import { Teachers } from "@/components/home/Teachers";
 import { Testimonials } from "@/components/home/Testimonials";
 import { PaymentMethods } from "@/components/home/PaymentMethods";
+import { Suspense } from "react";
 
 // ─── Homepage-specific SEO metadata ──────────────────────────────────────────
 // Overrides the root layout metadata for this page only.
@@ -143,9 +144,22 @@ const schemaOrg = {
 import { publicService } from "@/services/public.service";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 
-export default async function HomePage() {
+async function TestimonialsSection() {
 	const testimonials = await publicService.getTestimonials();
+	return <Testimonials testimonials={testimonials} />;
+}
 
+async function CategoriesSection() {
+	const categories = await publicService.getCategories();
+	return <HomeCategories initialCategories={categories} />;
+}
+
+async function CoursesSection() {
+	const courses = await publicService.getCourses();
+	return <HomeCourses initialCourses={courses} />;
+}
+
+export default function HomePage() {
 	return (
 		<>
 			{/* Schema.org JSON-LD — not visible, only for search engines */}
@@ -158,11 +172,15 @@ export default async function HomePage() {
 				<MainHero />
 				
 				<ScrollReveal animation="fade-in-up" duration={800}>
-					<HomeCategories />
+					<Suspense fallback={<div className="py-24 flex justify-center"><p className="text-muted-foreground animate-pulse font-medium">Cargando áreas de estudio...</p></div>}>
+						<CategoriesSection />
+					</Suspense>
 				</ScrollReveal>
 				
 				<ScrollReveal animation="fade-in-up" duration={850} delay={100}>
-					<HomeCourses />
+					<Suspense fallback={<div className="py-24 flex justify-center"><p className="text-muted-foreground animate-pulse font-medium">Cargando cursos destacados...</p></div>}>
+						<CoursesSection />
+					</Suspense>
 				</ScrollReveal>
 				
 				<ScrollReveal animation="fade-in-up" duration={800}>
@@ -174,11 +192,15 @@ export default async function HomePage() {
 				</ScrollReveal>
 				
 				<ScrollReveal animation="fade-in-up" duration={800}>
-					<Teachers />
+					<Suspense fallback={null}>
+						<Teachers />
+					</Suspense>
 				</ScrollReveal>
 				
 				<ScrollReveal animation="fade-in-right" duration={850}>
-					<Testimonials testimonials={testimonials} />
+					<Suspense fallback={null}>
+						<TestimonialsSection />
+					</Suspense>
 				</ScrollReveal>
 				
 				<ScrollReveal animation="fade-in-up" duration={800}>

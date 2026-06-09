@@ -26,20 +26,7 @@ const CATEGORY_CONFIG: Record<string, any> = {
 	"ofimatica": { icon: Laptop, bg: "bg-amber-500 dark:bg-amber-700", hexColor: "#f59e0b" },
 };
 
-export function HomeCategories() {
-	const [categories, setCategories] = useState<Category[]>([]);
-	const [isLoading, setIsLoading] = useState(true);
-
-	useEffect(() => {
-		categoriesService.list().then(data => {
-			setCategories(data);
-			setIsLoading(false);
-		}).catch(err => {
-			console.error("Error loading categories", err);
-			setIsLoading(false);
-		});
-	}, []);
-
+export function HomeCategories({ initialCategories }: { initialCategories: Category[] }) {
 	return (
 		<section className="py-24 relative z-10 bg-transparent">
 			<div className="container mx-auto px-4 lg:px-8 max-w-7xl">
@@ -60,12 +47,7 @@ export function HomeCategories() {
 			<div className="relative w-full max-w-[1500px] mx-auto px-4 md:px-8 lg:px-10 xl:px-12">
 				<div 
 					className="flex overflow-x-auto gap-6 lg:gap-8 pb-12 pt-8 snap-x snap-mandatory hide-scrollbar">
-					{isLoading ? (
-						<div className="col-span-full flex justify-center py-20 w-full">
-							<p className="text-muted-foreground animate-pulse font-medium">Cargando áreas de estudio...</p>
-						</div>
-					) : (
-						categories.map((category) => {
+					{initialCategories.map((category) => {
 							const config = CATEGORY_CONFIG[category.slug] || { icon: ArrowRight, bg: "bg-blue-600", hexColor: "#2563eb" };
 							const Icon = config.icon;
 							const hasImage = !!category.image_url;
@@ -136,11 +118,9 @@ export function HomeCategories() {
 									</Link>
 								</div>
 							);
-						})
-					)}
+						})}
 
 					{/* "View More" Card */}
-					{!isLoading && (
 						<div className="snap-start shrink-0 w-[85vw] sm:w-[320px] md:w-[360px] lg:w-[400px] flex h-full">
 							<Link
 								href="/catalog"
@@ -161,7 +141,6 @@ export function HomeCategories() {
 								</div>
 							</Link>
 						</div>
-					)}
 				</div>
 			</div>
 		</section>

@@ -70,14 +70,12 @@ function CourseCardSkeleton() {
 	);
 }
 
-export function HomeCourses() {
+export function HomeCourses({ initialCourses }: { initialCourses: Course[] }) {
 	const scrollContainerRef = useRef<HTMLDivElement>(null);
 	const [canScrollLeft, setCanScrollLeft] = useState(false);
 	const [canScrollRight, setCanScrollRight] = useState(true);
 
-	// Fetch only the first 8 courses for the homepage carousel
-	const { data: courses, isLoading, isError } = useCourses(0, 8);
-	const publishedCourses = courses?.filter(c => c.is_published) || [];
+	const publishedCourses = initialCourses?.filter(c => c.is_published) || [];
 
 	const checkScroll = () => {
 		if (scrollContainerRef.current) {
@@ -96,11 +94,11 @@ export function HomeCourses() {
 
 	// Re-check scroll state whenever courses load
 	useEffect(() => {
-		if (courses?.length) {
+		if (initialCourses?.length) {
 			// Give the DOM a tick to render the cards before checking
 			setTimeout(checkScroll, 50);
 		}
-	}, [courses]);
+	}, [initialCourses]);
 
 	const smoothScroll = (
 		element: HTMLElement,
@@ -179,39 +177,8 @@ export function HomeCourses() {
 
 			{/* Carousel / States */}
 			<div className="relative w-full max-w-[1500px] mx-auto px-4 md:px-8 lg:px-10 xl:px-12 group/carousel">
-				{/* Loading state — skeleton cards */}
-				{isLoading && (
-					<div className="flex gap-6 md:gap-8 pb-12 pt-8 overflow-hidden">
-						{Array.from({ length: 3 }).map((_, i) => (
-							<div
-								key={i}
-								className="shrink-0 w-full sm:w-[calc((100%-24px)/2)] md:w-[calc((100%-32px)/2)] lg:w-[calc((100%-64px)/3)]">
-								<CourseCardSkeleton />
-							</div>
-						))}
-					</div>
-				)}
-
-				{/* Error state */}
-				{isError && !isLoading && (
-					<div className="flex flex-col items-center justify-center py-24 gap-4 text-muted-foreground">
-						<AlertCircle className="w-10 h-10 text-destructive/70" />
-						<p className="font-semibold text-foreground">
-							No se pudieron cargar los cursos
-						</p>
-						<p className="text-sm text-center max-w-xs">
-							Por favor, intenta recargar la página o verifica tu conexión a internet. Si el problema persiste, contacta a soporte.
-						</p>
-						<Link
-							href="/courses"
-							className="mt-2 text-sm text-primary hover:underline font-medium">
-							Ir al catálogo completo →
-						</Link>
-					</div>
-				)}
-
 				{/* Empty state */}
-				{!isLoading && !isError && publishedCourses.length === 0 && (
+				{publishedCourses.length === 0 && (
 					<div className="flex flex-col items-center justify-center py-24 text-muted-foreground gap-3">
 						<BookOpen className="w-10 h-10 opacity-40" />
 						<p className="text-sm">No hay cursos publicados aún.</p>
@@ -219,9 +186,7 @@ export function HomeCourses() {
 				)}
 
 				{/* Carousel with nav buttons */}
-				{!isLoading &&
-					!isError &&
-					publishedCourses.length > 0 && (
+				{publishedCourses.length > 0 && (
 						<>
 							<button
 								onClick={() => scroll("left")}
@@ -276,33 +241,19 @@ export function HomeCourses() {
 						className="bg-primary hover:bg-primary/90 text-primary-foreground px-6 py-2.5 rounded-lg font-semibold transition-all flex items-center gap-2 text-sm shadow-sm">
 						Ver Cursos <ArrowRight className="w-4 h-4" />
 					</Link>
-					{!isLoading && !isError && (
-						<p className="mt-4 text-[13px] text-muted-foreground font-medium text-center">
-							{publishedCourses.length > 0 ? (
-								<>
-									Mostrando{" "}
-									<span className="font-semibold text-foreground">
-										{publishedCourses.length}
-									</span>{" "}
-									cursos destacados
-								</>
-							) : (
-								"Próximamente nuevos cursos disponibles"
-							)}
-						</p>
-					)}
-					{(isLoading || isError) && (
-						<p className="mt-4 text-[13px] text-muted-foreground font-medium text-center">
-							{isLoading ? (
-								<span className="inline-flex items-center gap-1.5">
-									<Loader2 className="w-3 h-3 animate-spin" /> Cargando
-									cursos...
-								</span>
-							) : (
-								"Ver todos los cursos disponibles"
-							)}
-						</p>
-					)}
+					<p className="mt-4 text-[13px] text-muted-foreground font-medium text-center">
+						{publishedCourses.length > 0 ? (
+							<>
+								Mostrando{" "}
+								<span className="font-semibold text-foreground">
+									{publishedCourses.length}
+								</span>{" "}
+								cursos destacados
+							</>
+						) : (
+							"Próximamente nuevos cursos disponibles"
+						)}
+					</p>
 				</div>
 			</div>
 		</section>
