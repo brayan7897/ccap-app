@@ -46,7 +46,9 @@ export const useEnrollmentsStore = create<EnrollmentsState>()((set, get) => ({
 
   isEnrolled: (courseId) =>
     get().enrollments.some(
-      (e) => e.course_id === courseId && e.status === "ACTIVE"
+      (e) =>
+        e.course_id === courseId &&
+        (e.status === "ACTIVE" || e.status === "COMPLETED"),
     ),
 
   getLessonProgress: (lessonId) =>

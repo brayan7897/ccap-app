@@ -27,7 +27,7 @@ const TYPE_CONFIG: Record<
 	{ icon: React.ElementType; color: string; bg: string }
 > = {
 	SYSTEM: { icon: Shield, color: "text-blue-500", bg: "bg-blue-500/10" },
-	COURSE_UPDATE: { icon: BookOpen, color: "text-primary", bg: "bg-primary/10" },
+	COURSE_UPDATE: { icon: BookOpen, color: "text-ring", bg: "bg-ring/10" },
 	ACHIEVEMENT: {
 		icon: Award,
 		color: "text-yellow-500",
@@ -65,11 +65,11 @@ function NotificationRow({
 	return (
 		<div
 			className={[
-				"flex items-start gap-4 p-4 rounded-2xl border transition-all group",
-				notification.is_read
-					? "bg-card border-border"
-					: "bg-primary/5 border-primary/15",
+				"relative flex items-start gap-4 overflow-hidden p-4 pl-5 rounded-2xl border bg-card border-border transition-all group",
 			].join(" ")}>
+			{!notification.is_read && (
+				<span className="absolute left-0 top-0 bottom-0 w-1 bg-ring" />
+			)}
 			{/* Icon */}
 			<div
 				className={`w-10 h-10 rounded-xl ${cfg.bg} shrink-0 flex items-center justify-center mt-0.5`}>
@@ -82,7 +82,7 @@ function NotificationRow({
 					<p className="text-sm font-bold leading-snug text-foreground">
 						{notification.title}
 						{!notification.is_read && (
-							<span className="ml-2 inline-block w-2 h-2 rounded-full bg-primary align-middle" />
+							<span className="ml-2 inline-block w-2 h-2 rounded-full bg-ring align-middle" />
 						)}
 					</p>
 					<span className="text-xs text-muted-foreground shrink-0">
@@ -101,7 +101,7 @@ function NotificationRow({
 						onClick={() => markRead.mutate(notification)}
 						disabled={markRead.isPending}
 						title="Marcar como leída"
-						className="p-1.5 text-muted-foreground hover:text-primary rounded-lg hover:bg-primary/10 transition-colors disabled:opacity-50">
+						className="p-1.5 text-muted-foreground hover:text-ring rounded-lg hover:bg-ring/10 transition-colors disabled:opacity-50">
 						<CheckCheck className="w-4 h-4" />
 					</button>
 				)}
@@ -131,10 +131,13 @@ export default function NotificacionesPage() {
 		return (
 			<div className="p-6 lg:p-8 max-w-3xl mx-auto space-y-6">
 				<div>
-					<h1 className="text-2xl font-black text-foreground">
+					<p className="text-[11px] font-bold text-ring uppercase tracking-widest mb-1.5">
+						Centro de avisos
+					</p>
+					<h1 className="text-3xl font-black text-foreground tracking-tight">
 						Notificaciones
 					</h1>
-					<p className="text-sm text-muted-foreground mt-1">
+					<p className="text-sm text-muted-foreground mt-1.5">
 						Activa tu cuenta para recibir notificaciones.
 					</p>
 				</div>
@@ -146,12 +149,15 @@ export default function NotificacionesPage() {
 	return (
 		<div className="p-6 lg:p-8 max-w-3xl mx-auto space-y-8">
 			{/* Header */}
-			<div className="flex items-center justify-between">
+			<div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
 				<div>
-					<h1 className="text-2xl font-black text-foreground">
+					<p className="text-[11px] font-bold text-ring uppercase tracking-widest mb-1.5">
+						Centro de avisos
+					</p>
+					<h1 className="text-3xl font-black text-foreground tracking-tight">
 						Notificaciones
 					</h1>
-					<p className="text-sm text-muted-foreground mt-1">
+					<p className="text-sm text-muted-foreground mt-1.5">
 						{unread > 0
 							? `Tienes ${unread} notificación${unread !== 1 ? "es" : ""} sin leer.`
 							: "Estás al día con todas tus notificaciones."}
@@ -159,14 +165,14 @@ export default function NotificacionesPage() {
 				</div>
 				{unread > 0 && (
 					<div className="flex items-center gap-3">
-						<div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-primary/10 border border-primary/15">
-							<Bell className="w-4 h-4 text-primary" />
-							<span className="text-sm font-bold text-primary">{unread}</span>
+						<div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-ring/10 border border-ring/20">
+							<Bell className="w-4 h-4 text-ring" />
+							<span className="text-sm font-black text-ring tabular-nums">{unread}</span>
 						</div>
 						<button
 							onClick={() => markAllRead.mutate()}
 							disabled={markAllRead.isPending}
-							className="flex items-center gap-2 text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors py-2 px-4 rounded-xl hover:bg-secondary border border-border disabled:opacity-50">
+							className="flex items-center gap-2 text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors py-2 px-4 rounded-full hover:bg-secondary border border-border disabled:opacity-50">
 							<CheckCheck className="w-3.5 h-3.5" />
 							Marcar todas como leídas
 						</button>

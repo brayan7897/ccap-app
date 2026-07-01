@@ -24,7 +24,7 @@ export function CourseInstructor({ instructor }: CourseInstructorProps) {
 
 			<div className="flex flex-col sm:flex-row gap-6 items-start">
 				{/* Avatar */}
-				<div className="relative w-24 h-24 rounded-full overflow-hidden border-2 border-primary/20 shrink-0 shadow-md">
+				<div className="relative w-24 h-24 rounded-full overflow-hidden border-2 border-ring/20 shrink-0 shadow-md">
 					{instructor.avatar_url ? (
 						<Image
 							src={instructor.avatar_url}
@@ -44,7 +44,7 @@ export function CourseInstructor({ instructor }: CourseInstructorProps) {
 					<h4 className="text-lg font-bold text-foreground mb-1">
 						{instructor.first_name} {instructor.last_name}
 					</h4>
-					<p className="text-sm font-medium text-primary mb-4">
+					<p className="text-sm font-medium text-ring mb-4">
 						Instructor Experto
 					</p>
 

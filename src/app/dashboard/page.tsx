@@ -59,6 +59,8 @@ function toCardProps(course: Course): CourseCardProps {
 			? `${Math.round(course.total_duration_seconds / 3600)} horas`
 			: undefined,
 		enrolled_count: course.enrolled_count,
+		course_type: course.course_type,
+		price: course.price,
 	};
 }
 
@@ -90,8 +92,8 @@ export default function DashboardHomePage() {
 			label: "Cursos activos",
 			value: activeEnrollments.length,
 			icon: BookOpen,
-			color: "text-primary",
-			bg: "bg-primary/10",
+			color: "text-ring",
+			bg: "bg-ring/10",
 			loading: loadingEnrollments,
 		},
 		{
@@ -106,8 +108,8 @@ export default function DashboardHomePage() {
 			label: "Certificados",
 			value: certificates?.length ?? 0,
 			icon: Award,
-			color: "text-yellow-500",
-			bg: "bg-yellow-500/10",
+			color: "text-gold",
+			bg: "bg-gold/10",
 			loading: loadingCerts,
 		},
 	];
@@ -115,29 +117,31 @@ export default function DashboardHomePage() {
 	return (
 		<div className="p-4 lg:p-8 max-w-[1400px] mx-auto min-h-[calc(100vh-4rem)]">
 			<div className="flex flex-col lg:flex-row gap-0">
-				{/* ── MAIN CONTENT (Left Column) ─────────────────────────────────── */}
-				<div className="flex-1 space-y-10 min-w-0 lg:pr-8 lg:border-r border-border">
+				{/* ── MAIN CONTENT (Left Column) — ordered after the sidebar on mobile
+				    so account/access banners surface before the course grid ── */}
+				<div className="order-2 lg:order-1 flex-1 space-y-10 min-w-0 lg:pr-8 lg:border-r border-border">
 					{/* ── Continue learning ──────────────────────────────────────────── */}
 					{(loadingEnrollments || inProgressEnrollments.length > 0) && (
 						<section>
-							<div className="flex items-center justify-between mb-5">
+							<div className="flex items-end justify-between mb-5 gap-4">
 								<div>
-									<h2 className="text-xl font-black text-foreground">
+									<p className="text-[11px] font-bold text-ring uppercase tracking-widest mb-1.5">
+										En progreso
+									</p>
+									<h2 className="text-2xl font-black text-foreground tracking-tight">
 										Continúa aprendiendo
 									</h2>
-									<p className="text-sm text-muted-foreground mt-0.5">
-										Retoma donde lo dejaste
-									</p>
 								</div>
 								<a
 									href="/dashboard/mis-cursos"
-									className="text-sm font-bold text-primary hover:underline">
-									Ver todos →
+									className="shrink-0 inline-flex items-center gap-1.5 text-xs font-bold text-foreground border border-border hover:border-ring/40 hover:bg-secondary/50 rounded-full px-4 py-2 transition-all">
+									Ver todos
+									<span aria-hidden>→</span>
 								</a>
 							</div>
 
 							{loadingEnrollments ? (
-								<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4">
+								<div className="grid grid-cols-1 sm:grid-cols-2 2xl:grid-cols-3 gap-4">
 									{[1, 2, 3].map((i) => (
 										<div
 											key={i}
@@ -152,7 +156,7 @@ export default function DashboardHomePage() {
 									))}
 								</div>
 							) : (
-								<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4">
+								<div className="grid grid-cols-1 sm:grid-cols-2 2xl:grid-cols-3 gap-4">
 									{inProgressEnrollments.map((enrollment) => (
 										<EnrollmentProgressCard
 											key={enrollment.id}
@@ -166,24 +170,28 @@ export default function DashboardHomePage() {
 
 					{/* ── Recommended courses ───────────────────────────────────────── */}
 					<section>
-						<div className="flex items-center justify-between mb-5">
+						<div className="flex items-end justify-between mb-5 gap-4">
 							<div>
-								<h2 className="text-xl font-black text-foreground">
-									Explorar catálogo
+								<p className="text-[11px] font-bold text-ring uppercase tracking-widest mb-1.5">
+									Catálogo
+								</p>
+								<h2 className="text-2xl font-black text-foreground tracking-tight">
+									Explora nuevos cursos
 								</h2>
-								<p className="text-sm text-muted-foreground mt-0.5">
+								<p className="text-sm text-muted-foreground mt-1">
 									Amplía tus conocimientos y habilidades
 								</p>
 							</div>
 							<a
 								href="/dashboard/catalogo"
-								className="text-sm font-bold text-primary hover:underline">
-								Ver catálogo →
+								className="shrink-0 inline-flex items-center gap-1.5 text-xs font-bold text-foreground border border-border hover:border-ring/40 hover:bg-secondary/50 rounded-full px-4 py-2 transition-all">
+								Ver catálogo
+								<span aria-hidden>→</span>
 							</a>
 						</div>
 
 						{loadingCourses ? (
-							<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+							<div className="grid grid-cols-1 sm:grid-cols-2 2xl:grid-cols-3 gap-6">
 								{[1, 2, 3, 4, 5, 6].map((i) => (
 									<div
 										key={i}
@@ -198,9 +206,9 @@ export default function DashboardHomePage() {
 								))}
 							</div>
 						) : courses && courses.length > 0 ? (
-							<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+							<div className="grid grid-cols-1 sm:grid-cols-2 2xl:grid-cols-3 gap-6">
 								{courses.map((course) => (
-									<CourseCard key={course.id} {...toCardProps(course)} />
+									<CourseCard key={course.id} {...toCardProps(course)} href={`/dashboard/cursos/${course.slug}`} />
 								))}
 							</div>
 						) : (
@@ -214,11 +222,13 @@ export default function DashboardHomePage() {
 					</section>
 				</div>
 
-				{/* ── SIDEBAR (Right Column) ─────────────────────────────────────── */}
-				<div className="w-full lg:w-[340px] xl:w-[380px] shrink-0 space-y-6 pt-8 lg:pt-0 lg:pl-8">
+				{/* ── SIDEBAR (Right Column) — first on mobile (account status takes
+				    priority), second on desktop (content leads, panel supports) ── */}
+				<div className="order-1 lg:order-2 w-full lg:w-85 xl:w-95 shrink-0 space-y-6 pb-8 lg:pb-0 lg:pt-0 lg:pl-8">
 					{/* ── Account Inactive Banner (takes priority over everything) ── */}
 					{user && !user.is_active && (
-						<div className="flex items-start gap-3 rounded-2xl border border-border bg-muted p-5">
+						<div className="relative flex items-start gap-3 overflow-hidden rounded-2xl border border-border bg-card pl-6 pr-5 py-5">
+							<span className="absolute left-0 top-0 bottom-0 w-1 bg-muted-foreground/30" />
 							<UserX className="h-5 w-5 mt-0.5 shrink-0 text-muted-foreground" />
 							<div>
 								<p className="font-semibold text-foreground text-sm">
@@ -238,9 +248,10 @@ export default function DashboardHomePage() {
 						user?.course_access === "NONE" &&
 						(hasRequiredProfileData(user) ? (
 							/* Profile complete → show the request button */
-							<div className="flex flex-col items-start gap-4 rounded-2xl border border-primary/30 bg-primary/5 p-5">
+							<div className="relative flex flex-col items-start gap-4 overflow-hidden rounded-2xl border border-border bg-card pl-6 pr-5 py-5">
+								<span className="absolute left-0 top-0 bottom-0 w-1 bg-ring" />
 								<div className="flex items-start gap-3">
-									<AlertCircle className="h-5 w-5 mt-0.5 shrink-0 text-primary" />
+									<AlertCircle className="h-5 w-5 mt-0.5 shrink-0 text-ring" />
 									<div>
 										<p className="font-semibold text-foreground text-sm">
 											Activa tu acceso a los cursos
@@ -255,7 +266,7 @@ export default function DashboardHomePage() {
 									size="sm"
 									onClick={() => requestAccessMutation.mutate()}
 									disabled={requestAccessMutation.isPending}
-									className="w-full font-bold shadow-md hover:shadow-lg transition-shadow">
+									className="w-full font-bold bg-ring text-white dark:text-background hover:bg-ring/90">
 									{requestAccessMutation.isPending
 										? "Enviando..."
 										: "Solicitar acceso"}
@@ -263,14 +274,15 @@ export default function DashboardHomePage() {
 							</div>
 						) : (
 							/* Profile incomplete → guide them to fill in DNI + phone first */
-							<div className="flex flex-col items-start gap-4 rounded-2xl border border-amber-500/30 bg-amber-500/10 p-5">
+							<div className="relative flex flex-col items-start gap-4 overflow-hidden rounded-2xl border border-border bg-card pl-6 pr-5 py-5">
+								<span className="absolute left-0 top-0 bottom-0 w-1 bg-amber-500" />
 								<div className="flex items-start gap-3">
 									<ClipboardList className="h-5 w-5 mt-0.5 shrink-0 text-amber-600 dark:text-amber-400" />
 									<div>
-										<p className="font-semibold text-amber-800 dark:text-amber-200 text-sm">
+										<p className="font-semibold text-foreground text-sm">
 											Completa tu perfil para solicitar acceso
 										</p>
-										<p className="text-xs text-amber-700/80 dark:text-amber-300/80 mt-1 leading-relaxed">
+										<p className="text-xs text-muted-foreground mt-1 leading-relaxed">
 											Para solicitar acceso a los cursos necesitamos {missingText}. Puedes seguir explorando el catálogo mientras tanto.
 										</p>
 									</div>
@@ -279,20 +291,21 @@ export default function DashboardHomePage() {
 									size="sm"
 									variant="outline"
 									asChild
-									className="w-full font-bold border-amber-500/50 text-amber-700 dark:text-amber-300 hover:bg-amber-500/10">
+									className="w-full font-bold border-amber-500/40 text-amber-700 dark:text-amber-300 hover:bg-amber-500/10">
 									<Link href="/dashboard/perfil">Completar mi perfil →</Link>
 								</Button>
 							</div>
 						))}
 
 					{user?.is_active && user?.course_access === "PENDING" && (
-						<div className="flex items-start gap-3 rounded-2xl border border-yellow-500/30 bg-yellow-500/10 p-5">
+						<div className="relative flex items-start gap-3 overflow-hidden rounded-2xl border border-border bg-card pl-6 pr-5 py-5">
+							<span className="absolute left-0 top-0 bottom-0 w-1 bg-yellow-500" />
 							<Clock className="h-5 w-5 mt-0.5 shrink-0 text-yellow-600 dark:text-yellow-400" />
 							<div>
-								<p className="font-semibold text-yellow-700 dark:text-yellow-300 text-sm">
+								<p className="font-semibold text-foreground text-sm">
 									Solicitud en revisión
 								</p>
-								<p className="text-xs text-yellow-600/80 dark:text-yellow-400/80 mt-1 tracking-wide">
+								<p className="text-xs text-muted-foreground mt-1 tracking-wide">
 									Tu solicitud de acceso está siendo revisada por un
 									administrador. Te notificaremos pronto.
 								</p>
@@ -301,13 +314,14 @@ export default function DashboardHomePage() {
 					)}
 
 					{user?.is_active && user?.course_access === "APPROVED" && (
-						<div className="flex items-start gap-3 rounded-2xl border border-emerald-500/30 bg-emerald-500/10 p-5">
+						<div className="relative flex items-start gap-3 overflow-hidden rounded-2xl border border-border bg-card pl-6 pr-5 py-5">
+							<span className="absolute left-0 top-0 bottom-0 w-1 bg-emerald-500" />
 							<ShieldCheck className="h-5 w-5 mt-0.5 shrink-0 text-emerald-600 dark:text-emerald-400" />
 							<div>
-								<p className="font-semibold text-emerald-700 dark:text-emerald-300 text-sm">
+								<p className="font-semibold text-foreground text-sm">
 									¡Acceso aprobado!
 								</p>
-								<p className="text-xs text-emerald-600/80 dark:text-emerald-400/80 mt-1 tracking-wide">
+								<p className="text-xs text-muted-foreground mt-1 tracking-wide">
 									Puedes inscribirte en todos los cursos gratuitos de la
 									plataforma y potenciar tu perfil.
 								</p>
@@ -316,7 +330,8 @@ export default function DashboardHomePage() {
 					)}
 
 					{user?.is_active && user?.course_access === "REJECTED" && (
-						<div className="flex flex-col items-start gap-4 rounded-2xl border border-destructive/30 bg-destructive/5 p-5">
+						<div className="relative flex flex-col items-start gap-4 overflow-hidden rounded-2xl border border-border bg-card pl-6 pr-5 py-5">
+							<span className="absolute left-0 top-0 bottom-0 w-1 bg-destructive" />
 							<div className="flex items-start gap-3">
 								<ShieldX className="h-5 w-5 mt-0.5 shrink-0 text-destructive" />
 								<div>
@@ -334,7 +349,7 @@ export default function DashboardHomePage() {
 								variant="outline"
 								onClick={() => requestAccessMutation.mutate()}
 								disabled={requestAccessMutation.isPending}
-								className="w-full font-bold border-destructive/50 text-destructive hover:bg-destructive/10">
+								className="w-full font-bold border-destructive/40 text-destructive hover:bg-destructive/10">
 								{requestAccessMutation.isPending
 									? "Enviando..."
 									: "Solicitar nuevamente"}
@@ -342,18 +357,27 @@ export default function DashboardHomePage() {
 						</div>
 					)}
 
-					{/* ── Stats ── */}
-					<div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-1 gap-4">
-						{stats.map((stat) => (
-							<DashboardStatCard key={stat.label} {...stat} />
-						))}
+					{/* ── Stats — 3-col horizontal on mobile, ledger rows on desktop ── */}
+					<div>
+						<p className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-2.5 px-1">
+							Tu progreso
+						</p>
+						<div className="rounded-2xl border border-border bg-card overflow-hidden">
+							{/* Mobile: 3 equal columns with vertical dividers
+							    Desktop: single column with horizontal dividers */}
+							<div className="grid grid-cols-3 divide-x lg:grid-cols-1 lg:divide-x-0 lg:divide-y divide-border">
+								{stats.map((stat) => (
+									<DashboardStatCard key={stat.label} {...stat} />
+								))}
+							</div>
+						</div>
 					</div>
 
-					{/* ── Support Panel ── */}
-					<div className="bg-card border border-border rounded-2xl p-6 shadow-sm">
+					{/* ── Support Panel — 2-col buttons on mobile, stacked on desktop ── */}
+					<div className="bg-card border border-border rounded-2xl p-5">
 						<div className="flex items-center gap-3 mb-4">
-							<div className="p-2.5 bg-primary/10 rounded-xl">
-								<LifeBuoy className="w-5 h-5 text-primary" />
+							<div className="w-9 h-9 rounded-lg bg-ring/10 flex items-center justify-center shrink-0">
+								<LifeBuoy className="w-4 h-4 text-ring" />
 							</div>
 							<div>
 								<h3 className="font-bold text-foreground text-sm">
@@ -364,23 +388,24 @@ export default function DashboardHomePage() {
 								</p>
 							</div>
 						</div>
-						<div className="space-y-3">
+						<div className="grid grid-cols-2 gap-2 lg:grid-cols-1 lg:gap-3">
 							<a
 								href="https://wa.me/51945115998"
 								target="_blank"
 								rel="noopener noreferrer"
-								className="flex items-center gap-3 px-4 py-3.5 bg-muted/50 border border-border hover:border-green-500/50 hover:bg-green-500/10 rounded-xl transition-all duration-300 group">
-								<MessageCircle className="w-4 h-4 text-green-600 dark:text-green-500 group-hover:scale-110 transition-transform" />
+								className="flex items-center justify-center lg:justify-start gap-2.5 px-3 py-3 lg:px-4 lg:py-3.5 bg-muted/50 border border-border hover:border-green-500/50 hover:bg-green-500/10 rounded-xl transition-all duration-200 group">
+								<MessageCircle className="w-4 h-4 text-green-600 dark:text-green-500 shrink-0 group-hover:scale-110 transition-transform" />
 								<span className="text-sm font-semibold text-foreground group-hover:text-green-700 dark:group-hover:text-green-400">
 									WhatsApp
 								</span>
 							</a>
 							<a
 								href="mailto:soporte@ccapglobal.com"
-								className="flex items-center gap-3 px-4 py-3.5 bg-muted/50 border border-border hover:border-primary/50 hover:bg-primary/10 rounded-xl transition-all duration-300 group">
-								<Mail className="w-4 h-4 text-primary group-hover:scale-110 transition-transform" />
-								<span className="text-sm font-semibold text-foreground group-hover:text-primary">
-									Correo Electrónico
+								className="flex items-center justify-center lg:justify-start gap-2.5 px-3 py-3 lg:px-4 lg:py-3.5 bg-muted/50 border border-border hover:border-ring/40 hover:bg-ring/5 rounded-xl transition-all duration-200 group">
+								<Mail className="w-4 h-4 text-ring shrink-0 group-hover:scale-110 transition-transform" />
+								<span className="text-sm font-semibold text-foreground group-hover:text-ring">
+									<span className="lg:hidden">Correo</span>
+									<span className="hidden lg:inline">Correo Electrónico</span>
 								</span>
 							</a>
 						</div>

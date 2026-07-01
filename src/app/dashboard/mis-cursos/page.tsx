@@ -25,8 +25,13 @@ export default function MisCursosPage() {
 		return (
 			<div className="p-6 lg:p-8 max-w-7xl mx-auto space-y-6">
 				<div>
-					<h1 className="text-2xl font-black text-foreground">Mis Cursos</h1>
-					<p className="text-sm text-muted-foreground mt-1">
+					<p className="text-[11px] font-bold text-ring uppercase tracking-widest mb-1.5">
+						Aprendizaje
+					</p>
+					<h1 className="text-3xl font-black text-foreground tracking-tight">
+						Mis Cursos
+					</h1>
+					<p className="text-sm text-muted-foreground mt-1.5">
 						Necesitas una cuenta activa para ver tus inscripciones.
 					</p>
 				</div>
@@ -52,14 +57,19 @@ export default function MisCursosPage() {
 		<div className="p-6 lg:p-8 max-w-7xl mx-auto space-y-8">
 			{/* Header */}
 			<div>
-				<h1 className="text-2xl font-black text-foreground">Mis Cursos</h1>
-				<p className="text-sm text-muted-foreground mt-1">
+				<p className="text-[11px] font-bold text-ring uppercase tracking-widest mb-1.5">
+					Aprendizaje
+				</p>
+				<h1 className="text-3xl font-black text-foreground tracking-tight">
+					Mis Cursos
+				</h1>
+				<p className="text-sm text-muted-foreground mt-1.5">
 					Gestiona y sigue el progreso de tus cursos inscritos.
 				</p>
 			</div>
 
-			{/* Tabs */}
-			<div className="flex items-center gap-1 p-1 rounded-2xl bg-muted/60 w-fit">
+			{/* Tabs — full-width so narrow phones never overflow horizontally */}
+			<div className="flex items-center gap-1 p-1 rounded-2xl bg-muted/60 w-full">
 				{TABS.map(({ key, label, icon: Icon }) => {
 					const isActive = activeTab === key;
 					return (
@@ -67,16 +77,17 @@ export default function MisCursosPage() {
 							key={key}
 							onClick={() => setActiveTab(key)}
 							className={[
-								"flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all",
+								"flex-1 flex items-center justify-center gap-1.5 px-2 sm:px-4 py-2 rounded-xl text-sm font-semibold transition-all min-w-0",
 								isActive
 									? "bg-background text-foreground shadow-sm"
 									: "text-muted-foreground hover:text-foreground",
 							].join(" ")}>
-							<Icon className="w-4 h-4" />
-							{label}
+							<Icon className="w-4 h-4 shrink-0" />
+							{/* Hide label on xs to avoid overflow; icon + count is enough context */}
+							<span className="hidden sm:inline truncate">{label}</span>
 							<span
 								className={[
-									"text-xs px-1.5 py-0.5 rounded-full font-bold",
+									"text-xs px-1.5 py-0.5 rounded-full font-bold shrink-0",
 									isActive
 										? "bg-secondary text-secondary-foreground"
 										: "bg-muted text-muted-foreground",

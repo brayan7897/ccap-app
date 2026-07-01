@@ -3,10 +3,11 @@
 import { useCourses } from "@/features/courses/hooks/useCourses";
 import { categoriesService } from "@/features/categories/services/categories.service";
 import { CourseCard } from "@/components/courses/CourseCard";
-import { Search, Filter, SlidersHorizontal, Loader2, CheckCircle2, QrCode, RefreshCw, ChevronDown } from "lucide-react";
+import { Search, Filter, SlidersHorizontal, Loader2, CheckCircle2, QrCode, RefreshCw, ChevronDown, X } from "lucide-react";
 import type { CourseCardProps } from "@/components/courses/CourseCard";
 import type { Course } from "@/types";
-import { useState } from "react";
+import { Suspense, useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 
@@ -41,6 +42,8 @@ function toCardProps(course: Course): CourseCardProps {
 			course.modules?.reduce((sum, m) => sum + (m.lessons?.length ?? 0), 0),
 		total_duration: hours ? `${hours} horas` : undefined,
 		enrolled_count: course.enrolled_count,
+		course_type: course.course_type,
+		price: course.price,
 	};
 }
 
@@ -51,9 +54,19 @@ const getCategoryIconColor = (index: number) => {
 };
 
 export default function CoursesPage() {
+	return (
+		<Suspense fallback={null}>
+			<CoursesPageContent />
+		</Suspense>
+	);
+}
+
+function CoursesPageContent() {
 	const [skip] = useState(0);
 	const limit = 20;
-	
+
+	const searchParams = useSearchParams();
+
 	// Fetch Courses
 	const { data: courses, isLoading, isError } = useCourses(skip, limit);
 	const publishedCourses = courses?.filter(c => c.is_published) || [];
@@ -64,12 +77,45 @@ export default function CoursesPage() {
 		queryFn: () => categoriesService.list(0, 50),
 	});
 
-	// Filter state (simulate active filter)
+	// Filter state — initialized from the URL (?q=, ?category=) so the navbar
+	// search modal and "Buscar" CTA can deep-link straight into filtered results.
 	const [activeCategory, setActiveCategory] = useState<string | null>(null);
+	const [searchQuery, setSearchQuery] = useState(searchParams.get("q") || "");
 
-	const filteredCourses = activeCategory 
-		? publishedCourses.filter(c => c.category_id === activeCategory)
-		: publishedCourses;
+	// Keep the search box in sync if the URL changes without remounting the
+	// page (e.g. user opens the search modal again while already on /courses).
+	useEffect(() => {
+		setSearchQuery(searchParams.get("q") || "");
+	}, [searchParams]);
+
+	// category comes in as a slug from the URL; resolve it to an id once
+	// categories have loaded.
+	useEffect(() => {
+		const categorySlug = searchParams.get("category");
+		if (!categorySlug || !categories) return;
+		const match = categories.find((c) => c.slug === categorySlug);
+		if (match) setActiveCategory(match.id);
+	}, [searchParams, categories]);
+
+	const normalizedQuery = searchQuery.trim().toLowerCase();
+
+	const filteredCourses = publishedCourses.filter((c) => {
+		if (activeCategory && c.category_id !== activeCategory) return false;
+		if (normalizedQuery) {
+			const haystack = [
+				c.title,
+				c.short_description,
+				c.category_name || c.category?.name,
+				c.instructor ? `${c.instructor.first_name} ${c.instructor.last_name}` : "",
+				...(c.tags || []),
+			]
+				.filter(Boolean)
+				.join(" ")
+				.toLowerCase();
+			if (!haystack.includes(normalizedQuery)) return false;
+		}
+		return true;
+	});
 
 	return (
 		<div className="min-h-screen pt-6 pb-20">
@@ -91,19 +137,34 @@ export default function CoursesPage() {
 						</div>
 
 						{/* Search Bar */}
-						<div className="w-full max-w-2xl flex items-center bg-card border border-gray-200 dark:border-border rounded-xl overflow-hidden focus-within:border-[#0b1b36] transition-colors shadow-sm mt-6">
+						<form
+							onSubmit={(e) => e.preventDefault()}
+							className="w-full max-w-2xl flex items-center bg-card border border-gray-200 dark:border-border rounded-xl overflow-hidden focus-within:border-ring transition-colors shadow-sm mt-6">
 							<div className="pl-4 flex items-center justify-center text-muted-foreground">
 								<Search className="w-5 h-5" />
 							</div>
 							<input
 								type="text"
+								value={searchQuery}
+								onChange={(e) => setSearchQuery(e.target.value)}
 								placeholder="Buscar curso, programa o palabra clave..."
 								className="w-full bg-transparent border-none outline-none text-foreground px-4 py-3.5 placeholder:text-muted-foreground text-sm"
 							/>
-							<button className="bg-[#0b1b36] hover:bg-[#1a2d53] text-white px-8 py-3.5 font-bold transition-colors text-sm">
+							{searchQuery && (
+								<button
+									type="button"
+									onClick={() => setSearchQuery("")}
+									aria-label="Limpiar búsqueda"
+									className="px-3 text-muted-foreground hover:text-foreground transition-colors shrink-0">
+									<X className="w-4 h-4" />
+								</button>
+							)}
+							<button
+								type="submit"
+								className="bg-ring hover:bg-ring/90 text-white dark:text-background px-8 py-3.5 font-bold transition-colors text-sm shrink-0">
 								Buscar
 							</button>
-						</div>
+						</form>
 					</div>
 
 					{/* Certificate Banner Component */}

@@ -37,6 +37,8 @@ function toCardProps(course: Course): CourseCardProps {
 		total_lessons: course.total_lessons ?? totalLessons,
 		total_duration: hours ? `${hours} horas` : undefined,
 		enrolled_count: course.enrolled_count,
+		course_type: course.course_type,
+		price: course.price,
 	};
 }
 

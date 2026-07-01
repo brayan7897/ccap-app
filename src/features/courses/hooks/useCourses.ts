@@ -24,7 +24,7 @@ export function useCourse(slug: string) {
     queryKey: courseKeys.detail(slug),
     queryFn:  () => coursesService.getBySlug(slug),
     enabled:  !!slug,
-    staleTime: 5 * 60 * 1000, // 5 min — prevents N+1 refetches when multiple cards mount
+    staleTime: 0, // Force fresh data
   });
 }
 

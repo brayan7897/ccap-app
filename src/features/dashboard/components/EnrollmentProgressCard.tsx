@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import Link from "next/link";
 import { PlayCircle, CheckCircle, BookOpen } from "lucide-react";
 import { useCourse } from "@/features/courses/hooks/useCourses";
@@ -16,19 +17,48 @@ export function EnrollmentProgressCard({ enrollment }: Props) {
 
 	const courseSlug = enrollment.course?.slug ?? "";
 	const { data: courseDetail } = useCourse(courseSlug);
-	const firstLessonId = courseDetail?.modules?.[0]?.lessons?.[0]?.id;
-
-	const continueHref = firstLessonId
-		? `/dashboard/cursos/${courseSlug}/leccion/${firstLessonId}`
-		: courseSlug
-			? `/courses/${courseSlug}`
-			: "/dashboard/mis-cursos";
 
 	const thumbnail = enrollment.course?.thumbnail_url ?? courseDetail?.thumbnail_url;
 
+	// Compute the lesson to resume from, using last_completed_lesson_id to land
+	// on the NEXT unseen lesson instead of always starting from lesson 1.
+	const continueHref = useMemo(() => {
+		const base = courseSlug
+			? `/dashboard/cursos/${courseSlug}`
+			: "/dashboard/mis-cursos";
+
+		if (!courseDetail?.modules) return base;
+
+		const allLessons = [...courseDetail.modules]
+			.sort((a, b) => a.order_index - b.order_index)
+			.flatMap((m) =>
+				[...m.lessons].sort((a, b) => a.order_index - b.order_index),
+			);
+
+		if (!allLessons.length) return base;
+
+		const lastCompletedId = enrollment.last_completed_lesson_id;
+
+		if (!lastCompletedId) {
+			// Never completed any lesson → start from the very first
+			return `/dashboard/cursos/${courseSlug}/leccion/${allLessons[0].id}`;
+		}
+
+		const lastIdx = allLessons.findIndex((l) => l.id === lastCompletedId);
+
+		if (lastIdx >= 0 && lastIdx < allLessons.length - 1) {
+			// Advance to the lesson right after the last completed one
+			return `/dashboard/cursos/${courseSlug}/leccion/${allLessons[lastIdx + 1].id}`;
+		}
+
+		// Either last lesson was completed (course done) or ID not found →
+		// go back to the first lesson so completed courses remain navigable.
+		return `/dashboard/cursos/${courseSlug}/leccion/${allLessons[0].id}`;
+	}, [courseDetail, courseSlug, enrollment.last_completed_lesson_id]);
+
 	return (
 		<div className="group flex flex-col rounded-2xl border border-border bg-card overflow-hidden hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300">
-			{/* Thumbnail placeholder */}
+			{/* Thumbnail */}
 			<div className="relative aspect-video w-full bg-muted overflow-hidden">
 				{thumbnail ? (
 					// eslint-disable-next-line @next/next/no-img-element
@@ -51,13 +81,9 @@ export function EnrollmentProgressCard({ enrollment }: Props) {
 							: "bg-background/90 text-foreground border-border/50"
 					}`}>
 					{isCompleted ? (
-						<>
-							<CheckCircle className="w-3 h-3" /> Completado
-						</>
+						<><CheckCircle className="w-3 h-3" /> Completado</>
 					) : (
-						<>
-							<PlayCircle className="w-3 h-3 text-ring" /> En curso
-						</>
+						<><PlayCircle className="w-3 h-3 text-ring" /> En curso</>
 					)}
 				</div>
 			</div>
@@ -72,8 +98,7 @@ export function EnrollmentProgressCard({ enrollment }: Props) {
 				<div className="mt-auto space-y-1.5">
 					<div className="flex items-center justify-between text-xs">
 						<span className="text-muted-foreground font-medium">Progreso</span>
-						<span
-							className={`font-bold ${isCompleted ? "text-emerald-500" : "text-ring"}`}>
+						<span className={`font-bold tabular-nums ${isCompleted ? "text-emerald-500" : "text-ring"}`}>
 							{progress}%
 						</span>
 					</div>
@@ -96,7 +121,7 @@ export function EnrollmentProgressCard({ enrollment }: Props) {
 							: "bg-secondary text-secondary-foreground hover:bg-secondary/90 border border-secondary"
 					}`}>
 					<PlayCircle className="w-4 h-4" />
-					{isCompleted ? "Ver curso" : "Continuar"}
+					{isCompleted ? "Repasar curso" : "Continuar"}
 				</Link>
 			</div>
 		</div>

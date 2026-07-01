@@ -13,6 +13,7 @@ import {
 	User,
 	FileText,
 	Phone,
+	Briefcase,
 	CheckCircle2,
 	XCircle,
 } from "lucide-react";
@@ -248,6 +249,26 @@ export function RegisterForm() {
 						<StatusIcon state={fieldState("phone_number")} />
 					</div>
 					<FieldFeedback state={fieldState("phone_number")} error={errors.phone_number?.message} />
+				</div>
+
+				{/* Profesión / Carrera (opcional) */}
+				<div className="space-y-2">
+					<Label htmlFor="reg-professional_career" className="text-sm font-semibold ml-1">
+						Profesión o Carrera{" "}
+						<span className="text-muted-foreground font-normal">(opcional)</span>
+					</Label>
+					<div className="relative">
+						<Briefcase className="absolute left-3.5 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground z-10" />
+						<Input
+							id="reg-professional_career"
+							type="text"
+							placeholder="Ej. Contabilidad, Arquitectura..."
+							className={inputClass(fieldState("professional_career"), "pl-11 pr-8")}
+							{...register("professional_career")}
+						/>
+						<StatusIcon state={fieldState("professional_career")} />
+					</div>
+					<FieldFeedback state={fieldState("professional_career")} error={errors.professional_career?.message} />
 				</div>
 
 				{/* Terms */}

@@ -219,6 +219,7 @@ export function useUpdateProfile() {
       phone_number?: string;
       avatar_url?: string;
       bio?: string;
+      professional_career?: string;
     }) => authService.updateMe(data),
     onSuccess: (updatedUser) => {
       useAuthStore.getState().setUser(updatedUser);

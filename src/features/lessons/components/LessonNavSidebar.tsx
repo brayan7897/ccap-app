@@ -1,17 +1,7 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
-import {
-	CheckCircle2,
-	PlayCircle,
-	FileText,
-	HelpCircle,
-	ChevronDown,
-	ChevronLeft,
-	X,
-	Check,
-} from "lucide-react";
+import { ChevronLeft, X, Check, FileText, HelpCircle } from "lucide-react";
 import type { CourseDetail, LessonProgress, LessonType } from "@/types";
 
 interface LessonNavSidebarProps {
@@ -23,17 +13,10 @@ interface LessonNavSidebarProps {
 	onClose?: () => void;
 }
 
-function getLessonIcon(type: LessonType) {
-	switch (type) {
-		case "VIDEO":
-			return <PlayCircle className="w-4 h-4 text-sky-500 shrink-0" />;
-		case "PDF":
-			return <FileText className="w-4 h-4 text-rose-500 shrink-0" />;
-		case "TEXT":
-			return <HelpCircle className="w-4 h-4 text-amber-500 shrink-0" />;
-		default:
-			return <PlayCircle className="w-4 h-4 text-muted-foreground shrink-0" />;
-	}
+function lessonTypeIcon(type: LessonType) {
+	if (type === "PDF") return <FileText className="w-3 h-3" />;
+	if (type === "TEXT") return <HelpCircle className="w-3 h-3" />;
+	return null; // VIDEO — no icon needed, circle conveys enough
 }
 
 export function LessonNavSidebar({
@@ -44,25 +27,23 @@ export function LessonNavSidebar({
 	isOpen = false,
 	onClose,
 }: LessonNavSidebarProps) {
-	const [openModuleId, setOpenModuleId] = useState<string | null>(() => {
-		// Default open: the module that contains the current lesson
-		for (const mod of course.modules) {
-			if (mod.lessons.some((l) => l.id === currentLessonId)) return mod.id;
-		}
-		return course.modules[0]?.id ?? null;
-	});
-
 	const progressMap = new Map(progress.map((p) => [p.lesson_id, p]));
 
-	const totalLessons = course.modules.reduce((acc, mod) => acc + mod.lessons.length, 0);
-	const totalCompleted = course.modules.reduce(
-		(acc, mod) =>
-			acc +
-			mod.lessons.filter((l) => progressMap.get(l.id)?.is_completed).length,
-		0,
+	const sortedModules = [...course.modules].sort(
+		(a, b) => a.order_index - b.order_index,
 	);
+
+	// Flat ordered lesson list for global numbering
+	const allLessons = sortedModules.flatMap((m) =>
+		[...m.lessons].sort((a, b) => a.order_index - b.order_index),
+	);
+	const totalLessons = allLessons.length;
+	const totalCompleted = allLessons.filter(
+		(l) => progressMap.get(l.id)?.is_completed,
+	).length;
 	const progressPercent =
 		totalLessons > 0 ? Math.round((totalCompleted / totalLessons) * 100) : 0;
+	const currentIndex = allLessons.findIndex((l) => l.id === currentLessonId);
 
 	return (
 		<>
@@ -76,149 +57,162 @@ export function LessonNavSidebar({
 			)}
 
 			<aside
-				className={`fixed lg:static inset-y-0 right-0 z-50 flex flex-col h-full bg-card border-l border-border w-[320px] xl:w-[380px] shrink-0 transition-transform duration-300 ease-in-out lg:translate-x-0 ${
+				className={`fixed lg:static inset-y-0 right-0 z-50 flex flex-col h-full bg-card border-l border-border w-[320px] xl:w-90 shrink-0 transition-transform duration-300 ease-in-out lg:translate-x-0 ${
 					isOpen ? "translate-x-0" : "translate-x-full"
 				}`}>
-				{/* Header */}
-				<div className="px-5 py-6 border-b border-border shrink-0 space-y-4">
-					<div className="flex items-center justify-between">
+
+				{/* ── Header ─────────────────────────────────────────────────── */}
+				<div className="px-4 pt-4 pb-3 border-b border-border shrink-0 space-y-3">
+					<div className="flex items-center justify-between gap-2">
 						<Link
-							href={`/courses/${courseSlug}`}
-							className="text-xs text-ring hover:text-ring/80 font-bold flex items-center gap-1 transition-colors">
-							<ChevronLeft className="w-4 h-4" /> Volver al curso
+							href={`/dashboard/cursos/${courseSlug}`}
+							className="text-xs font-bold text-ring hover:text-ring/80 flex items-center gap-1 transition-colors">
+							<ChevronLeft className="w-3.5 h-3.5 shrink-0" />
+							Volver al curso
 						</Link>
 						{onClose && (
 							<button
 								onClick={onClose}
-								className="lg:hidden p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground rounded-lg transition-colors">
-								<X className="w-5 h-5" />
+								aria-label="Cerrar temario"
+								className="lg:hidden p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors">
+								<X className="w-4 h-4" />
 							</button>
 						)}
 					</div>
-					<h2 className="text-base font-extrabold text-foreground line-clamp-2 leading-snug">
+
+					<h2 className="text-sm font-bold text-foreground line-clamp-2 leading-snug">
 						{course.title}
 					</h2>
 
-					{/* Course Progress */}
-					<div className="space-y-2 pt-1">
-						<div className="flex items-center justify-between text-xs font-bold">
-							<span className="text-muted-foreground">Progreso</span>
-							<span className="text-foreground">{progressPercent}%</span>
+					{/* Progress */}
+					<div className="space-y-1.5">
+						<div className="flex items-center justify-between text-[11px] font-semibold">
+							<span className="text-muted-foreground">
+								{currentIndex >= 0 ? `Lección ${currentIndex + 1} de ${totalLessons}` : `${totalLessons} lecciones`}
+							</span>
+							<span className={progressPercent === 100 ? "text-emerald-500" : "text-ring"}>
+								{progressPercent}%
+							</span>
 						</div>
-						<div className="h-2 w-full bg-muted overflow-hidden rounded-full">
+						<div className="h-1.5 w-full bg-muted overflow-hidden rounded-full">
 							<div
-								className="h-full bg-ring rounded-full transition-all duration-500 ease-out"
+								className={`h-full rounded-full transition-all duration-700 ease-out ${
+									progressPercent === 100 ? "bg-emerald-500" : "bg-ring"
+								}`}
 								style={{ width: `${progressPercent}%` }}
 							/>
 						</div>
 					</div>
 				</div>
 
-			{/* Scrollable module/lesson list */}
-			<div className="flex-1 overflow-y-auto p-4 space-y-3">
-				{course.modules.map((module, idx) => {
-					const isModuleOpen = openModuleId === module.id;
-					const completedCount = module.lessons.filter(
-						(l) => progressMap.get(l.id)?.is_completed,
-					).length;
-
-					return (
-						<div
-							key={module.id}
-							className="flex flex-col border border-border/50 rounded-2xl bg-card overflow-hidden shadow-sm">
-							{/* Module header button */}
-							<button
-								onClick={() => setOpenModuleId(isModuleOpen ? null : module.id)}
-								className={`w-full flex items-start justify-between gap-3 px-4 py-4 text-left transition-colors ${
-									isModuleOpen ? "bg-muted" : "hover:bg-muted/80"
-								}`}>
-								<div className="min-w-0">
-									<p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-1.5 flex items-center gap-2">
-										Módulo {idx + 1}
-										{completedCount === module.lessons.length && completedCount > 0 && (
-											<span className="bg-emerald-500/10 text-emerald-600 px-1.5 py-0.5 rounded-sm inline-flex items-center gap-0.5">
-												<Check className="w-3 h-3" />
-											</span>
-										)}
-									</p>
-									<p className="text-sm font-bold text-foreground line-clamp-2 leading-snug">
+				{/* ── Flat lesson list with vertical timeline ─────────────────── */}
+				<div className="flex-1 overflow-y-auto py-3">
+					{sortedModules.map((module) => {
+						const sortedLessons = [...module.lessons].sort(
+							(a, b) => a.order_index - b.order_index,
+						);
+						return (
+							<div key={module.id} className="mb-1">
+								{/* Module name divider */}
+								<div className="px-4 pt-3 pb-2">
+									<p className="text-[10px] font-bold text-muted-foreground/60 uppercase tracking-widest leading-none">
 										{module.title}
 									</p>
-									<p className="text-xs text-muted-foreground/80 mt-1 font-medium">
-										{completedCount}/{module.lessons.length} completadas
-									</p>
 								</div>
-								<div className="shrink-0 w-8 h-8 rounded-full border border-border/50 bg-background flex items-center justify-center text-muted-foreground">
-									<ChevronDown
-										className={`w-4 h-4 transition-transform duration-300 ${
-											isModuleOpen ? "rotate-180 text-foreground" : ""
-										}`}
-									/>
-								</div>
-							</button>
 
-							{/* Lesson list (collapsible) */}
-							<div
-								className={`grid transition-all duration-300 ease-in-out ${
-									isModuleOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
-								}`}>
-								<div className="overflow-hidden bg-muted/10">
-									<div className="flex flex-col px-2 py-3 gap-1">
-										{module.lessons.map((lesson) => {
-											const isCurrent = lesson.id === currentLessonId;
-											const isCompleted =
-												progressMap.get(lesson.id)?.is_completed ?? false;
+								{/* Lessons with vertical timeline */}
+								<div className="relative ml-9 border-l-2 border-border/50">
+									{sortedLessons.map((lesson) => {
+										const globalIdx = allLessons.findIndex(
+											(l) => l.id === lesson.id,
+										);
+										const isCurrent = lesson.id === currentLessonId;
+										const isCompleted =
+											progressMap.get(lesson.id)?.is_completed ?? false;
 
-											return (
-												<Link
-													key={lesson.id}
-													href={`/dashboard/cursos/${courseSlug}/leccion/${lesson.id}`}
-													onClick={() => {
-														if (onClose) onClose();
-													}}
-													className={`relative flex items-start gap-3 px-3 py-3 text-sm rounded-xl transition-all duration-200 ${
-														isCurrent
-															? "bg-sidebar-accent text-sidebar-accent-foreground font-semibold shadow-sm ring-1 ring-border/50"
-															: "hover:bg-muted text-muted-foreground hover:text-foreground"
-													}`}>
-													{isCurrent && (
-														<div className="absolute left-0 top-3 bottom-3 w-1 bg-sidebar-ring rounded-r-md" />
+										return (
+											<Link
+												key={lesson.id}
+												href={`/dashboard/cursos/${courseSlug}/leccion/${lesson.id}`}
+												onClick={() => { if (onClose) onClose(); }}
+												className={[
+													"relative flex items-start gap-3 pl-5 pr-4 py-3",
+													"transition-colors duration-150 group",
+													isCurrent
+														? "bg-sidebar-accent/50"
+														: "hover:bg-sidebar-accent/25",
+												].join(" ")}>
+
+												{/* Timeline bubble — overlaps the left border line */}
+												<div
+													className={[
+														"absolute -left-2.5 top-3.5 w-5 h-5 rounded-full shrink-0 flex items-center justify-center",
+														"text-[10px] font-black transition-all duration-200",
+														isCompleted
+															? "bg-ring text-white dark:text-background shadow-sm"
+															: isCurrent
+																? "bg-ring text-white dark:text-background ring-2 ring-ring/30 ring-offset-2 ring-offset-background shadow-sm"
+																: "bg-background border-2 border-muted-foreground/25 text-muted-foreground/60",
+													].join(" ")}>
+													{isCompleted ? (
+														<Check className="w-2.5 h-2.5 stroke-3" />
+													) : (
+														globalIdx + 1
 													)}
-													
-													{/* Status icon */}
-													<div className="mt-0.5 shrink-0 w-6 h-6 flex items-center justify-center">
-														{isCompleted ? (
-															<CheckCircle2 className="w-5 h-5 text-emerald-500" />
+												</div>
+
+												{/* Lesson info */}
+												<div className="flex-1 min-w-0">
+													<p
+														className={[
+															"text-sm leading-snug line-clamp-2",
+															isCurrent
+																? "font-bold text-sidebar-accent-foreground"
+																: isCompleted
+																	? "font-medium text-sidebar-foreground/80"
+																	: "text-sidebar-foreground/55 group-hover:text-sidebar-foreground/80",
+														].join(" ")}>
+														{lesson.title}
+													</p>
+
+													<div className="flex items-center gap-2 mt-0.5">
+														{isCurrent ? (
+															<span className="flex items-center gap-1 text-[11px] font-bold text-ring">
+																<span className="w-1.5 h-1.5 rounded-full bg-ring animate-pulse" />
+																Viendo ahora
+															</span>
 														) : (
-															getLessonIcon(lesson.lesson_type)
+															<>
+																{lesson.duration_minutes != null && (
+																	<span className="text-[11px] text-muted-foreground/60">
+																		{lesson.duration_minutes} min
+																	</span>
+																)}
+																{lessonTypeIcon(lesson.lesson_type) && (
+																	<span className="text-muted-foreground/40">
+																		{lessonTypeIcon(lesson.lesson_type)}
+																	</span>
+																)}
+															</>
 														)}
 													</div>
+												</div>
 
-													{/* Title + duration */}
-													<div className="flex-1 min-w-0 pr-2">
-														<p className="line-clamp-2 leading-snug">
-															{lesson.title}
-														</p>
-														{lesson.duration_minutes ? (
-															<p
-																className={`text-[11px] mt-1 font-medium ${
-																	isCurrent ? "text-sidebar-accent-foreground/70" : "text-muted-foreground/60"
-																}`}>
-																{lesson.duration_minutes} min
-															</p>
-														) : null}
-													</div>
-												</Link>
-											);
-										})}
-									</div>
+												{/* Duration on current lesson (right-aligned) */}
+												{isCurrent && lesson.duration_minutes != null && (
+													<span className="text-[11px] text-muted-foreground/60 shrink-0 self-center">
+														{lesson.duration_minutes} min
+													</span>
+												)}
+											</Link>
+										);
+									})}
 								</div>
 							</div>
-						</div>
-					);
-				})}
-			</div>
-		</aside>
+						);
+					})}
+				</div>
+			</aside>
 		</>
 	);
 }

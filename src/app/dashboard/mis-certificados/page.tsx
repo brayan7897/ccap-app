@@ -10,19 +10,22 @@ export default function MisCertificadosPage() {
 	return (
 		<div className="p-6 lg:p-8 max-w-7xl mx-auto space-y-8">
 			{/* Header */}
-			<div className="flex items-start justify-between">
+			<div className="flex items-end justify-between gap-4">
 				<div>
-					<h1 className="text-2xl font-black text-foreground">
+					<p className="text-[11px] font-bold text-ring uppercase tracking-widest mb-1.5">
+						Logros
+					</p>
+					<h1 className="text-3xl font-black text-foreground tracking-tight">
 						Mis Certificados
 					</h1>
-					<p className="text-sm text-muted-foreground mt-1">
+					<p className="text-sm text-muted-foreground mt-1.5">
 						Todos los certificados que has obtenido al completar tus cursos.
 					</p>
 				</div>
 				{!isLoading && certificates && certificates.length > 0 && (
-					<div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-secondary/10 border border-secondary/20">
-						<Award className="w-4 h-4 text-secondary" />
-						<span className="text-sm font-bold text-secondary">
+					<div className="shrink-0 flex items-center gap-2 px-4 py-2 rounded-xl bg-gold/10 border border-gold/25">
+						<Award className="w-4 h-4 text-gold" />
+						<span className="text-sm font-black text-gold tabular-nums">
 							{certificates.length} certificado
 							{certificates.length !== 1 ? "s" : ""}
 						</span>
@@ -54,9 +57,9 @@ export default function MisCertificadosPage() {
 					))}
 				</div>
 			) : (
-				<div className="flex flex-col items-center justify-center py-24 rounded-2xl border border-dashed border-secondary/30 bg-secondary/5">
-					<div className="w-20 h-20 rounded-full bg-secondary/10 border border-secondary/20 flex items-center justify-center mb-5">
-						<Award className="w-10 h-10 text-secondary/50" />
+				<div className="flex flex-col items-center justify-center py-24 rounded-2xl border border-dashed border-gold/30 bg-gold/5">
+					<div className="w-20 h-20 rounded-full bg-gold/10 border border-gold/20 flex items-center justify-center mb-5">
+						<Award className="w-10 h-10 text-gold/60" />
 					</div>
 					<p className="text-lg font-black text-foreground">
 						Aún no tienes certificados

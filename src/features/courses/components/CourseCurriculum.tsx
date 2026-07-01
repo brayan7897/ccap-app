@@ -9,6 +9,7 @@ import {
 	HelpCircle,
 	Clock,
 	Lock,
+	BookOpen,
 } from "lucide-react";
 import type { ModuleWithLessons, LessonType } from "@/types";
 import { useEnrollmentsStore } from "@/store/enrollments-store";
@@ -18,6 +19,8 @@ interface CourseCurriculumProps {
 	/** When provided and user is enrolled, lesson rows become navigation links */
 	courseSlug?: string;
 	courseId?: string;
+	/** Course category color (hex). Falls back to the --ring token when omitted. */
+	accentColor?: string;
 }
 
 const getLessonIcon = (type: LessonType) => {
@@ -42,12 +45,24 @@ export function CourseCurriculum({
 	modules,
 	courseSlug,
 	courseId,
+	accentColor,
 }: CourseCurriculumProps) {
 	const [openModuleId, setOpenModuleId] = useState<string | null>(
 		modules.length > 0 ? modules[0].id : null,
 	);
 	const isEnrolled = useEnrollmentsStore((s) => s.isEnrolled(courseId ?? ""));
 	const canNavigate = !!courseSlug && !!courseId && isEnrolled;
+
+	const iconStyle = accentColor
+		? { backgroundColor: `${accentColor}15`, color: accentColor }
+		: undefined;
+	const numberStyle = accentColor
+		? {
+				backgroundColor: `${accentColor}15`,
+				color: accentColor,
+				borderColor: `${accentColor}30`,
+			}
+		: undefined;
 
 	const toggleModule = (moduleId: string) => {
 		setOpenModuleId((prev) => (prev === moduleId ? null : moduleId));
@@ -63,9 +78,16 @@ export function CourseCurriculum({
 
 	return (
 		<div className="space-y-4">
-			<h3 className="text-xl font-bold text-foreground mb-6">
-				Plan de Estudios
-			</h3>
+			<div className="flex items-center gap-3 mb-6">
+				<div
+					className={`p-2.5 rounded-xl ${accentColor ? "" : "bg-ring/10 text-ring"}`}
+					style={iconStyle}>
+					<BookOpen className="w-6 h-6" />
+				</div>
+				<h3 className="text-xl font-bold text-foreground m-0">
+					Plan de Estudios
+				</h3>
+			</div>
 
 			<div className="flex flex-col gap-3">
 				{modules.map((module, index) => {
@@ -89,7 +111,9 @@ export function CourseCurriculum({
 								className="w-full flex items-center justify-between p-5 text-left focus:outline-none">
 								<div className="flex flex-col gap-1">
 									<h4 className="font-bold text-foreground flex items-center gap-3 text-base md:text-lg">
-										<span className="flex items-center justify-center w-8 h-8 rounded-full bg-muted text-foreground border border-border/50 text-sm font-black">
+										<span
+											className={`flex items-center justify-center w-8 h-8 rounded-full text-sm font-black border ${accentColor ? "" : "bg-ring/10 text-ring border-ring/20"}`}
+											style={numberStyle}>
 											{index + 1}
 										</span>
 										{module.title}

@@ -42,7 +42,7 @@ export const publicService = {
   async getCategories() {
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories/?skip=0&limit=50`, {
-        next: { revalidate: 3600 },
+        next: { revalidate: 0 },
         signal: AbortSignal.timeout(8000)
       });
       if (!res.ok) return [];
@@ -56,7 +56,7 @@ export const publicService = {
   async getCourses(skip = 0, limit = 8) {
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/courses/?skip=${skip}&limit=${limit}`, {
-        next: { revalidate: 3600 },
+        next: { revalidate: 0 },
         signal: AbortSignal.timeout(8000)
       });
       if (!res.ok) return [];

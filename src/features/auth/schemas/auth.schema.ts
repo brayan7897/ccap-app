@@ -39,6 +39,7 @@ export const registerSchema = z
     document_type: z.enum(["DNI", "CE", "PASAPORTE"]),
     document_number: z.string().trim().min(1, "Número de documento requerido").max(20, "Número de documento inválido"),
     phone_number: phoneField,
+    professional_career: z.string().trim().max(100, "Carrera/Profesión muy larga").optional().nullable(),
     role_id: z.string().uuid("ID de rol inválido").optional(),
   })
   .superRefine(({ document_type, document_number }, ctx) => {

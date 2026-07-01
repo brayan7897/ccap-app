@@ -13,6 +13,8 @@ import {
 	FileText,
 	Download,
 	ExternalLink,
+	CheckCircle2,
+	Award,
 } from "lucide-react";
 import { useCourse } from "@/features/courses/hooks/useCourses";
 import { useResources } from "@/features/lessons/hooks/useResources";
@@ -20,7 +22,7 @@ import {
 	getDriveDownloadUrl,
 	getDriveEmbedUrl,
 } from "@/features/lessons/components/ContentPlayer";
-import { useMyProgress } from "@/features/enrollments/hooks/useProgress";
+import { useMyProgress, useCompleteLesson } from "@/features/enrollments/hooks/useProgress";
 import { useEnrollmentsStore } from "@/store/enrollments-store";
 import { ContentPlayer } from "@/features/lessons/components/ContentPlayer";
 import { LessonNavSidebar } from "@/features/lessons/components/LessonNavSidebar";
@@ -28,7 +30,7 @@ import { Button } from "@/components/ui/button";
 import { InactiveAccountBanner } from "@/components/ui/InactiveAccountBanner";
 import { useUser } from "@/features/auth/hooks/useAuth";
 import { useMyEnrollments } from "@/features/dashboard/hooks/useDashboard";
-import type { CourseDetail, LessonSummary } from "@/types";
+import type { CourseDetail } from "@/types";
 
 export default function LessonViewerPage() {
 	const params = useParams();
@@ -48,15 +50,22 @@ export default function LessonViewerPage() {
 	// Populate the enrollments store so isEnrolled() below is accurate.
 	const { isLoading: isEnrollmentsLoading } = useMyEnrollments();
 	const isEnrolled = useEnrollmentsStore((s) => s.isEnrolled(course?.id ?? ""));
+	const enrollment = useEnrollmentsStore(
+		(s) => s.enrollments.find((e) => e.course_id === (course?.id ?? "")),
+	);
 
-	// Only fetch resources if the user is enrolled, to prevent unauthorized data fetching via direct URL access
+	// Only fetch resources if the user is enrolled
 	const { data: resources = [], isLoading: isResourcesLoading } =
 		useResources(isEnrolled ? lessonId : undefined);
 
-	// Only fetch progress once the course ID is known to avoid a double-query
-	// (["progress", undefined] then ["progress", "real-id"]).
+	// Only fetch progress once the course ID is known
 	const { data: progressList = [] } = useMyProgress(course?.id ?? undefined);
 	const { data: user } = useUser();
+
+	// Complete-lesson mutation — updates store (progress + enrollment) in real time
+	const { mutate: completeLesson, isPending: isCompleting } = useCompleteLesson(
+		course?.id ?? "",
+	);
 
 	const secondaryResources = useMemo(() => {
 		return resources.filter((r) => r.resource_type === "SECONDARY");
@@ -92,6 +101,13 @@ export default function LessonViewerPage() {
 		currentLesson &&
 		nextLesson &&
 		currentLesson.moduleId !== nextLesson.moduleId;
+
+	// Whether this specific lesson is already checked off
+	const isAlreadyCompleted =
+		progressList.find((p) => p.lesson_id === lessonId)?.is_completed ?? false;
+
+	// Whether the entire course has been completed (enrollment status from store)
+	const isCourseCompleted = enrollment?.status === "COMPLETED";
 
 	// ── Loading / error states ─────────────────────────────────────────────────
 	if (isCourseLoading) {
@@ -192,18 +208,29 @@ export default function LessonViewerPage() {
 
 	// ── Render ─────────────────────────────────────────────────────────────────
 	return (
-		<div className="flex flex-col lg:flex-row h-full overflow-hidden relative">
+		<div className="flex flex-col lg:flex-row lg:h-[calc(100vh-4rem)] overflow-hidden">
 			{/* ── Left: Content + controls ── */}
-			<div className="flex-1 overflow-y-auto w-full">
+			{/* overflow-x-hidden prevents any child element from triggering a horizontal
+			    scrollbar in the inner scroll container */}
+			<div className="flex-1 overflow-y-auto overflow-x-hidden w-full">
 				<div className="max-w-5xl mx-auto px-4 lg:px-8 py-6 space-y-6">
-					{/* Mobile Header Toggle */}
-					<div className="lg:hidden flex items-center justify-between mb-2">
-						<h1 className="text-lg font-bold truncate pr-4">{course.title}</h1>
+					{/* Mobile top bar — lesson counter + "Temario" toggle */}
+					<div className="lg:hidden flex items-center justify-between gap-3">
+						<div className="min-w-0">
+							{currentIndex >= 0 && (
+								<p className="text-[11px] font-bold text-ring uppercase tracking-widest mb-0.5">
+									Lección {currentIndex + 1} de {flatLessons.length}
+								</p>
+							)}
+							<p className="text-sm font-bold text-foreground truncate">
+								{currentLesson?.title ?? course.title}
+							</p>
+						</div>
 						<Button
 							variant="outline"
 							size="sm"
 							onClick={() => setIsMobileNavOpen(true)}
-							className="shrink-0 gap-2">
+							className="shrink-0 gap-2 h-9">
 							<Menu className="w-4 h-4" />
 							Temario
 						</Button>
@@ -224,55 +251,106 @@ export default function LessonViewerPage() {
 						<ContentPlayer resources={resources} isLoading={isResourcesLoading} />
 					)}
 
-					{/* Lesson title & duration */}
+					{/* Lesson title & meta — desktop only (mobile shows it in top bar) */}
 					{currentLesson && (
-						<div>
-							<h1 className="text-2xl font-extrabold text-foreground">
+						<div className="hidden lg:block">
+							{currentIndex >= 0 && (
+								<p className="text-[11px] font-bold text-ring uppercase tracking-widest mb-1.5">
+									Lección {currentIndex + 1} de {flatLessons.length}
+								</p>
+							)}
+							<h1 className="text-2xl font-extrabold text-foreground leading-snug">
 								{currentLesson.title}
 							</h1>
 							{currentLesson.duration_minutes ? (
-								<p className="text-sm font-medium text-muted-foreground mt-1">
-									Duración: {currentLesson.duration_minutes} min
+								<p className="text-sm text-muted-foreground mt-1">
+									{currentLesson.duration_minutes} min de duración
 								</p>
 							) : null}
 						</div>
 					)}
 
-					{/* Prev / Next navigation */}
-					<div className="flex items-center justify-between border-t border-border pt-6">
-						{prevLesson ? (
-							<Button asChild variant="ghost" className="gap-2 max-w-[45%]">
-								<Link
-									href={`/dashboard/cursos/${slug}/leccion/${prevLesson.id}`}>
-									<ChevronLeft className="w-4 h-4 shrink-0" />
-									<span className="hidden sm:inline truncate">
-										{prevLesson.title}
-									</span>
-									<span className="sm:hidden">Anterior</span>
+					{/* ── Complete Lesson button ─────────────────────────────────── */}
+					{/* Course completion banner — shown when this lesson made the course 100% */}
+					{isCourseCompleted && !nextLesson && (
+						<div className="flex flex-col items-center gap-5 rounded-2xl border border-gold/30 bg-gold/5 p-8 text-center">
+							<div className="w-16 h-16 rounded-full bg-gold/15 border border-gold/25 flex items-center justify-center">
+								<Award className="w-8 h-8 text-gold" />
+							</div>
+							<div>
+								<h2 className="text-2xl font-black text-foreground mb-1">
+									¡Felicitaciones!
+								</h2>
+								<p className="text-muted-foreground text-sm max-w-sm">
+									Completaste el curso. Tu certificado ya está disponible en
+									"Mis Certificados".
+								</p>
+							</div>
+							<Button asChild className="bg-ring text-white dark:text-background hover:bg-ring/90 font-bold px-8">
+								<Link href="/dashboard/mis-certificados">
+									<Award className="w-4 h-4 mr-2" />
+									Ver mi certificado
 								</Link>
 							</Button>
+						</div>
+					)}
+
+					{/* Normal complete button — only when course not yet finished */}
+					{!isCourseCompleted && (
+						<Button
+							onClick={() => completeLesson(lessonId)}
+							disabled={isCompleting || isAlreadyCompleted}
+							className={
+								isAlreadyCompleted
+									? "w-full h-12 font-bold rounded-xl border-emerald-500/40 text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 hover:bg-emerald-500/15 border"
+									: "w-full h-12 font-bold rounded-xl bg-ring text-white dark:text-background hover:bg-ring/90 shadow-md"
+							}>
+							{isCompleting ? (
+								<><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Guardando…</>
+							) : isAlreadyCompleted ? (
+								<><CheckCircle2 className="w-4 h-4 mr-2 text-emerald-500" /> Lección completada</>
+							) : (
+								<><CheckCircle2 className="w-4 h-4 mr-2" /> Completar lección</>
+							)}
+						</Button>
+					)}
+
+					{/* ── Prev / Next navigation ────────────────────────────────── */}
+					<div className="grid grid-cols-2 gap-3 border-t border-border pt-5">
+						{/* Previous */}
+						{prevLesson ? (
+							<Link
+								href={`/dashboard/cursos/${slug}/leccion/${prevLesson.id}`}
+								className="group flex items-start gap-2.5 rounded-xl border border-border bg-muted/30 hover:bg-muted/60 hover:border-border/80 px-4 py-3 transition-all">
+								<ChevronLeft className="w-4 h-4 mt-0.5 shrink-0 text-muted-foreground group-hover:text-foreground transition-colors" />
+								<div className="min-w-0">
+									<p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wide mb-0.5">
+										Anterior
+									</p>
+									<p className="text-sm font-semibold text-foreground line-clamp-2 leading-snug">
+										{prevLesson.title}
+									</p>
+								</div>
+							</Link>
 						) : (
 							<div />
 						)}
 
+						{/* Next */}
 						{nextLesson ? (
-							<Button
-								asChild
-								variant="outline"
-								className="gap-2 max-w-[45%] bg-card hover:bg-accent hover:text-accent-foreground">
-								<Link
-									href={`/dashboard/cursos/${slug}/leccion/${nextLesson.id}`}>
-									<span className="hidden sm:inline truncate">
-										{isNextLessonNewModule
-											? `Siguiente Módulo: ${nextLesson.moduleTitle}`
-											: nextLesson.title}
-									</span>
-									<span className="sm:hidden">
-										{isNextLessonNewModule ? "Nuevo Módulo" : "Siguiente"}
-									</span>
-									<ChevronRight className="w-4 h-4 shrink-0" />
-								</Link>
-							</Button>
+							<Link
+								href={`/dashboard/cursos/${slug}/leccion/${nextLesson.id}`}
+								className="group flex items-start gap-2.5 rounded-xl border border-ring/30 bg-ring/5 hover:bg-ring/10 hover:border-ring/50 px-4 py-3 transition-all text-right ml-auto w-full">
+								<div className="min-w-0 flex-1">
+									<p className="text-[10px] font-bold text-ring/70 uppercase tracking-wide mb-0.5">
+										{isNextLessonNewModule ? `Siguiente módulo` : "Siguiente clase"}
+									</p>
+									<p className="text-sm font-semibold text-foreground line-clamp-2 leading-snug">
+										{nextLesson.title}
+									</p>
+								</div>
+								<ChevronRight className="w-4 h-4 mt-0.5 shrink-0 text-ring group-hover:translate-x-0.5 transition-transform" />
+							</Link>
 						) : (
 							<div />
 						)}

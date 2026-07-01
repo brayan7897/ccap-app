@@ -85,6 +85,12 @@ const profileSchema = z.object({
 		.max(500, "La biografía es muy larga")
 		.optional()
 		.nullable(),
+	professional_career: z
+		.string()
+		.trim()
+		.max(100, "La carrera es muy larga")
+		.optional()
+		.nullable(),
 });
 
 const DOC_RULES: Record<
@@ -257,13 +263,13 @@ function AvatarPreview({ url, name }: { url: string; name: string }) {
 					onError={() => setBroken(true)}
 				/>
 			) : (
-				<span className="text-2xl font-black text-primary select-none">
+				<span className="text-2xl font-black text-ring select-none">
 					{initials || (
 						<UserRound className="w-10 h-10 text-muted-foreground" />
 					)}
 				</span>
 			)}
-			<div className="absolute bottom-0 right-0 bg-primary text-primary-foreground rounded-full p-1 shadow">
+			<div className="absolute bottom-0 right-0 bg-ring text-white dark:text-background rounded-full p-1 shadow">
 				<Camera className="w-3.5 h-3.5" />
 			</div>
 		</div>
@@ -325,6 +331,7 @@ export default function ProfilePage() {
 			phone_number: "",
 			avatar_url: "",
 			bio: "",
+			professional_career: "",
 		},
 		mode: "onChange",
 	});
@@ -350,6 +357,7 @@ export default function ProfilePage() {
 				phone_number: user.phone_number || "",
 				avatar_url: user.avatar_url || "",
 				bio: user.bio || "",
+				professional_career: user.professional_career || "",
 			});
 		}
 	}, [user, reset]);
@@ -362,6 +370,7 @@ export default function ProfilePage() {
 				phone_number: data.phone_number || undefined,
 				avatar_url: data.avatar_url || undefined,
 				bio: data.bio || undefined,
+				professional_career: data.professional_career || undefined,
 			},
 			{
 				onSuccess: () => {
@@ -387,6 +396,7 @@ export default function ProfilePage() {
 				phone_number: user.phone_number || "",
 				avatar_url: user.avatar_url || "",
 				bio: user.bio || "",
+				professional_career: user.professional_career || "",
 			});
 		}
 		setIsEditing(false);
@@ -461,7 +471,7 @@ export default function ProfilePage() {
 	if (isLoading) {
 		return (
 			<div className="flex h-64 items-center justify-center">
-				<Loader2 className="w-8 h-8 animate-spin text-primary" />
+				<Loader2 className="w-8 h-8 animate-spin text-ring" />
 			</div>
 		);
 	}
@@ -661,6 +671,33 @@ export default function ProfilePage() {
 						/>
 					</div>
 
+					{/* Profesión / Carrera */}
+					<div className="space-y-1.5">
+						<Label
+							htmlFor="professional_career"
+							className="text-xs font-semibold uppercase tracking-wide">
+							Profesión o Carrera
+						</Label>
+						<div className="relative">
+							<Input
+								id="professional_career"
+								type="text"
+								placeholder="Ej. Ingeniería de Sistemas, Contabilidad..."
+								disabled={!isEditing}
+								{...register("professional_career")}
+								className={getInputClass(
+									profileFieldState("professional_career"),
+									"h-11 rounded-xl bg-background/50 pr-8 disabled:opacity-60 disabled:cursor-not-allowed",
+								)}
+							/>
+							<StatusIcon state={profileFieldState("professional_career")} />
+						</div>
+						<FieldMsg
+							state={profileFieldState("professional_career")}
+							error={errors.professional_career?.message}
+						/>
+					</div>
+
 					{/* Biografía */}
 					<div className="space-y-1.5">
 						<Label
@@ -733,7 +770,7 @@ export default function ProfilePage() {
 						<button
 							type="button"
 							onClick={() => setIsEditingDoc(true)}
-							className="text-xs text-primary hover:underline transition-colors font-medium">
+							className="text-xs text-ring hover:underline transition-colors font-medium">
 							Registrar documento
 						</button>
 					)}

@@ -1,11 +1,13 @@
 import { api } from "@/lib/api";
-import type { Enrollment, LessonProgress } from "@/types";
+import type { Enrollment, LessonProgress, CompleteProgressResponse } from "@/types";
 
 export interface ProgressInput {
   lesson_id: string;
-  last_position_seconds: number;
-  watch_time_seconds: number;
   is_completed: boolean;
+  /** Optional — not used for Google Drive content */
+  last_position_seconds?: number;
+  /** Optional — not used for Google Drive content */
+  watch_time_seconds?: number;
 }
 
 export const enrollmentsService = {
@@ -33,10 +35,20 @@ export const enrollmentsService = {
     return res.data;
   },
 
-  /** Track lesson progress */
-  async trackProgress(data: ProgressInput): Promise<LessonProgress> {
-    const res = await api.post<LessonProgress>("/enrollments/progress", data);
+  /**
+   * Mark a lesson as complete.
+   * Returns the updated lesson progress AND the updated enrollment
+   * (with new progress_percentage and last_completed_lesson_id).
+   * POST /enrollments/progress
+   */
+  async completeLesson(data: ProgressInput): Promise<CompleteProgressResponse> {
+    const res = await api.post<CompleteProgressResponse>("/enrollments/progress", data);
     return res.data;
+  },
+
+  /** Alias kept for backward compatibility */
+  async trackProgress(data: ProgressInput): Promise<CompleteProgressResponse> {
+    return this.completeLesson(data);
   },
 
   /** Get all lesson progress for the current user (optionally filtered by course) */

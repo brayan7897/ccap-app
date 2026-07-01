@@ -13,35 +13,12 @@ import {
 	Home,
 	Star,
 	Users,
-	Clock,
-	LayoutList,
 	Award,
+	BookOpen,
+	ClipboardList,
 } from "lucide-react";
 import Link from "next/link";
 import { useEnrollmentsStore } from "@/store/enrollments-store";
-
-const levelLabels: Record<string, string> = {
-	BASIC: "Básico",
-	INTERMEDIATE: "Intermedio",
-	ADVANCED: "Avanzado",
-};
-
-const levelColors: Record<string, string> = {
-	BASIC:
-		"bg-emerald-500/10 text-emerald-600 border-emerald-500/20 dark:text-emerald-400",
-	INTERMEDIATE:
-		"bg-blue-500/10 text-blue-600 border-blue-500/20 dark:text-blue-400",
-	ADVANCED:
-		"bg-pink-500/10 text-pink-600 border-pink-500/20 dark:text-pink-400",
-};
-
-function formatTotalDuration(seconds?: number): string {
-	if (!seconds) return "—";
-	const h = Math.floor(seconds / 3600);
-	const m = Math.floor((seconds % 3600) / 60);
-	if (h > 0) return m > 0 ? `${h}h ${m}m` : `${h}h`;
-	return `${m}m`;
-}
 
 export default function CourseDetailsPage() {
 	const params = useParams();
@@ -90,12 +67,7 @@ export default function CourseDetailsPage() {
 		);
 	}
 
-	const moduleCount = course.modules?.length ?? 0;
-	const durationFormatted = formatTotalDuration(course.total_duration_seconds);
-	const levelLabel = levelLabels[course.course_level] ?? course.course_level;
-	const levelColor =
-		levelColors[course.course_level] ??
-		"bg-muted text-muted-foreground border-border";
+	const categoryColor = course.category_color || course.category?.color || "#4f46e5"; // default indigo
 	const priceDisplay =
 		course.course_type === "PAID" && course.price != null
 			? `S/. ${course.price.toFixed(2)}`
@@ -103,10 +75,10 @@ export default function CourseDetailsPage() {
 
 	return (
 		<div className="min-h-screen bg-background w-full flex flex-col pb-28 relative">
-			{/* ── Breadcrumbs ── */}
-			<div className="bg-muted/30 border-b border-border/50">
-				<div className="container mx-auto px-4 lg:px-8 py-4">
-					<nav className="flex items-center gap-2 text-sm text-muted-foreground overflow-x-auto whitespace-nowrap">
+			{/* Breadcrumbs */}
+			<div className="bg-muted/10 border-b border-border/20">
+				<div className="container mx-auto px-4 lg:px-8 py-3">
+					<nav className="flex items-center gap-2 text-sm text-muted-foreground overflow-x-auto whitespace-nowrap font-medium">
 						<Link
 							href="/"
 							className="hover:text-primary transition-colors flex items-center gap-1.5">
@@ -119,165 +91,178 @@ export default function CourseDetailsPage() {
 							Cursos
 						</Link>
 						<ChevronRight className="w-4 h-4 shrink-0" />
-						<span className="text-foreground font-medium truncate max-w-50 sm:max-w-xs md:max-w-md">
+						<span className="text-foreground truncate max-w-[200px] sm:max-w-xs md:max-w-md">
 							{course.title}
 						</span>
 					</nav>
 				</div>
 			</div>
 
-			{/* ── Light header ── */}
-			<section className="border-b border-border bg-card">
-				<div className="container mx-auto px-4 lg:px-8 py-10">
-					{/* Category + Level */}
-					<div className="flex flex-wrap items-center gap-2 mb-4">
-						{course.category && (
-							<span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-								{course.category.name}
-							</span>
-						)}
-						<span
-							className={`px-2.5 py-1 rounded-full text-xs font-bold border ${levelColor}`}>
-							{levelLabel}
-						</span>
-					</div>
-
-					{/* Title */}
-					<h1 className="text-3xl md:text-4xl font-extrabold text-foreground leading-tight mb-3 max-w-3xl">
-						{course.title}
-					</h1>
-
-					{/* Short description */}
-					{course.short_description && (
-						<p className="text-base text-muted-foreground leading-relaxed mb-5 max-w-2xl">
-							{course.short_description}
-						</p>
-					)}
-
-					{/* Rating + instructor row */}
-					<div className="flex flex-wrap items-center gap-3 mb-6 text-sm">
-						<div className="flex items-center gap-1">
-							{[...Array(5)].map((_, i) => (
-								<Star
-									key={i}
-									className={`w-4 h-4 ${
-										i < 4
-											? "fill-amber-400 text-amber-400"
-											: "fill-amber-400/30 text-amber-400/30"
-									}`}
-								/>
-							))}
-							<span className="font-bold text-foreground ml-1">4.9</span>
-						</div>
-						{course.enrolled_count !== undefined && (
-							<span className="text-muted-foreground">
-								({course.enrolled_count.toLocaleString()} valoraciones)
-							</span>
-						)}
-						{course.instructor && (
-							<>
-								<span className="text-muted-foreground/40">·</span>
-								<span className="text-foreground font-medium">
-									Instructor: {course.instructor.first_name}{" "}
-									{course.instructor.last_name}
-								</span>
-							</>
-						)}
-					</div>
-
-					{/* Stats bar */}
-					<div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm">
-						{course.total_duration_seconds != null && (
-							<div className="flex items-center gap-1.5 text-muted-foreground">
-								<Clock className="w-4 h-4" />
-								<span className="font-medium">
-									{durationFormatted} en total
-								</span>
-							</div>
-						)}
-						<div className="flex items-center gap-1.5 text-muted-foreground">
-							<Users className="w-4 h-4" />
-							<span className="font-medium">
-								{(course.enrolled_count ?? 0).toLocaleString()} estudiantes
-							</span>
-						</div>
-						{moduleCount > 0 && (
-							<div className="flex items-center gap-1.5 text-muted-foreground">
-								<LayoutList className="w-4 h-4" />
-								<span className="font-medium">{moduleCount} módulos</span>
-							</div>
-						)}
-						<div className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-medium">
-							<Award className="w-4 h-4" />
-							Certificado incluido
-						</div>
-					</div>
-				</div>
-			</section>
-
-			{/* ── Main content grid ── */}
-			<section className="container mx-auto px-4 lg:px-8 py-12">
-				<div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-12 items-start">
+			<section className="container mx-auto px-4 lg:px-8 py-8 md:py-12">
+				<div className="grid grid-cols-1 xl:grid-cols-[1fr_420px] gap-10 items-start">
 					{/* Left column */}
-					<div className="space-y-12">
-						{/* What you'll learn */}
-						{course.what_you_will_learn &&
-							course.what_you_will_learn.length > 0 && (
-								<div className="p-6 rounded-2xl border border-border bg-muted">
-									<h3 className="text-xl font-bold text-foreground mb-4">
-										Lo que aprenderás
-									</h3>
-									<div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-										{course.what_you_will_learn.map(
-											(item: string, idx: number) => (
-												<div key={idx} className="flex items-start gap-2.5">
-													<CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
-													<span className="text-sm text-foreground/80 leading-relaxed">
-														{item}
-													</span>
-												</div>
-											),
-										)}
-									</div>
+					<div className="space-y-10">
+						{/* Header Section */}
+						<div className="space-y-6">
+							{course.category && (
+								<div
+									className="inline-flex px-4 py-1.5 rounded-full text-sm font-black uppercase tracking-wider"
+									style={{
+										backgroundColor: `${categoryColor}15`,
+										color: categoryColor,
+										border: `1px solid ${categoryColor}30`,
+									}}>
+									{course.category.name}
 								</div>
 							)}
 
-						{/* Description */}
-						<div>
-							<h3 className="text-xl font-bold text-foreground mb-3">
-								Acerca de este curso
-							</h3>
-							<p className="whitespace-pre-line text-muted-foreground leading-relaxed">
-								{course.description ||
-									"Este curso no proporciona una descripción detallada en este momento."}
-							</p>
+							<h1 className="text-3xl md:text-5xl lg:text-[3.5rem] font-black leading-[1.08] tracking-tight text-foreground">
+								{course.title}
+							</h1>
+
+							{course.short_description && (
+								<p className="text-xl md:text-2xl text-foreground/80 font-medium leading-relaxed max-w-4xl">
+									{course.short_description}
+								</p>
+							)}
+
+							{/* Rating & Stats row */}
+							<div className="flex flex-wrap items-center gap-x-8 gap-y-4 pt-4">
+								<div className="flex flex-col items-center sm:items-start">
+									<div className="flex items-center gap-1.5">
+										{[...Array(5)].map((_, i) => (
+											<Star
+												key={i}
+												className={`w-5 h-5 md:w-6 md:h-6 ${
+													i < 4
+														? "fill-amber-400 text-amber-400"
+														: "fill-amber-400/30 text-amber-400/30"
+												}`}
+											/>
+										))}
+									</div>
+									<div className="flex items-center gap-2 mt-1">
+										<span className="font-bold text-foreground text-lg">4.8</span>
+										<span className="text-muted-foreground text-sm">Valoración del curso</span>
+									</div>
+								</div>
+								
+								<div className="w-px h-12 bg-border hidden sm:block"></div>
+
+								<div className="flex items-center gap-3">
+									<Users className="w-7 h-7 opacity-70 text-ring" />
+									<div className="flex flex-col">
+										<span className="font-black text-lg text-foreground">
+											{(course.enrolled_count ?? 0).toLocaleString("es-PE")}+
+										</span>
+										<span className="text-sm text-muted-foreground">Estudiantes</span>
+									</div>
+								</div>
+
+								<div className="w-px h-10 bg-border hidden sm:block"></div>
+
+								<div className="flex items-center gap-3">
+									<Award className="w-7 h-7 opacity-70 text-gold" />
+									<div className="flex flex-col">
+										<span className="font-bold text-foreground">Certificado</span>
+										<span className="text-sm font-bold text-gold">incluido</span>
+									</div>
+								</div>
+							</div>
 						</div>
 
-						{/* Requirements */}
-						{course.requirements && course.requirements.length > 0 && (
-							<div>
-								<h3 className="text-xl font-bold text-foreground mb-4">
-									Requisitos
-								</h3>
-								<ul className="space-y-2">
-									{course.requirements.map((req: string, idx: number) => (
-										<li
-											key={idx}
-											className="flex items-center gap-2.5 text-muted-foreground text-sm">
-											<div className="w-1.5 h-1.5 rounded-full bg-foreground/60 shrink-0" />
-											{req}
-										</li>
+						{/* What you'll learn */}
+						{course.what_you_will_learn && course.what_you_will_learn.length > 0 && (
+							<div
+								className="p-6 md:p-8 rounded-2xl border relative overflow-hidden"
+								style={{
+									borderColor: `${categoryColor}25`,
+									backgroundColor: `${categoryColor}0d`,
+								}}>
+								<div className="flex items-center gap-3 mb-6 relative z-10">
+									<div
+										className="p-2.5 rounded-xl text-white dark:text-background"
+										style={{ backgroundColor: categoryColor }}>
+										<CheckCircle2 className="w-6 h-6" />
+									</div>
+									<h3 className="text-2xl font-bold text-foreground">
+										Lo que aprenderás
+									</h3>
+								</div>
+								<div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-8 relative z-10">
+									{course.what_you_will_learn.map((item: string, idx: number) => (
+										<div key={idx} className="flex items-start gap-3">
+											<div
+												className="mt-1 shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-white dark:text-background"
+												style={{ backgroundColor: categoryColor }}>
+												<svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
+											</div>
+											<span className="text-base text-foreground/80 font-medium leading-relaxed">
+												{item}
+											</span>
+										</div>
 									))}
-								</ul>
+								</div>
 							</div>
 						)}
 
-						{/* Curriculum */}
-						<CourseCurriculum
-							modules={course.modules || []}
-							courseSlug={slug}
-							courseId={course.id}
-						/>
+						{/* About + Requisitos: condensed, paired side by side */}
+						<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+							{/* About */}
+							<div className="p-6 rounded-2xl bg-muted/40 border border-border h-full">
+								<div className="flex items-center gap-3 mb-4">
+									<div
+										className="p-2.5 rounded-xl"
+										style={{ backgroundColor: `${categoryColor}15`, color: categoryColor }}>
+										<BookOpen className="w-5 h-5" />
+									</div>
+									<h3 className="text-lg font-bold text-foreground">
+										Acerca del curso
+									</h3>
+								</div>
+								<p className="whitespace-pre-line text-foreground/80 text-sm leading-relaxed">
+									{course.description || "Este curso no proporciona una descripción detallada en este momento."}
+								</p>
+							</div>
+
+							{/* Requisitos */}
+							<div className="p-6 rounded-2xl bg-muted/40 border border-border h-full">
+								<div className="flex items-center gap-3 mb-4">
+									<div
+										className="p-2.5 rounded-xl"
+										style={{ backgroundColor: `${categoryColor}15`, color: categoryColor }}>
+										<ClipboardList className="w-5 h-5" />
+									</div>
+									<h3 className="text-lg font-bold text-foreground">
+										Requisitos
+									</h3>
+								</div>
+								{course.requirements && course.requirements.length > 0 ? (
+									<ul className="space-y-3.5">
+										{course.requirements.map((req: string, idx: number) => (
+											<li key={idx} className="flex items-start gap-3 text-foreground/80 text-sm font-medium">
+												<div
+													className="w-1.5 h-1.5 rounded-full mt-2 shrink-0"
+													style={{ backgroundColor: categoryColor }} />
+												<span className="leading-relaxed">{req}</span>
+											</li>
+										))}
+									</ul>
+								) : (
+									<p className="text-muted-foreground text-sm">No hay requisitos específicos.</p>
+								)}
+							</div>
+						</div>
+
+						{/* Plan de estudios */}
+						<div className="p-6 rounded-2xl bg-muted/40 border border-border">
+							<CourseCurriculum
+								modules={course.modules || []}
+								courseSlug={slug}
+								courseId={course.id}
+								accentColor={categoryColor}
+							/>
+						</div>
 
 						{/* Instructor */}
 						{course.instructor && (
@@ -286,27 +271,27 @@ export default function CourseDetailsPage() {
 					</div>
 
 					{/* Right: sticky sidebar (desktop only) */}
-					<div className="hidden lg:block">
+					<div className="hidden xl:block">
 						<CourseEnrollCard course={course} />
 					</div>
 				</div>
 			</section>
 
 			{/* Mobile: inline enrollment card */}
-			<div className="lg:hidden container mx-auto px-4 pb-8" id="mobile-enroll">
+			<div className="xl:hidden container mx-auto px-4 pb-8" id="mobile-enroll">
 				<CourseEnrollCard course={course} />
 			</div>
 
-			{/* ── Mobile FAB ── */}
-			<div className="fixed bottom-0 left-0 right-0 p-4 bg-background/90 backdrop-blur-xl border-t border-border/50 lg:hidden z-50 flex gap-4 items-center">
+			{/* Mobile FAB */}
+			<div className="fixed bottom-0 left-0 right-0 p-4 bg-background/90 backdrop-blur-xl border-t border-border/50 xl:hidden z-50 flex gap-4 items-center">
 				<div className="flex-1">
 					<p className="text-xs text-muted-foreground mb-0.5">Precio</p>
-					<p className="font-bold text-foreground">{priceDisplay}</p>
+					<p className="font-bold text-foreground text-xl">{priceDisplay}</p>
 				</div>
 				{isEnrolled ? (
 					<Link
 						href="/dashboard/mis-cursos"
-						className="flex-1 bg-ring text-primary-foreground h-12 rounded-xl font-bold shadow-lg text-center flex items-center justify-center">
+						className="flex-1 h-12 rounded-xl font-bold shadow-lg text-center flex items-center justify-center bg-ring text-white dark:text-background">
 						Ir a mis cursos
 					</Link>
 				) : (
@@ -316,7 +301,7 @@ export default function CourseDetailsPage() {
 								.getElementById("mobile-enroll")
 								?.scrollIntoView({ behavior: "smooth" })
 						}
-						className="flex-1 bg-secondary text-secondary-foreground h-12 rounded-xl font-bold shadow-lg">
+						className="flex-1 h-12 rounded-xl font-bold shadow-lg bg-ring text-white dark:text-background">
 						Inscribirme
 					</button>
 				)}

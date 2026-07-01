@@ -48,6 +48,8 @@ function toCardProps(course: Course): CourseCardProps {
 			course.modules?.reduce((sum, m) => sum + (m.lessons?.length ?? 0), 0),
 		total_duration: hours ? `${hours} horas` : undefined,
 		enrolled_count: course.enrolled_count,
+		course_type: course.course_type,
+		price: course.price,
 	};
 }
 

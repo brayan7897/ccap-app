@@ -44,6 +44,7 @@ export const authService = {
     phone_number?: string;
     avatar_url?: string;
     bio?: string;
+    professional_career?: string;
   }): Promise<User> {
     const res = await api.put<User>("/users/me", data);
     return res.data;

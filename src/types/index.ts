@@ -61,6 +61,7 @@ export interface User {
   role_name: string;
   is_active: boolean;
   course_access: CourseAccess;
+  professional_career: string | null;
 }
 
 /** Returned by admin endpoints — includes created_at */
@@ -168,9 +169,12 @@ export interface Enrollment {
   status: EnrollmentStatus;
   progress_percentage: number;
   enrolled_at: string;
+  /** ID of the furthest lesson completed — use to resume from the right place */
+  last_completed_lesson_id: string | null;
+  /** Set by backend when status becomes COMPLETED */
+  completed_at: string | null;
 }
 
-/** POST /enrollments/progress response */
 export interface LessonProgress {
   id: string;
   user_id: string;
@@ -180,6 +184,14 @@ export interface LessonProgress {
   is_completed: boolean;
   completed_at: string | null;
   last_accessed_at: string;
+}
+
+/** Response from POST /enrollments/progress */
+export interface CompleteProgressResponse {
+  lesson_progress: LessonProgress;
+  /** Updated enrollment with new progress_percentage and last_completed_lesson_id.
+   *  null when the backend can't resolve the enrollment (shouldn't happen normally). */
+  enrollment: Enrollment | null;
 }
 
 // ── Certificate ───────────────────────────────────────────────────────────────
