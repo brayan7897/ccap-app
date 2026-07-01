@@ -305,174 +305,95 @@ export default function LessonViewerPage() {
 						</div>
 					)}
 
-					{/* ── Unified lesson action + navigation ────────────────────── */}
-					{/* All states share the same visual weight and slot positions so
-					    the layout doesn't shift between completed / not-completed. */}
+					{/* ── Lesson navigation ── compact single row ───────────────── */}
 					{!isCourseCompleted && (
-						<div className="space-y-3">
+						<div className="flex items-stretch gap-2.5 border-t border-border pt-5">
 
-							{/* PRIMARY ACTION ── same button style regardless of state */}
+							{/* Previous — compact chip, always at start */}
+							{prevLesson && (
+								<Link
+									href={`/dashboard/cursos/${slug}/leccion/${prevLesson.id}`}
+									className="group shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-xl border border-border bg-muted/40 hover:bg-muted/70 hover:border-border/80 transition-all duration-200">
+									<ChevronLeft className="w-4 h-4 text-muted-foreground group-hover:text-foreground group-hover:-translate-x-0.5 transition-all duration-150 shrink-0" />
+									<div className="hidden sm:block min-w-0 max-w-27.5">
+										<p className="text-[10px] text-muted-foreground font-semibold uppercase tracking-wide leading-none">Anterior</p>
+										<p className="text-xs font-semibold text-foreground truncate mt-0.5">{prevLesson.title}</p>
+									</div>
+								</Link>
+							)}
+
+							{/* Primary action — fills remaining width */}
 							{nextLesson ? (
-								/* Has next → "Completar y continuar" (or just "Continuar" if done) */
+								/* Has next: "Completar y continuar →" / "Continuar →" */
 								<button
 									onClick={() => handleCompleteAndContinue(nextLesson.id)}
 									disabled={isCompleting || isNavigating}
-									className="w-full h-14 rounded-xl font-bold flex items-center justify-between px-5 gap-3 bg-ring text-white dark:text-background hover:bg-ring/90 active:bg-ring/80 disabled:opacity-70 shadow-sm hover:shadow-md transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 group">
-									<span className="flex items-center gap-2.5 min-w-0">
-										{(isCompleting || isNavigating) ? (
-											<Loader2 className="w-4 h-4 shrink-0 animate-spin" />
-										) : isAlreadyCompleted ? (
-											<CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-300" />
-										) : (
-											<CheckCircle2 className="w-4 h-4 shrink-0" />
-										)}
-										<span className="truncate">
+									className="flex-1 flex items-center justify-between px-4 py-2.5 rounded-xl font-bold bg-ring text-white dark:text-background hover:bg-ring/90 active:bg-ring/80 disabled:opacity-60 shadow-sm hover:shadow-md transition-all duration-200 group">
+									<span className="flex items-center gap-2 min-w-0">
+										{(isCompleting || isNavigating)
+											? <Loader2 className="w-4 h-4 shrink-0 animate-spin" />
+											: isAlreadyCompleted
+												? <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-300" />
+												: <CheckCircle2 className="w-4 h-4 shrink-0" />}
+										<span className="text-sm truncate">
 											{isAlreadyCompleted ? "Continuar" : "Completar y continuar"}
 										</span>
 									</span>
-									<span className="flex items-center gap-1 text-[11px] font-semibold opacity-75 shrink-0 group-hover:opacity-100 transition-opacity">
-										{isNextLessonNewModule ? "Siguiente módulo" : "Siguiente clase"}
+									<span className="flex items-center gap-1 text-xs font-semibold opacity-70 shrink-0 group-hover:opacity-100 transition-opacity">
+										{isNextLessonNewModule ? "Siguiente módulo" : "Siguiente"}
 										<ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform duration-150" />
 									</span>
 								</button>
 							) : (
-								/* Last lesson → "Completar lección" only */
+								/* Last lesson: complete only */
 								<button
 									onClick={() => completeLesson(lessonId)}
 									disabled={isCompleting || isAlreadyCompleted}
 									className={[
-										"w-full h-14 rounded-xl font-bold flex items-center justify-center gap-2.5 transition-all duration-200",
+										"flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-bold text-sm transition-all duration-200",
 										isAlreadyCompleted
-											? "bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 cursor-default"
-											: "bg-ring text-white dark:text-background hover:bg-ring/90 active:bg-ring/80 shadow-sm hover:shadow-md hover:-translate-y-0.5 active:translate-y-0",
+											? "bg-emerald-500/10 border border-emerald-500/25 text-emerald-600 dark:text-emerald-400 cursor-default"
+											: "bg-ring text-white dark:text-background hover:bg-ring/90 active:bg-ring/80 shadow-sm hover:shadow-md",
 									].join(" ")}>
-									{isCompleting ? (
-										<><Loader2 className="w-4 h-4 animate-spin" /> Guardando…</>
-									) : isAlreadyCompleted ? (
-										<><CheckCircle2 className="w-5 h-5 text-emerald-500" /> Lección completada</>
-									) : (
-										<><CheckCircle2 className="w-5 h-5" /> Completar lección</>
-									)}
+									{isCompleting
+										? <><Loader2 className="w-4 h-4 animate-spin" /> Guardando…</>
+										: isAlreadyCompleted
+											? <><CheckCircle2 className="w-4 h-4 text-emerald-500" /> Lección completada</>
+											: <><CheckCircle2 className="w-4 h-4" /> Completar lección</>}
 								</button>
 							)}
-
-							{/* SECONDARY NAV ── Anterior / (Siguiente only when already done) */}
-							<div className="flex items-center gap-3 pt-1">
-								{prevLesson ? (
-									<Link
-										href={`/dashboard/cursos/${slug}/leccion/${prevLesson.id}`}
-										className="group flex items-center gap-2 flex-1 rounded-xl border border-border bg-muted/30 hover:bg-muted/60 hover:border-border/70 px-4 py-2.5 transition-all duration-200">
-										<ChevronLeft className="w-3.5 h-3.5 shrink-0 text-muted-foreground group-hover:text-foreground group-hover:-translate-x-0.5 transition-all duration-150" />
-										<div className="min-w-0">
-											<p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wide leading-none mb-0.5">Anterior</p>
-											<p className="text-xs font-semibold text-foreground truncate">{prevLesson.title}</p>
-										</div>
-									</Link>
-								) : (
-									<div className="flex-1" />
-								)}
-
-								{/* Show a separate "Siguiente" card only when already completed
-								    (the primary button above handles it when not completed) */}
-								{nextLesson && isAlreadyCompleted && (
-									<Link
-										href={`/dashboard/cursos/${slug}/leccion/${nextLesson.id}`}
-										className="group flex items-center gap-2 flex-1 rounded-xl border border-ring/25 bg-ring/5 hover:bg-ring/10 hover:border-ring/40 px-4 py-2.5 transition-all duration-200 justify-end text-right">
-										<div className="min-w-0">
-											<p className="text-[10px] font-bold text-ring/60 uppercase tracking-wide leading-none mb-0.5">
-												{isNextLessonNewModule ? "Siguiente módulo" : "Siguiente"}
-											</p>
-											<p className="text-xs font-semibold text-foreground truncate">{nextLesson.title}</p>
-										</div>
-										<ChevronRight className="w-3.5 h-3.5 shrink-0 text-ring group-hover:translate-x-0.5 transition-transform duration-150" />
-									</Link>
-								)}
-							</div>
 						</div>
 					)}
 
-					{/* ── Resources Section ── */}
+					{/* ── Resources — quiet flat list, focus stays on the video ── */}
 					{secondaryResources.length > 0 && (
-						<div className="mt-8 pt-8 border-t border-border">
-							<h3 className="text-xl font-extrabold text-foreground mb-6 flex items-center gap-2">
-								Recursos Complementarios
-								<span className="flex items-center justify-center bg-muted text-foreground border border-border/50 text-xs w-6 h-6 rounded-full">
-									{secondaryResources.length}
-								</span>
-							</h3>
-
-							<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4">
+						<div className="pt-6 border-t border-border">
+							<p className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-3">
+								Recursos · {secondaryResources.length}
+							</p>
+							<div className="space-y-0.5">
 								{secondaryResources.map((res) => {
 									const isPDF = res.resource_format === "PDF";
 									const isDoc = res.resource_format === "DOCUMENT";
-									const isImg = res.resource_format === "IMAGE";
-									const isVideo = res.resource_format === "VIDEO";
-									const isLink = res.resource_format === "LINK";
+									const isDownload = isPDF || isDoc;
 
 									let url = res.external_url;
 									if (!url && res.drive_file_id) {
-										if (isPDF || isDoc)
-											url = getDriveDownloadUrl(res.drive_file_id);
-										else url = getDriveEmbedUrl(res.drive_file_id);
+										url = isDownload
+											? getDriveDownloadUrl(res.drive_file_id)
+											: getDriveEmbedUrl(res.drive_file_id);
 									}
 
-									// Color themes based on format
-									let themeClasses =
-										"border-border/60 bg-card hover:border-ring/40 hover:bg-accent/50";
-									let iconBoxClasses = "bg-muted text-foreground";
-									let icon = <ExternalLink className="w-6 h-6" />;
-									let actionText = "Visitar Enlace";
-									let actionIcon = <ExternalLink className="w-3.5 h-3.5" />;
-
-									if (isPDF) {
-										themeClasses =
-											"border-red-200/50 bg-red-50/30 hover:bg-red-50 hover:border-red-300 dark:border-red-900/50 dark:bg-red-950/10 dark:hover:bg-red-950/30 hover:shadow-red-500/10";
-										iconBoxClasses =
-											"bg-red-100 text-red-600 dark:bg-red-900/40 dark:text-red-400";
-										icon = <FileText className="w-6 h-6" />;
-										actionText = "Descargar PDF";
-										actionIcon = <Download className="w-3.5 h-3.5" />;
-									} else if (isDoc) {
-										themeClasses =
-											"border-blue-200/50 bg-blue-50/30 hover:bg-blue-50 hover:border-blue-300 dark:border-blue-900/50 dark:bg-blue-950/10 dark:hover:bg-blue-950/30 hover:shadow-blue-500/10";
-										iconBoxClasses =
-											"bg-blue-100 text-blue-600 dark:bg-blue-900/40 dark:text-blue-400";
-										icon = <FileText className="w-6 h-6" />;
-										actionText = "Descargar Archivo";
-										actionIcon = <Download className="w-3.5 h-3.5" />;
-									} else if (isImg) {
-										themeClasses =
-											"border-purple-200/50 bg-purple-50/30 hover:bg-purple-50 hover:border-purple-300 dark:border-purple-900/50 dark:bg-purple-950/10 dark:hover:bg-purple-950/30 hover:shadow-purple-500/10";
-										iconBoxClasses =
-											"bg-purple-100 text-purple-600 dark:bg-purple-900/40 dark:text-purple-400 p-0 overflow-hidden";
-										// Attempt to show preview if using drive file, otherwise icon
-										const previewUrl = res.drive_file_id
-											? `https://drive.google.com/uc?export=view&id=${res.drive_file_id}`
-											: res.external_url;
-										icon = previewUrl ? (
-											// eslint-disable-next-line @next/next/no-img-element
-											<img
-												src={previewUrl}
-												alt={res.title}
-												className="w-full h-full object-cover"
-											/>
-										) : (
-											<FileText className="w-6 h-6" />
-										);
-										actionText = "Ver Imagen";
-									} else if (isVideo) {
-										themeClasses =
-											"border-amber-200/50 bg-amber-50/30 hover:bg-amber-50 hover:border-amber-300 dark:border-amber-900/50 dark:bg-amber-950/10 dark:hover:bg-amber-950/30 hover:shadow-amber-500/10";
-										iconBoxClasses =
-											"bg-amber-100 text-amber-600 dark:bg-amber-900/40 dark:text-amber-400";
-										icon = <FileText className="w-6 h-6" />;
-										actionText = "Ver Video";
-									} else if (isLink) {
-										themeClasses =
-											"border-emerald-200/50 bg-emerald-50/30 hover:bg-emerald-50 hover:border-emerald-300 dark:border-emerald-900/50 dark:bg-emerald-950/10 dark:hover:bg-emerald-950/30 hover:shadow-emerald-500/10";
-										iconBoxClasses =
-											"bg-emerald-100 text-emerald-600 dark:bg-emerald-900/40 dark:text-emerald-400";
-									}
+									const Icon = isDownload ? Download : ExternalLink;
+									const label = isPDF
+										? "PDF"
+										: isDoc
+											? "Archivo"
+											: res.resource_format === "IMAGE"
+												? "Imagen"
+												: res.resource_format === "VIDEO"
+													? "Video"
+													: "Enlace";
 
 									return (
 										<a
@@ -480,19 +401,12 @@ export default function LessonViewerPage() {
 											href={url ?? "#"}
 											target="_blank"
 											rel="noopener noreferrer"
-											className={`flex items-center gap-4 p-4 rounded-xl border transition-all group shadow-sm hover:-translate-y-0.5 ${themeClasses}`}>
-											<div
-												className={`w-14 h-14 rounded-xl flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform shadow-sm ${iconBoxClasses}`}>
-												{icon}
-											</div>
-											<div className="flex-1 min-w-0">
-												<p className="text-sm font-bold text-foreground line-clamp-2 leading-tight mb-1.5">
-													{res.title}
-												</p>
-												<p className="text-xs font-semibold opacity-80 flex items-center gap-1.5 uppercase tracking-wider">
-													{actionIcon} {actionText}
-												</p>
-											</div>
+											className="flex items-center gap-3 px-2 py-2 rounded-lg text-sm text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all duration-150 group">
+											<Icon className="w-3.5 h-3.5 shrink-0 text-muted-foreground/60 group-hover:text-ring transition-colors" />
+											<span className="flex-1 truncate font-medium">{res.title}</span>
+											<span className="text-[10px] font-bold uppercase tracking-wide text-muted-foreground/50 shrink-0 group-hover:text-muted-foreground transition-colors">
+												{label}
+											</span>
 										</a>
 									);
 								})}
