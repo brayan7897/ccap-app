@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState, useEffect, useTransition } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import {
@@ -66,6 +66,20 @@ export default function LessonViewerPage() {
 	const { mutate: completeLesson, isPending: isCompleting } = useCompleteLesson(
 		course?.id ?? "",
 	);
+
+	// useTransition marks router navigation as non-urgent (rule rendering-usetransition-loading).
+	// isPending gives us a loading signal without blocking the UI thread.
+	const [isNavigating, startNavigation] = useTransition();
+
+	// Complete current lesson AND navigate to the next one in one user intent.
+	// The mutation fires immediately (optimistic); navigation starts concurrently
+	// via startTransition so it doesn't block the mutation's onSuccess toast.
+	const handleCompleteAndContinue = (targetId: string) => {
+		if (!isAlreadyCompleted) completeLesson(lessonId);
+		startNavigation(() => {
+			router.push(`/dashboard/cursos/${slug}/leccion/${targetId}`);
+		});
+	};
 
 	const secondaryResources = useMemo(() => {
 		return resources.filter((r) => r.resource_type === "SECONDARY");
@@ -213,7 +227,7 @@ export default function LessonViewerPage() {
 			{/* overflow-x-hidden prevents any child element from triggering a horizontal
 			    scrollbar in the inner scroll container */}
 			<div className="flex-1 overflow-y-auto overflow-x-hidden w-full">
-				<div className="max-w-5xl mx-auto px-4 lg:px-8 py-6 space-y-6">
+				<div className={`max-w-5xl mx-auto px-4 lg:px-8 py-6 space-y-6 transition-opacity duration-150 ${isNavigating ? "opacity-50 pointer-events-none" : "opacity-100"}`}>
 					{/* Mobile top bar — lesson counter + "Temario" toggle */}
 					<div className="lg:hidden flex items-center justify-between gap-3">
 						<div className="min-w-0">
@@ -270,23 +284,19 @@ export default function LessonViewerPage() {
 						</div>
 					)}
 
-					{/* ── Complete Lesson button ─────────────────────────────────── */}
-					{/* Course completion banner — shown when this lesson made the course 100% */}
+					{/* ── Course completion banner ──────────────────────────────── */}
 					{isCourseCompleted && !nextLesson && (
-						<div className="flex flex-col items-center gap-5 rounded-2xl border border-gold/30 bg-gold/5 p-8 text-center">
+						<div className="flex flex-col items-center gap-5 rounded-2xl border border-gold/30 bg-gold/5 p-8 text-center animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
 							<div className="w-16 h-16 rounded-full bg-gold/15 border border-gold/25 flex items-center justify-center">
 								<Award className="w-8 h-8 text-gold" />
 							</div>
 							<div>
-								<h2 className="text-2xl font-black text-foreground mb-1">
-									¡Felicitaciones!
-								</h2>
+								<h2 className="text-2xl font-black text-foreground mb-1">¡Felicitaciones!</h2>
 								<p className="text-muted-foreground text-sm max-w-sm">
-									Completaste el curso. Tu certificado ya está disponible en
-									"Mis Certificados".
+									Completaste el curso. Tu certificado ya está disponible.
 								</p>
 							</div>
-							<Button asChild className="bg-ring text-white dark:text-background hover:bg-ring/90 font-bold px-8">
+							<Button asChild className="bg-ring text-white dark:text-background hover:bg-ring/90 font-bold px-8 h-12 transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 active:translate-y-0">
 								<Link href="/dashboard/mis-certificados">
 									<Award className="w-4 h-4 mr-2" />
 									Ver mi certificado
@@ -295,66 +305,91 @@ export default function LessonViewerPage() {
 						</div>
 					)}
 
-					{/* Normal complete button — only when course not yet finished */}
+					{/* ── Unified lesson action + navigation ────────────────────── */}
+					{/* All states share the same visual weight and slot positions so
+					    the layout doesn't shift between completed / not-completed. */}
 					{!isCourseCompleted && (
-						<Button
-							onClick={() => completeLesson(lessonId)}
-							disabled={isCompleting || isAlreadyCompleted}
-							className={
-								isAlreadyCompleted
-									? "w-full h-12 font-bold rounded-xl border-emerald-500/40 text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 hover:bg-emerald-500/15 border"
-									: "w-full h-12 font-bold rounded-xl bg-ring text-white dark:text-background hover:bg-ring/90 shadow-md"
-							}>
-							{isCompleting ? (
-								<><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Guardando…</>
-							) : isAlreadyCompleted ? (
-								<><CheckCircle2 className="w-4 h-4 mr-2 text-emerald-500" /> Lección completada</>
+						<div className="space-y-3">
+
+							{/* PRIMARY ACTION ── same button style regardless of state */}
+							{nextLesson ? (
+								/* Has next → "Completar y continuar" (or just "Continuar" if done) */
+								<button
+									onClick={() => handleCompleteAndContinue(nextLesson.id)}
+									disabled={isCompleting || isNavigating}
+									className="w-full h-14 rounded-xl font-bold flex items-center justify-between px-5 gap-3 bg-ring text-white dark:text-background hover:bg-ring/90 active:bg-ring/80 disabled:opacity-70 shadow-sm hover:shadow-md transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 group">
+									<span className="flex items-center gap-2.5 min-w-0">
+										{(isCompleting || isNavigating) ? (
+											<Loader2 className="w-4 h-4 shrink-0 animate-spin" />
+										) : isAlreadyCompleted ? (
+											<CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-300" />
+										) : (
+											<CheckCircle2 className="w-4 h-4 shrink-0" />
+										)}
+										<span className="truncate">
+											{isAlreadyCompleted ? "Continuar" : "Completar y continuar"}
+										</span>
+									</span>
+									<span className="flex items-center gap-1 text-[11px] font-semibold opacity-75 shrink-0 group-hover:opacity-100 transition-opacity">
+										{isNextLessonNewModule ? "Siguiente módulo" : "Siguiente clase"}
+										<ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform duration-150" />
+									</span>
+								</button>
 							) : (
-								<><CheckCircle2 className="w-4 h-4 mr-2" /> Completar lección</>
+								/* Last lesson → "Completar lección" only */
+								<button
+									onClick={() => completeLesson(lessonId)}
+									disabled={isCompleting || isAlreadyCompleted}
+									className={[
+										"w-full h-14 rounded-xl font-bold flex items-center justify-center gap-2.5 transition-all duration-200",
+										isAlreadyCompleted
+											? "bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 cursor-default"
+											: "bg-ring text-white dark:text-background hover:bg-ring/90 active:bg-ring/80 shadow-sm hover:shadow-md hover:-translate-y-0.5 active:translate-y-0",
+									].join(" ")}>
+									{isCompleting ? (
+										<><Loader2 className="w-4 h-4 animate-spin" /> Guardando…</>
+									) : isAlreadyCompleted ? (
+										<><CheckCircle2 className="w-5 h-5 text-emerald-500" /> Lección completada</>
+									) : (
+										<><CheckCircle2 className="w-5 h-5" /> Completar lección</>
+									)}
+								</button>
 							)}
-						</Button>
+
+							{/* SECONDARY NAV ── Anterior / (Siguiente only when already done) */}
+							<div className="flex items-center gap-3 pt-1">
+								{prevLesson ? (
+									<Link
+										href={`/dashboard/cursos/${slug}/leccion/${prevLesson.id}`}
+										className="group flex items-center gap-2 flex-1 rounded-xl border border-border bg-muted/30 hover:bg-muted/60 hover:border-border/70 px-4 py-2.5 transition-all duration-200">
+										<ChevronLeft className="w-3.5 h-3.5 shrink-0 text-muted-foreground group-hover:text-foreground group-hover:-translate-x-0.5 transition-all duration-150" />
+										<div className="min-w-0">
+											<p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wide leading-none mb-0.5">Anterior</p>
+											<p className="text-xs font-semibold text-foreground truncate">{prevLesson.title}</p>
+										</div>
+									</Link>
+								) : (
+									<div className="flex-1" />
+								)}
+
+								{/* Show a separate "Siguiente" card only when already completed
+								    (the primary button above handles it when not completed) */}
+								{nextLesson && isAlreadyCompleted && (
+									<Link
+										href={`/dashboard/cursos/${slug}/leccion/${nextLesson.id}`}
+										className="group flex items-center gap-2 flex-1 rounded-xl border border-ring/25 bg-ring/5 hover:bg-ring/10 hover:border-ring/40 px-4 py-2.5 transition-all duration-200 justify-end text-right">
+										<div className="min-w-0">
+											<p className="text-[10px] font-bold text-ring/60 uppercase tracking-wide leading-none mb-0.5">
+												{isNextLessonNewModule ? "Siguiente módulo" : "Siguiente"}
+											</p>
+											<p className="text-xs font-semibold text-foreground truncate">{nextLesson.title}</p>
+										</div>
+										<ChevronRight className="w-3.5 h-3.5 shrink-0 text-ring group-hover:translate-x-0.5 transition-transform duration-150" />
+									</Link>
+								)}
+							</div>
+						</div>
 					)}
-
-					{/* ── Prev / Next navigation ────────────────────────────────── */}
-					<div className="grid grid-cols-2 gap-3 border-t border-border pt-5">
-						{/* Previous */}
-						{prevLesson ? (
-							<Link
-								href={`/dashboard/cursos/${slug}/leccion/${prevLesson.id}`}
-								className="group flex items-start gap-2.5 rounded-xl border border-border bg-muted/30 hover:bg-muted/60 hover:border-border/80 px-4 py-3 transition-all">
-								<ChevronLeft className="w-4 h-4 mt-0.5 shrink-0 text-muted-foreground group-hover:text-foreground transition-colors" />
-								<div className="min-w-0">
-									<p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wide mb-0.5">
-										Anterior
-									</p>
-									<p className="text-sm font-semibold text-foreground line-clamp-2 leading-snug">
-										{prevLesson.title}
-									</p>
-								</div>
-							</Link>
-						) : (
-							<div />
-						)}
-
-						{/* Next */}
-						{nextLesson ? (
-							<Link
-								href={`/dashboard/cursos/${slug}/leccion/${nextLesson.id}`}
-								className="group flex items-start gap-2.5 rounded-xl border border-ring/30 bg-ring/5 hover:bg-ring/10 hover:border-ring/50 px-4 py-3 transition-all text-right ml-auto w-full">
-								<div className="min-w-0 flex-1">
-									<p className="text-[10px] font-bold text-ring/70 uppercase tracking-wide mb-0.5">
-										{isNextLessonNewModule ? `Siguiente módulo` : "Siguiente clase"}
-									</p>
-									<p className="text-sm font-semibold text-foreground line-clamp-2 leading-snug">
-										{nextLesson.title}
-									</p>
-								</div>
-								<ChevronRight className="w-4 h-4 mt-0.5 shrink-0 text-ring group-hover:translate-x-0.5 transition-transform" />
-							</Link>
-						) : (
-							<div />
-						)}
-					</div>
 
 					{/* ── Resources Section ── */}
 					{secondaryResources.length > 0 && (
