@@ -34,6 +34,10 @@ export default function DashboardCourseDetailsPage() {
 
 	const { data: course, isLoading, isError, error } = useCourse(slug);
 	const isEnrolled = useEnrollmentsStore((s) => s.isEnrolled(course?.id ?? ""));
+	// Must be called here (not after early returns) to satisfy Rules of Hooks
+	const enrollment = useEnrollmentsStore(
+		(s) => s.enrollments.find((e) => e.course_id === (course?.id ?? "")),
+	);
 
 	if (isLoading) {
 		return (
@@ -76,11 +80,6 @@ export default function DashboardCourseDetailsPage() {
 	const totalHours = course.total_duration_seconds
 		? Math.round(course.total_duration_seconds / 3600)
 		: null;
-
-	// Find the enrollment in the store to get last_completed_lesson_id
-	const enrollment = useEnrollmentsStore(
-		(s) => s.enrollments.find((e) => e.course_id === course.id),
-	);
 
 	// Compute where to resume: next lesson after last_completed, or first lesson
 	const resumeLessonId = (() => {

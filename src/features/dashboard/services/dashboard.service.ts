@@ -14,14 +14,13 @@ export const dashboardService = {
   async getMyEnrollments(): Promise<EnrollmentWithCourse[]> {
     const [enrollments, coursesRes] = await Promise.all([
       enrollmentsService.listMy(0, 50),
-      // Fetch enough courses to cover all possible enrollments.
-      // listMy already caps at 50, so limit: 50 is sufficient for the join.
       api.get<Course[]>("/courses/", { params: { skip: 0, limit: 50 } }),
     ]);
-    const courses = coursesRes.data;
+    // O(1) lookup via Map instead of O(N×M) Array.find() in a map (rule js-set-map-lookups)
+    const courseMap = new Map(coursesRes.data.map((c) => [c.id, c]));
     return enrollments.map((e) => ({
       ...e,
-      course: courses.find((c) => c.id === e.course_id),
+      course: courseMap.get(e.course_id),
     }));
   },
 

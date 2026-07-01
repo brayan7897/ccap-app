@@ -16,6 +16,7 @@ import {
 	UserX,
 	ClipboardList,
 } from "lucide-react";
+import { useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import type { Course } from "@/types";
 import { useUser, useRequestAccess } from "@/features/auth/hooks/useAuth";
@@ -53,15 +54,17 @@ export function CourseEnrollCard({ course }: CourseEnrollCardProps) {
 			? `S/. ${course.price.toFixed(2)}`
 			: "Gratis";
 
-	// ── WhatsApp contact link (paid courses) ───────────────────────────────────────
-	const rawPhone = companyInfo?.phone_number?.replace(/\D/g, "") ?? "";
-	const waNumber = rawPhone
-		? rawPhone.startsWith("51") ? rawPhone : `51${rawPhone}`
-		: "51905517549"; // fallback al número del seed
-	const waMessage = `Hola, estoy interesado en matricularme en el curso "${course.title}"${
-		course.price != null ? ` (S/. ${course.price.toFixed(2)})` : ""
-	}. ¿Me pueden brindar información sobre el proceso de pago y matrícula?`;
-	const waLink = `https://wa.me/${waNumber}?text=${encodeURIComponent(waMessage)}`;
+	// ── WhatsApp contact link — memoized: encodeURIComponent is non-trivial ──────
+	const waLink = useMemo(() => {
+		const rawPhone = companyInfo?.phone_number?.replace(/\D/g, "") ?? "";
+		const waNumber = rawPhone
+			? rawPhone.startsWith("51") ? rawPhone : `51${rawPhone}`
+			: "51905517549";
+		const waMessage = `Hola, estoy interesado en matricularme en el curso "${course.title}"${
+			course.price != null ? ` (S/. ${course.price.toFixed(2)})` : ""
+		}. ¿Me pueden brindar información sobre el proceso de pago y matrícula?`;
+		return `https://wa.me/${waNumber}?text=${encodeURIComponent(waMessage)}`;
+	}, [companyInfo?.phone_number, course.title, course.price]);
 
 	// Primary CTA already offers a WhatsApp button only once the user is logged in,
 	// active, and not yet enrolled — show the lighter "Contáctanos" link otherwise.

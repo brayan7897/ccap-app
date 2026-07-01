@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import Link from "next/link";
 import { ChevronLeft, X, Check, FileText, HelpCircle } from "lucide-react";
 import type { CourseDetail, LessonProgress, LessonType } from "@/types";
@@ -27,23 +28,41 @@ export function LessonNavSidebar({
 	isOpen = false,
 	onClose,
 }: LessonNavSidebarProps) {
-	const progressMap = new Map(progress.map((p) => [p.lesson_id, p]));
-
-	const sortedModules = [...course.modules].sort(
-		(a, b) => a.order_index - b.order_index,
+	// Memoize the progress map so it's rebuilt only when the progress array changes
+	const progressMap = useMemo(
+		() => new Map(progress.map((p) => [p.lesson_id, p])),
+		[progress],
 	);
 
-	// Flat ordered lesson list for global numbering
-	const allLessons = sortedModules.flatMap((m) =>
-		[...m.lessons].sort((a, b) => a.order_index - b.order_index),
+	// Memoize sorted modules + flat lesson list — stable between renders while
+	// watching a lesson (course structure doesn't change mid-session)
+	const sortedModules = useMemo(
+		() => [...course.modules].sort((a, b) => a.order_index - b.order_index),
+		[course.modules],
 	);
-	const totalLessons = allLessons.length;
-	const totalCompleted = allLessons.filter(
-		(l) => progressMap.get(l.id)?.is_completed,
-	).length;
-	const progressPercent =
-		totalLessons > 0 ? Math.round((totalCompleted / totalLessons) * 100) : 0;
-	const currentIndex = allLessons.findIndex((l) => l.id === currentLessonId);
+
+	const allLessons = useMemo(
+		() =>
+			sortedModules.flatMap((m) =>
+				[...m.lessons].sort((a, b) => a.order_index - b.order_index),
+			),
+		[sortedModules],
+	);
+
+	const { totalLessons, progressPercent, currentIndex } = useMemo(() => {
+		const totalLessons = allLessons.length;
+		const totalCompleted = allLessons.filter(
+			(l) => progressMap.get(l.id)?.is_completed,
+		).length;
+		return {
+			totalLessons,
+			progressPercent:
+				totalLessons > 0
+					? Math.round((totalCompleted / totalLessons) * 100)
+					: 0,
+			currentIndex: allLessons.findIndex((l) => l.id === currentLessonId),
+		};
+	}, [allLessons, progressMap, currentLessonId]);
 
 	return (
 		<>

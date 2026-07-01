@@ -24,7 +24,7 @@ export function useCourse(slug: string) {
     queryKey: courseKeys.detail(slug),
     queryFn:  () => coursesService.getBySlug(slug),
     enabled:  !!slug,
-    staleTime: 0, // Force fresh data
+    staleTime: 5 * 60 * 1000, // Cache for 5 min — avoids N background refetches from EnrollmentProgressCard
   });
 }
 

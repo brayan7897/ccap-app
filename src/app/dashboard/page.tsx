@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import {
 	BookOpen,
 	Award,
@@ -72,47 +73,60 @@ export default function DashboardHomePage() {
 	const { data: courses, isLoading: loadingCourses } = useCourses(0, 6);
 	const requestAccessMutation = useRequestAccess();
 
-	const missingDoc = !user?.document_number?.trim();
-	const missingPhone = !user?.phone_number?.trim();
-	let missingText = "tu número de documento (DNI/CE/Pasaporte) y un número de teléfono de contacto";
-	if (missingDoc && !missingPhone) missingText = "tu número de documento (DNI/CE/Pasaporte)";
-	if (!missingDoc && missingPhone) missingText = "un número de teléfono de contacto";
+	const missingText = useMemo(() => {
+		const missingDoc = !user?.document_number?.trim();
+		const missingPhone = !user?.phone_number?.trim();
+		if (missingDoc && !missingPhone) return "tu número de documento (DNI/CE/Pasaporte)";
+		if (!missingDoc && missingPhone) return "un número de teléfono de contacto";
+		return "tu número de documento (DNI/CE/Pasaporte) y un número de teléfono de contacto";
+	}, [user?.document_number, user?.phone_number]);
 
-	const activeEnrollments =
-		enrollments?.filter((e) => e.status === "ACTIVE") ?? [];
-	const completedEnrollments =
-		enrollments?.filter((e) => e.status === "COMPLETED") ?? [];
-	const inProgressEnrollments = activeEnrollments
-		.filter((e) => e.progress_percentage < 100)
-		.sort((a, b) => b.progress_percentage - a.progress_percentage)
-		.slice(0, 3);
+	// Derived enrollment lists — memoized so filter/sort/slice don't run on
+	// every render (this component re-renders ~8 times during initial page load
+	// as user, enrollments, certificates and courses queries resolve)
+	const { activeEnrollments, completedEnrollments, inProgressEnrollments } =
+		useMemo(() => {
+			const activeEnrollments =
+				enrollments?.filter((e) => e.status === "ACTIVE") ?? [];
+			const completedEnrollments =
+				enrollments?.filter((e) => e.status === "COMPLETED") ?? [];
+			const inProgressEnrollments = activeEnrollments
+				.filter((e) => e.progress_percentage < 100)
+				.sort((a, b) => b.progress_percentage - a.progress_percentage)
+				.slice(0, 3);
+			return { activeEnrollments, completedEnrollments, inProgressEnrollments };
+		}, [enrollments]);
 
-	const stats = [
-		{
-			label: "Cursos activos",
-			value: activeEnrollments.length,
-			icon: BookOpen,
-			color: "text-ring",
-			bg: "bg-ring/10",
-			loading: loadingEnrollments,
-		},
-		{
-			label: "Completados",
-			value: completedEnrollments.length,
-			icon: CheckCircle,
-			color: "text-emerald-500",
-			bg: "bg-emerald-500/10",
-			loading: loadingEnrollments,
-		},
-		{
-			label: "Certificados",
-			value: certificates?.length ?? 0,
-			icon: Award,
-			color: "text-gold",
-			bg: "bg-gold/10",
-			loading: loadingCerts,
-		},
-	];
+	const stats = useMemo(
+		() => [
+			{
+				label: "Cursos activos",
+				value: activeEnrollments.length,
+				icon: BookOpen,
+				color: "text-ring",
+				bg: "bg-ring/10",
+				loading: loadingEnrollments,
+			},
+			{
+				label: "Completados",
+				value: completedEnrollments.length,
+				icon: CheckCircle,
+				color: "text-emerald-500",
+				bg: "bg-emerald-500/10",
+				loading: loadingEnrollments,
+			},
+			{
+				label: "Certificados",
+				value: certificates?.length ?? 0,
+				icon: Award,
+				color: "text-gold",
+				bg: "bg-gold/10",
+				loading: loadingCerts,
+			},
+		],
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+		[activeEnrollments.length, completedEnrollments.length, certificates?.length, loadingEnrollments, loadingCerts],
+	);
 
 	return (
 		<div className="p-4 lg:p-8 max-w-[1400px] mx-auto min-h-[calc(100vh-4rem)]">
