@@ -8,14 +8,14 @@ import { useEnrollmentsStore } from "@/store/enrollments-store";
 
 export const courseKeys = {
   all:    () => ["courses"] as const,
-  list:   (skip: number, limit: number, categorySlug?: string) => ["courses", "list", skip, limit, categorySlug] as const,
+  list:   (skip: number, limit: number, categorySlug?: string, q?: string, sort_by?: string, sort_order?: string) => ["courses", "list", skip, limit, categorySlug, q, sort_by, sort_order] as const,
   detail: (id: string) => ["courses", id] as const,
 };
 
-export function useCourses(skip = 0, limit = 20, categorySlug?: string) {
+export function useCourses(skip = 0, limit = 20, categorySlug?: string, q?: string, sort_by?: string, sort_order?: "asc" | "desc") {
   return useQuery({
-    queryKey: courseKeys.list(skip, limit, categorySlug),
-    queryFn:  () => coursesService.list(skip, limit, categorySlug),
+    queryKey: courseKeys.list(skip, limit, categorySlug, q, sort_by, sort_order),
+    queryFn:  () => coursesService.list(skip, limit, categorySlug, q, sort_by, sort_order),
   });
 }
 
