@@ -90,11 +90,10 @@ export function Navbar() {
 				{/* ── Main bar ── */}
 				<div className="container mx-auto px-4 lg:px-6 h-[4.5rem] lg:h-20 flex items-center justify-between">
 
-					{/* ── Left: Logo ── */}
 					<div className="flex items-center">
 						<Link
 							href="/"
-							className="relative shrink-0 h-6 md:h-8 w-auto flex items-center"
+							className="relative shrink-0 h-12 sm:h-14 md:h-16 lg:h-[72px] w-auto flex items-center"
 							onClick={closeMobileMenu}>
 							<Logo className="h-full hover:opacity-90 transition-opacity" />
 						</Link>

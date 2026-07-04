@@ -23,7 +23,7 @@ export function Footer() {
 					
 					{/* Col 1: Logo & Socials */}
 					<div className="flex flex-col space-y-6 w-full lg:w-1/4">
-						<Link href="/" className="relative flex items-center h-10 w-auto text-white">
+						<Link href="/" className="relative flex items-center h-14 lg:h-[72px] w-auto text-white">
 							<Logo className="h-full hover:opacity-90 transition-opacity" variant="light" />
 						</Link>
 						<p className="text-sm leading-relaxed text-white/80">
