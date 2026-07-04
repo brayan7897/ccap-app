@@ -22,6 +22,18 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+
+  // /courses and /catalog were duplicate course-listing pages splitting SEO
+  // signal between them. /catalog is the canonical listing.
+  async redirects() {
+    return [
+      {
+        source: "/courses",
+        destination: "/catalog",
+        permanent: true,
+      },
+    ];
+  },
   turbopack: {
     root: projectRoot,
     resolveAlias: {

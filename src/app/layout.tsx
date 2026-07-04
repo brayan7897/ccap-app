@@ -26,7 +26,7 @@ const jetbrainsMono = JetBrains_Mono({
 // ─── SEO Global Base Metadata ────────────────────────────────────────────────
 // Each page can override these values via its own `export const metadata`.
 export const metadata: Metadata = {
-	metadataBase: new URL("https://www.ccapglobal.com"),
+	metadataBase: new URL("https://ccapglobal.com"),
 	title: {
 		default: "CCAP Global | Cursos Online con Certificación Avalada en Perú",
 		template: "%s | CCAP Global",
@@ -59,10 +59,13 @@ export const metadata: Metadata = {
 			"max-snippet": -1,
 		},
 	},
+	verification: {
+		google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
+	},
 	openGraph: {
 		type: "website",
 		locale: "es_PE",
-		url: "https://www.ccapglobal.com",
+		url: "https://ccapglobal.com",
 		siteName: "CCAP Global",
 		title: "CCAP Global | Cursos Online con Certificación Avalada en Perú",
 		description:
@@ -85,9 +88,9 @@ export const metadata: Metadata = {
 		creator: "@ccapglobal",
 	},
 	alternates: {
-		canonical: "https://www.ccapglobal.com",
+		canonical: "https://ccapglobal.com",
 		languages: {
-			"es-PE": "https://www.ccapglobal.com",
+			"es-PE": "https://ccapglobal.com",
 		},
 	},
 	category: "education",
@@ -127,6 +130,22 @@ export default function RootLayout({
 					src="https://accounts.google.com/gsi/client"
 					strategy="afterInteractive"
 				/>
+				{process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID && (
+					<>
+						<Script
+							src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID}`}
+							strategy="afterInteractive"
+						/>
+						<Script id="ga4-init" strategy="afterInteractive">
+							{`
+								window.dataLayer = window.dataLayer || [];
+								function gtag(){dataLayer.push(arguments);}
+								gtag('js', new Date());
+								gtag('config', '${process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID}');
+							`}
+						</Script>
+					</>
+				)}
 				<QueryProvider>
 					<ThemeProvider>
 						{children}

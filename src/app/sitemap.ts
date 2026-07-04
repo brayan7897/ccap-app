@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 
-const BASE_URL = "https://www.ccapglobal.com";
+const BASE_URL = "https://ccapglobal.com";
 
 /**
  * Generates /sitemap.xml dynamically via Next.js App Router.
@@ -21,12 +21,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 		},
 		{
 			url: `${BASE_URL}/catalog`,
-			lastModified: new Date(),
-			changeFrequency: "daily",
-			priority: 0.9,
-		},
-		{
-			url: `${BASE_URL}/courses`,
 			lastModified: new Date(),
 			changeFrequency: "daily",
 			priority: 0.9,

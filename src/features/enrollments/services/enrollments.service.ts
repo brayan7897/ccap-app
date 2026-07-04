@@ -19,7 +19,7 @@ export const enrollmentsService = {
 
   /** Get all enrollments of the current user */
   async listMy(skip = 0, limit = 50): Promise<Enrollment[]> {
-    const res = await api.get<Enrollment[]>("/enrollments/my", { params: { skip, limit } });
+    const res = await api.get<Enrollment[]>("/enrollments/me", { params: { skip, limit } });
     return res.data;
   },
 
@@ -42,7 +42,7 @@ export const enrollmentsService = {
    * POST /enrollments/progress
    */
   async completeLesson(data: ProgressInput): Promise<CompleteProgressResponse> {
-    const res = await api.post<CompleteProgressResponse>("/enrollments/progress", data);
+    const res = await api.patch<CompleteProgressResponse>("/enrollments/progress", data);
     return res.data;
   },
 
@@ -53,7 +53,7 @@ export const enrollmentsService = {
 
   /** Get all lesson progress for the current user (optionally filtered by course) */
   async getMyProgress(courseId?: string): Promise<LessonProgress[]> {
-    const res = await api.get<LessonProgress[]>("/enrollments/progress/my", {
+    const res = await api.get<LessonProgress[]>("/enrollments/progress/me", {
       params: courseId ? { course_id: courseId } : undefined,
     });
     return res.data;
