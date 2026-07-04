@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/accordion";
 
 export const metadata: Metadata = {
-	title: "Preguntas Frecuentes — CCAP Global",
+	title: "Preguntas Frecuentes",
 	description:
 		"Resuelve tus dudas sobre inscripciones, modalidades, pagos y certificación de los cursos de CCAP Global.",
 	alternates: {

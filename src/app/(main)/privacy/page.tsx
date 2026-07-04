@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-	title: "Política de Privacidad — CCAP Global",
+	title: "Política de Privacidad",
 	description:
 		"Política de privacidad y tratamiento de datos personales de CCAP Global, conforme a la Ley N.º 29733 – Ley de Protección de Datos Personales del Perú.",
 	alternates: {

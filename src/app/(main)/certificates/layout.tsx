@@ -7,7 +7,7 @@ import type { Metadata } from "next";
  * server layout instead — Next.js will use this for the page.
  */
 export const metadata: Metadata = {
-	title: "Verificación de Certificados Oficiales — Portal de Validación",
+	title: "Verificación de Certificados Oficiales",
 	description:
 		"Verifica la autenticidad de tu certificado CCAP Global usando tu código único alfanumérico o número de DNI. Credenciales con aval CIP, Autodesk y RIB Presto, verificadas en segundos.",
 	alternates: {

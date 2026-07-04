@@ -49,10 +49,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 	let courseRoutes: MetadataRoute.Sitemap = [];
 
 	try {
+		// NEXT_PUBLIC_API_URL already includes the /api/v1 prefix (see src/lib/api.ts),
+		// so routes below must NOT prepend it again.
 		const apiBase =
-			process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+			process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000/api/v1";
 
-		const response = await fetch(`${apiBase}/api/v1/courses?limit=500`, {
+		const response = await fetch(`${apiBase}/courses/?limit=100`, {
 			// Revalidate once a day during ISR
 			next: { revalidate: 86400 },
 		});
@@ -60,11 +62,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 		if (response.ok) {
 			const data = await response.json();
 			// Support both paginated { items: [] } and flat [] responses
-			const courses: Array<{ slug: string; updated_at?: string }> =
+			const courses: Array<{ slug: string; updated_at?: string; is_published?: boolean }> =
 				Array.isArray(data) ? data : (data.items ?? []);
 
 			courseRoutes = courses
-				.filter((c) => Boolean(c.slug))
+				.filter((c) => Boolean(c.slug) && c.is_published !== false)
 				.map((course) => ({
 					url: `${BASE_URL}/courses/${course.slug}`,
 					lastModified: course.updated_at
