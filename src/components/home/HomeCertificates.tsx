@@ -27,6 +27,7 @@ export function HomeCertificates() {
 								src={certificadoLanding}
 								alt="Certificado CCAP Global"
 								fill
+								placeholder="blur"
 								className="object-contain object-center scale-100 group-hover:scale-105 transition-transform duration-700 p-4 bg-primary/50"
 								sizes="(max-width: 1024px) 100vw, 50vw"
 							/>

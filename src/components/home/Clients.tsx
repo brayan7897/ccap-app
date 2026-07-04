@@ -53,6 +53,7 @@ export function Clients() {
 									src={client.logo}
 									alt={`Logo de ${client.name}`}
 									fill
+									placeholder="blur"
 									className="object-contain"
 								/>
 							</div>

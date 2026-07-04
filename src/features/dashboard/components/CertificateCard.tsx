@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Award, ExternalLink, Calendar, BookOpen, User } from "lucide-react";
 import type { CertificateWithCourse } from "../services/dashboard.service";
+import { shimmerBlurDataURL } from "@/lib/image-placeholder";
 
 interface Props {
 	certificate: CertificateWithCourse;
@@ -46,6 +47,8 @@ export function CertificateCard({ certificate }: Props) {
 						alt={courseTitle}
 						fill
 						sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+						placeholder="blur"
+						blurDataURL={shimmerBlurDataURL()}
 						className="object-cover transition-transform duration-500 group-hover:scale-105"
 					/>
 				) : (

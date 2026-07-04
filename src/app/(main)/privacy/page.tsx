@@ -5,7 +5,7 @@ export const metadata: Metadata = {
 	description:
 		"Política de privacidad y tratamiento de datos personales de CCAP Global, conforme a la Ley N.º 29733 – Ley de Protección de Datos Personales del Perú.",
 	alternates: {
-		canonical: "https://www.ccapglobal.com/privacy",
+		canonical: "https://ccapglobal.com/privacy",
 	},
 };
 

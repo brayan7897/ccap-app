@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { User as UserIcon, Award, Star, Users } from "lucide-react";
+import { shimmerBlurDataURL } from "@/lib/image-placeholder";
 
 interface CourseInstructorProps {
 	instructor?: {
@@ -30,6 +31,8 @@ export function CourseInstructor({ instructor }: CourseInstructorProps) {
 							src={instructor.avatar_url}
 							alt={`${instructor.first_name} ${instructor.last_name}`}
 							fill
+							placeholder="blur"
+							blurDataURL={shimmerBlurDataURL(96, 96)}
 							className="object-cover"
 						/>
 					) : (

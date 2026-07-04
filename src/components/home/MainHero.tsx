@@ -148,6 +148,7 @@ export function MainHero() {
 									alt="Profesional"
 									fill
 									priority
+									placeholder="blur"
 									className="object-contain object-bottom origin-bottom"
 								/>
 							</div>

@@ -11,6 +11,7 @@ import {
 import type { CourseLevel } from "@/types";
 import { useEnrollmentsStore } from "@/store/enrollments-store";
 import { useAuthStore } from "@/store/auth-store";
+import { shimmerBlurDataURL } from "@/lib/image-placeholder";
 
 /* ── Props ─────────────────────────────────────────────────────────────────── */
 export interface CourseCardProps {
@@ -80,6 +81,8 @@ export function CourseCard({
 							alt={title}
 							fill
 							sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+							placeholder="blur"
+							blurDataURL={shimmerBlurDataURL()}
 							className="object-cover transition-transform duration-700 group-hover:scale-105"
 						/>
 					</>

@@ -11,13 +11,13 @@ export const metadata: Metadata = {
 	description:
 		"Verifica la autenticidad de tu certificado CCAP Global usando tu código único alfanumérico o número de DNI. Credenciales con aval CIP, Autodesk y RIB Presto, verificadas en segundos.",
 	alternates: {
-		canonical: "https://www.ccapglobal.com/certificates",
+		canonical: "https://ccapglobal.com/certificates",
 	},
 	openGraph: {
 		title: "Verificación de Certificados | CCAP Global",
 		description:
 			"Comprueba al instante la validez de un certificado CCAP Global. Ingresa el código único o DNI del participante.",
-		url: "https://www.ccapglobal.com/certificates",
+		url: "https://ccapglobal.com/certificates",
 	},
 };
 

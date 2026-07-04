@@ -179,6 +179,7 @@ export default function CertificatesPage() {
 										src={CertificadoFrontal}
 										alt="Certificado CCAP Cara Frontal"
 										fill
+										placeholder="blur"
 										className="object-cover transform transition-transform duration-1000 group-hover:scale-105"
 									/>
 									{/* Reflection effect */}
@@ -291,6 +292,7 @@ export default function CertificatesPage() {
 										src={CertificadoTrasera}
 										alt="Certificado CCAP Cara Trasera"
 										fill
+										placeholder="blur"
 										className="object-cover transform transition-transform duration-1000 group-hover:scale-105"
 									/>
 									{/* Reflection effect */}

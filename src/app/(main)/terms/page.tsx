@@ -5,7 +5,7 @@ export const metadata: Metadata = {
 	description:
 		"Términos y condiciones de uso de los servicios de CCAP Global, Centro de Capacitación y Perfeccionamiento Profesional.",
 	alternates: {
-		canonical: "https://www.ccapglobal.com/terms",
+		canonical: "https://ccapglobal.com/terms",
 	},
 };
 

@@ -10,12 +10,12 @@ export const metadata: Metadata = {
 	title: "Sobre Nosotros | CCAP Global — Plataforma de E-Learning en Perú",
 	description: "Formación de calidad, acceso flexible y certificaciones verificables para potenciar tu desarrollo en el ámbito público y privado.",
 	alternates: {
-		canonical: "https://www.ccapglobal.com/about",
+		canonical: "https://ccapglobal.com/about",
 	},
 	openGraph: {
 		title: "Sobre Nosotros | CCAP Global",
 		description: "Formación de calidad, acceso flexible y certificaciones verificables para potenciar tu desarrollo en el ámbito público y privado.",
-		url: "https://www.ccapglobal.com/about",
+		url: "https://ccapglobal.com/about",
 	},
 };
 
@@ -48,6 +48,7 @@ export default async function AboutPage() {
 						fill
 						className="object-cover object-center animate-slow-zoom"
 						priority
+						placeholder="blur"
 					/>
 					{/* Gradient to blend image with the solid left background */}
 					<div className="absolute inset-0 bg-gradient-to-r from-primary via-primary/5 md:via-primary/10 to-transparent z-10"></div>
@@ -94,6 +95,7 @@ export default async function AboutPage() {
 								alt="Edificio CCAP Global"
 								fill
 								className="object-cover"
+								placeholder="blur"
 							/>
 						</ScrollReveal>
 						

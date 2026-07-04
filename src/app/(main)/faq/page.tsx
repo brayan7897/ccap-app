@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 	description:
 		"Resuelve tus dudas sobre inscripciones, modalidades, pagos y certificación de los cursos de CCAP Global.",
 	alternates: {
-		canonical: "https://www.ccapglobal.com/faq",
+		canonical: "https://ccapglobal.com/faq",
 	},
 };
 

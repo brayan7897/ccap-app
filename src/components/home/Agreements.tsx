@@ -55,6 +55,7 @@ export function Agreements() {
                                 src={partner.logo}
                                 alt={`Logo de ${partner.name}`}
                                 fill
+                                placeholder="blur"
                                 className="object-contain filter grayscale opacity-90 group-hover:grayscale-0 group-hover:opacity-100 dark:brightness-0 dark:invert dark:opacity-80 dark:group-hover:opacity-100 transition-all duration-300"
                             />
                         </div>

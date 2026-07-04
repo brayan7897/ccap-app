@@ -20,14 +20,14 @@ export const metadata: Metadata = {
 	description:
 		"Plataforma líder de capacitación online en Perú. Cursos de ingeniería, arquitectura y tecnología avalados por CIP, CAP, CEL, Autodesk y RIB Presto. Certificados reconocidos nacional e internacionalmente. Inscripciones 2026 abiertas.",
 	alternates: {
-		canonical: "https://www.ccapglobal.com",
+		canonical: "https://ccapglobal.com",
 	},
 	openGraph: {
 		title:
 			"CCAP Global | Cursos Online con Certificación Avalada — CIP, Autodesk, RIB Presto",
 		description:
 			"Capacítate con los mejores cursos online con certificados avalados por CIP, Autodesk y RIB Presto. Inscripciones abiertas para el 2026.",
-		url: "https://www.ccapglobal.com",
+		url: "https://ccapglobal.com",
 		type: "website",
 	},
 };
@@ -41,13 +41,13 @@ const schemaOrg = {
 		// Organization: Company identity
 		{
 			"@type": ["Organization", "EducationalOrganization"],
-			"@id": "https://www.ccapglobal.com/#organization",
+			"@id": "https://ccapglobal.com/#organization",
 			name: "CCAP Global",
 			alternateName: "Centro de Capacitación Profesional — CCAP",
-			url: "https://www.ccapglobal.com",
+			url: "https://ccapglobal.com",
 			logo: {
 				"@type": "ImageObject",
-				url: "https://www.ccapglobal.com/og-image.png",
+				url: "https://ccapglobal.com/og-image.png",
 				width: 1200,
 				height: 630,
 			},
@@ -69,20 +69,20 @@ const schemaOrg = {
 		// WebSite: Enables Sitelinks Searchbox in Google Search
 		{
 			"@type": "WebSite",
-			"@id": "https://www.ccapglobal.com/#website",
-			url: "https://www.ccapglobal.com",
+			"@id": "https://ccapglobal.com/#website",
+			url: "https://ccapglobal.com",
 			name: "CCAP Global",
 			description:
 				"Plataforma líder de cursos online con certificación avalada en Perú.",
 			publisher: {
-				"@id": "https://www.ccapglobal.com/#organization",
+				"@id": "https://ccapglobal.com/#organization",
 			},
 			potentialAction: {
 				"@type": "SearchAction",
 				target: {
 					"@type": "EntryPoint",
 					urlTemplate:
-						"https://www.ccapglobal.com/catalog?q={search_term_string}",
+						"https://ccapglobal.com/catalog?q={search_term_string}",
 				},
 				"query-input": "required name=search_term_string",
 			},
@@ -91,11 +91,11 @@ const schemaOrg = {
 		// WebPage: Homepage structured data
 		{
 			"@type": "WebPage",
-			"@id": "https://www.ccapglobal.com/#webpage",
-			url: "https://www.ccapglobal.com",
+			"@id": "https://ccapglobal.com/#webpage",
+			url: "https://ccapglobal.com",
 			name: "CCAP Global — Cursos Online con Certificación Avalada en Perú",
-			isPartOf: { "@id": "https://www.ccapglobal.com/#website" },
-			about: { "@id": "https://www.ccapglobal.com/#organization" },
+			isPartOf: { "@id": "https://ccapglobal.com/#website" },
+			about: { "@id": "https://ccapglobal.com/#organization" },
 			description:
 				"Descubre nuestros cursos online de ingeniería y arquitectura con certificados avalados por CIP, Autodesk y RIB Presto.",
 			inLanguage: "es-PE",

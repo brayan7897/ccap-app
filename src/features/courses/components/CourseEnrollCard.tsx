@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { useMemo } from "react";
 import { Button } from "@/components/ui/button";
+import { shimmerBlurDataURL } from "@/lib/image-placeholder";
 import type { Course } from "@/types";
 import { useUser, useRequestAccess } from "@/features/auth/hooks/useAuth";
 import { useEnroll } from "../hooks/useCourses";
@@ -264,6 +265,8 @@ export function CourseEnrollCard({ course }: CourseEnrollCardProps) {
 						src={course.thumbnail_url}
 						alt={course.title}
 						fill
+						placeholder="blur"
+						blurDataURL={shimmerBlurDataURL()}
 						className="object-cover"
 					/>
 				) : (

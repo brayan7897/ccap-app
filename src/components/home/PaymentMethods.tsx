@@ -63,6 +63,7 @@ export const PaymentMethods = () => {
 									src={method.icon}
 									alt={`${method.name}`}
 									fill
+									placeholder="blur"
 									className="object-contain"
 								/>
 							</div>

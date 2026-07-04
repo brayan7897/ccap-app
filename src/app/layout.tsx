@@ -45,7 +45,7 @@ export const metadata: Metadata = {
 		"certificados online avalados",
 		"cursos técnicos profesionales",
 	],
-	authors: [{ name: "CCAP Global", url: "https://www.ccapglobal.com" }],
+	authors: [{ name: "CCAP Global", url: "https://ccapglobal.com" }],
 	creator: "CCAP Global",
 	publisher: "CCAP Global",
 	robots: {
