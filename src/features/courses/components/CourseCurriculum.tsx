@@ -7,7 +7,6 @@ import {
 	PlayCircle,
 	FileText,
 	HelpCircle,
-	Clock,
 	Lock,
 	BookOpen,
 } from "lucide-react";
@@ -34,11 +33,6 @@ const getLessonIcon = (type: LessonType) => {
 		default:
 			return <PlayCircle className="w-4 h-4 text-muted-foreground" />;
 	}
-};
-
-const formatDuration = (minutes: number | null) => {
-	if (!minutes) return "";
-	return `${minutes} min`;
 };
 
 export function CourseCurriculum({
@@ -80,7 +74,7 @@ export function CourseCurriculum({
 		<div className="space-y-4">
 			<div className="flex items-center gap-3 mb-6">
 				<div
-					className={`p-2.5 rounded-xl ${accentColor ? "" : "bg-ring/10 text-ring"}`}
+					className={`p-2.5 rounded-xl transition-colors ${accentColor ? "" : "bg-primary/10 text-primary"}`}
 					style={iconStyle}>
 					<BookOpen className="w-6 h-6" />
 				</div>
@@ -92,52 +86,46 @@ export function CourseCurriculum({
 			<div className="flex flex-col gap-3">
 				{modules.map((module, index) => {
 					const isOpen = openModuleId === module.id;
-					const totalDuration = module.lessons.reduce(
-						(acc, lesson) => acc + (lesson.duration_minutes || 0),
-						0,
-					);
 
 					return (
 						<div
 							key={module.id}
-							className={`border border-border/60 rounded-2xl overflow-hidden transition-all duration-300 ${
+							className={`border border-border/60 rounded-2xl overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] ${
 								isOpen
-									? "bg-card shadow-lg ring-1 ring-border"
-									: "bg-card/50 hover:bg-card hover:border-border"
+									? "bg-card shadow-md ring-1 ring-border/50"
+									: "bg-card/40 hover:bg-card/80 hover:border-border/80"
 							}`}>
 							{/* Header */}
 							<button
 								onClick={() => toggleModule(module.id)}
-								className="w-full flex items-center justify-between p-5 text-left focus:outline-none">
-								<div className="flex flex-col gap-1">
+								aria-expanded={isOpen}
+								aria-controls={`module-content-${module.id}`}
+								className="w-full flex items-center justify-between p-5 text-left transition-colors focus-visible:outline-none focus-visible:bg-muted/50 group">
+								<div className="flex flex-col gap-1.5">
 									<h4 className="font-bold text-foreground flex items-center gap-3 text-base md:text-lg">
 										<span
-											className={`flex items-center justify-center w-8 h-8 rounded-full text-sm font-black border ${accentColor ? "" : "bg-ring/10 text-ring border-ring/20"}`}
+											className={`flex items-center justify-center w-8 h-8 rounded-full text-sm font-black border transition-colors ${accentColor ? "" : "bg-primary/10 text-primary border-primary/20 group-hover:bg-primary/15"}`}
 											style={numberStyle}>
 											{index + 1}
 										</span>
-										{module.title}
+										<span className="group-hover:text-primary transition-colors">
+											{module.title}
+										</span>
 									</h4>
 									{module.description && (
-										<p className="text-sm text-muted-foreground mt-1 ml-11 line-clamp-1">
+										<p className="text-sm text-muted-foreground ml-11 line-clamp-1">
 											{module.description}
 										</p>
 									)}
 								</div>
 
-								<div className="flex items-center gap-4 text-muted-foreground">
-									<div className="hidden sm:flex items-center gap-4 text-xs font-medium">
-										<span>{module.lessons.length} clases</span>
-										{totalDuration > 0 && (
-											<span className="flex items-center gap-1.5 bg-muted px-2 py-1 rounded-md">
-												<Clock className="w-3.5 h-3.5" />
-												{formatDuration(totalDuration)}
-											</span>
-										)}
+								<div className="flex items-center gap-4 text-muted-foreground ml-4">
+									<div className="hidden sm:flex items-center gap-4 text-xs font-medium px-2.5 py-1 rounded-md bg-muted/50 group-hover:bg-muted transition-colors">
+										<span>{module.lessons.length} {module.lessons.length === 1 ? 'clase' : 'clases'}</span>
 									</div>
 									<ChevronDown
-										className={`w-5 h-5 transition-transform duration-300 ${
-											isOpen ? "rotate-180 text-foreground" : ""
+										className={`w-5 h-5 transition-transform duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] ${
+											isOpen ? "rotate-180 text-primary" : "group-hover:text-foreground"
 										}`}
 									/>
 								</div>
@@ -145,46 +133,44 @@ export function CourseCurriculum({
 
 							{/* Body */}
 							<div
-								className={`grid transition-all duration-300 ease-in-out ${
+								id={`module-content-${module.id}`}
+								className={`grid transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] ${
 									isOpen
 										? "grid-rows-[1fr] opacity-100"
 										: "grid-rows-[0fr] opacity-0"
 								}`}>
 								<div className="overflow-hidden">
-									<div className="p-2 pt-0 pb-4">
-										<div className="flex flex-col gap-1 px-3 ml-8 border-l border-border/50">
+									<div className="p-2 pt-0 pb-5">
+										<div className="flex flex-col gap-1.5 px-3 ml-7 border-l-2 border-border/40">
 											{module.lessons.length === 0 ? (
-												<div className="p-4 text-sm text-muted-foreground italic ml-2">
+												<div className="p-5 text-sm text-muted-foreground ml-4 my-2 border border-dashed rounded-xl bg-muted/30 flex items-center justify-center">
 													Próximamente más contenido.
 												</div>
 											) : (
 												module.lessons.map((lesson) => {
 													const rowContent = (
 														<>
-															<div className="flex items-center justify-center w-8 h-8 rounded-full bg-card shadow-sm border border-border/50 group-hover:scale-110 transition-transform">
+															<div className="flex items-center justify-center w-8 h-8 rounded-full bg-card shadow-sm border border-border/50 group-hover:scale-110 group-hover:shadow-md transition-all duration-300">
 																{getLessonIcon(lesson.lesson_type)}
 															</div>
-															<span className={`text-sm font-medium transition-colors flex-1 ${canNavigate ? "text-foreground/80 group-hover:text-foreground" : "text-muted-foreground"}`}>
+															<span className={`text-sm font-medium transition-colors flex-1 ${canNavigate ? "text-foreground/80 group-hover:text-foreground" : "text-muted-foreground group-hover:text-muted-foreground/80"}`}>
 																{lesson.title}
 															</span>
-															{lesson.duration_minutes ? (
-																<span className="text-xs text-muted-foreground font-medium">
-																	{formatDuration(lesson.duration_minutes)}
-																</span>
-															) : null}
 															{!canNavigate && (
-																<Lock className="w-4 h-4 text-muted-foreground/50 ml-2 shrink-0" />
+																<div className="flex items-center justify-center w-8 h-8 rounded-full bg-muted/50 shrink-0">
+																	<Lock className="w-3.5 h-3.5 text-muted-foreground/50" />
+																</div>
 															)}
 														</>
 													);
 													const cls =
-														"flex items-center gap-3 p-3 ml-2 rounded-xl transition-colors group";
+														"flex items-center gap-3 p-3 ml-3 rounded-xl transition-all duration-200 group relative";
 													if (canNavigate) {
 														return (
 															<Link
 																key={lesson.id}
 																href={`/dashboard/cursos/${courseSlug}/leccion/${lesson.id}`}
-																className={`${cls} hover:bg-muted/50`}>
+																className={`${cls} hover:bg-muted/60 hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary`}>
 																{rowContent}
 															</Link>
 														);
@@ -192,7 +178,7 @@ export function CourseCurriculum({
 													return (
 														<div
 															key={lesson.id}
-															className={`${cls} cursor-not-allowed`}>
+															className={`${cls} opacity-90 cursor-not-allowed`}>
 															{rowContent}
 														</div>
 													);

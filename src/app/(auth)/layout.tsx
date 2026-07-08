@@ -33,9 +33,13 @@ export default function AuthLayout({
 			
 			{/* Simple Header */}
 			<header className="sticky top-0 z-50 w-full h-16 md:h-20 flex items-center justify-between px-4 sm:px-6 lg:px-8 border-b border-border/40 backdrop-blur-xl bg-background/80">
-				<Link href="/" className="inline-flex hover:opacity-90 transition-opacity">
-					<Logo className="h-7 md:h-8 w-auto" />
-				</Link>
+				<div className="flex items-center h-full py-2">
+					<Link
+						href="/"
+						className="relative shrink-0 h-full max-h-[48px] md:max-h-[56px] w-auto flex items-center">
+						<Logo className="h-full hover:opacity-90 transition-opacity" />
+					</Link>
+				</div>
 				<Link
 					href="/"
 					className="inline-flex items-center gap-2 text-sm font-semibold text-muted-foreground hover:text-secondary transition-colors group px-4 py-2 rounded-full hover:bg-secondary/10">
