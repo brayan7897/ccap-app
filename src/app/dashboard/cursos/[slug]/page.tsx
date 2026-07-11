@@ -48,7 +48,7 @@ export default function DashboardCourseDetailsPage() {
 		);
 	}
 
-	if (isError || !course || !course.is_published) {
+	if (isError || !course || course.status !== "published") {
 		return (
 			<div className="min-h-screen flex flex-col items-center justify-center gap-4 text-center px-4">
 				<AlertCircle className="w-16 h-16 text-rose-500 mb-2" />

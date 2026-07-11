@@ -155,7 +155,7 @@ async function CategoriesSection() {
 }
 
 async function CoursesSection() {
-	const courses = await publicService.getCourses();
+	const courses = await publicService.getCourses(0, 8, true);
 	return <HomeCourses initialCourses={courses} />;
 }
 

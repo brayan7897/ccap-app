@@ -155,7 +155,7 @@ export default function LessonViewerPage() {
 	}
 
 	// ── Guard: course is in draft (not published) ───────────────────────────────
-	if (course && !course.is_published) {
+	if (course && course.status !== "published") {
 		return (
 			<div className="flex h-full flex-col items-center justify-center gap-4 text-center px-4">
 				<AlertCircle className="w-12 h-12 text-yellow-500" />

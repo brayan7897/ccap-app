@@ -53,9 +53,9 @@ export const publicService = {
     }
   },
 
-  async getCourses(skip = 0, limit = 8) {
+  async getCourses(skip = 0, limit = 8, featured = false) {
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/courses/?skip=${skip}&limit=${limit}`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/courses/?skip=${skip}&limit=${limit}&featured=${featured}`, {
         next: { revalidate: 300 },
         signal: AbortSignal.timeout(8000)
       });

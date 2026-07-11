@@ -34,7 +34,9 @@ export interface CourseUpdateInput {
   what_you_will_learn?: string[];
   tags?: string[];
   category_id?: string | null;
-  is_published?: boolean;
+  status?: "draft" | "published" | "archived";
+  featured?: boolean;
+  certificate_only?: boolean;
 }
 
 export const coursesService = {

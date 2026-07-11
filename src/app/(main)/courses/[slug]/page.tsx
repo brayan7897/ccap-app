@@ -11,7 +11,7 @@ interface Props {
 async function getCourse(slug: string): Promise<CourseDetail | null> {
 	try {
 		const course = await coursesService.getBySlug(slug);
-		return course.is_published ? course : null;
+		return course.status === "published" ? course : null;
 	} catch {
 		return null;
 	}

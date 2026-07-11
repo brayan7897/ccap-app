@@ -44,7 +44,7 @@ export default function CatalogoPage() {
 
 function CatalogoPageContent() {
 	const { data: courses, isLoading } = useCourses(0, 50);
-	const publishedCourses = courses?.filter(c => c.is_published) || [];
+	const publishedCourses = courses?.filter(c => c.status === "published") || [];
 
 	const searchParams = useSearchParams();
 	const [searchQuery, setSearchQuery] = useState(searchParams.get("q") || "");

@@ -77,7 +77,9 @@ export function HomeCourses({ initialCourses }: { initialCourses: Course[] }) {
 	const [canScrollLeft, setCanScrollLeft] = useState(false);
 	const [canScrollRight, setCanScrollRight] = useState(true);
 
-	const publishedCourses = initialCourses?.filter(c => c.is_published) || [];
+	// The backend already returns only publicly-visible courses here — this is
+	// just a defensive client-side guard, not the primary filter.
+	const publishedCourses = initialCourses?.filter(c => c.status === "published") || [];
 
 	const checkScroll = () => {
 		if (scrollContainerRef.current) {

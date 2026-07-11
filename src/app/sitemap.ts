@@ -62,11 +62,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 		if (response.ok) {
 			const data = await response.json();
 			// Support both paginated { items: [] } and flat [] responses
-			const courses: Array<{ slug: string; updated_at?: string; is_published?: boolean }> =
+			const courses: Array<{ slug: string; updated_at?: string; status?: string }> =
 				Array.isArray(data) ? data : (data.items ?? []);
 
 			courseRoutes = courses
-				.filter((c) => Boolean(c.slug) && c.is_published !== false)
+				.filter((c) => Boolean(c.slug) && c.status !== "draft" && c.status !== "archived")
 				.map((course) => ({
 					url: `${BASE_URL}/courses/${course.slug}`,
 					lastModified: course.updated_at
