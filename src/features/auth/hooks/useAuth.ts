@@ -91,6 +91,12 @@ export function useRegister() {
       router.push("/login");
     },
     onError: (error) => {
+      const axiosError = error as AxiosError<{ detail: string; type?: string }>;
+      if (axiosError.response?.data?.type === "UnclaimedAccountExistsError") {
+        // A registro provisional already exists for this document — RegisterForm
+        // renders <UnclaimedAccountNotice /> instead of a generic error toast.
+        return;
+      }
       toast.error(
         getApiErrorMessage(error, "Error al crear la cuenta. Intenta de nuevo.")
       );

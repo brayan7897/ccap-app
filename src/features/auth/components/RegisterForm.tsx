@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
+import type { AxiosError } from "axios";
 import {
 	Eye,
 	EyeOff,
@@ -20,6 +21,7 @@ import {
 import { registerSchema, type RegisterInput } from "../schemas/auth.schema";
 import { useRegister } from "../hooks/useAuth";
 import { GoogleLoginButton } from "./GoogleLoginButton";
+import { UnclaimedAccountNotice } from "./UnclaimedAccountNotice";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -56,7 +58,7 @@ function StatusIcon({ state }: { state: FieldState }) {
 
 export function RegisterForm() {
 	const [showPassword, setShowPassword] = useState(false);
-	const { mutate: register_, isPending } = useRegister();
+	const { mutate: register_, isPending, isError, error, variables, reset: resetRegister } = useRegister();
 
 	const {
 		register,
@@ -78,6 +80,18 @@ export function RegisterForm() {
 
 	const docType = watch("document_type");
 	const docPlaceholder = docType === "DNI" ? "12345678" : docType === "CE" ? "000123456" : "AB123456";
+
+	const axiosError = error as AxiosError<{ detail: string; type?: string }> | null;
+	const isUnclaimedConflict = isError && axiosError?.response?.data?.type === "UnclaimedAccountExistsError";
+
+	if (isUnclaimedConflict) {
+		return (
+			<UnclaimedAccountNotice
+				documentNumber={variables?.document_number}
+				onRetry={() => resetRegister()}
+			/>
+		);
+	}
 
 	return (
 		<div className="space-y-8">
