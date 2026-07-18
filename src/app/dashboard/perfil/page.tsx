@@ -27,6 +27,7 @@ import {
 	useUpdateDocument,
 	useChangePassword,
 } from "@/features/auth/hooks/useAuth";
+import { EmailChangeCard } from "@/features/auth/components/EmailChangeCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -1028,6 +1029,9 @@ export default function ProfilePage() {
 					</div>
 				</form>
 			</div>
+
+			{/* ── Cambiar correo ────────────────────────────────────────────── */}
+			<EmailChangeCard user={user} />
 		</div>
 	);
 }

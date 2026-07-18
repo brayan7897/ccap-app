@@ -63,6 +63,8 @@ export interface User {
   is_active: boolean;
   course_access: CourseAccess;
   professional_career: string | null;
+  /** How this account authenticates: signed up with Google, has a local password, or neither yet. */
+  auth_provider?: "google" | "local" | "pending";
 }
 
 /** Returned by admin endpoints — includes created_at */

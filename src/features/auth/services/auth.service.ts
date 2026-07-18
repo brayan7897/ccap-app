@@ -67,6 +67,17 @@ export const authService = {
     await api.post("/auth/change-password", data);
   },
 
+  /**
+   * Request a change of your own login email. Not applied immediately — it's
+   * queued for admin review (POST /users/me/email-change-request).
+   */
+  async requestEmailChange(newEmail: string): Promise<{ detail: string }> {
+    const res = await api.post<{ detail: string }>("/users/me/email-change-request", {
+      new_email: newEmail,
+    });
+    return res.data;
+  },
+
   /** Sign in / sign up via Google ID Token */
   async googleLogin(credential: string): Promise<AuthTokens> {
     const res = await api.post<AuthTokens>("/auth/google", { credential });

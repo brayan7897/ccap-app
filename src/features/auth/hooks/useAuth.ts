@@ -297,3 +297,21 @@ export function useRequestPasswordReset() {
     },
   });
 }
+
+/**
+ * Requests a change of your own login email. Not applied immediately — an
+ * admin reviews and approves it (same pattern as password-reset requests).
+ */
+export function useRequestEmailChange() {
+  return useMutation({
+    mutationFn: (newEmail: string) => authService.requestEmailChange(newEmail),
+    onSuccess: (data) => {
+      toast.success(data.detail || "Solicitud enviada. El administrador la revisará pronto.");
+    },
+    onError: (error) => {
+      toast.error(
+        getApiErrorMessage(error, "No se pudo enviar la solicitud. Intenta de nuevo.")
+      );
+    },
+  });
+}
