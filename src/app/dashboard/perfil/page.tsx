@@ -116,17 +116,11 @@ const DOC_RULES: Record<
 		regex: /^[A-Za-z0-9]{6,12}$/,
 		error: "El pasaporte debe tener entre 6 y 12 caracteres alfanuméricos",
 	},
-	RUC: {
-		placeholder: "Ej. 20123456789",
-		hint: "11 dígitos, empieza con 10, 15, 16, 17 o 20",
-		regex: /^(10|15|16|17|20)\d{9}$/,
-		error: "El RUC debe tener 11 dígitos numéricos y empezar con 10, 15, 16, 17 o 20",
-	},
 };
 
 const documentSchema = z
 	.object({
-		document_type: z.enum(["DNI", "CE", "PASAPORTE", "RUC"], {
+		document_type: z.enum(["DNI", "CE", "PASAPORTE"], {
 			error: "Selecciona un tipo de documento",
 		}),
 		document_number: z.string().trim().min(1, "Ingresa el número de documento"),
@@ -217,7 +211,6 @@ const DOC_LABELS: Record<string, string> = {
 	DNI: "DNI",
 	CE: "Carné de Extranjería",
 	PASAPORTE: "Pasaporte",
-	RUC: "RUC",
 };
 
 // ── Sub-components ────────────────────────────────────────────────────────────
@@ -870,7 +863,7 @@ export default function ProfilePage() {
 										}
 										{...docRegister}
 										onChange={(e) => {
-											if (watchedDocType === "DNI" || watchedDocType === "CE" || watchedDocType === "RUC") {
+											if (watchedDocType === "DNI" || watchedDocType === "CE") {
 												e.target.value = e.target.value.replace(/\D/g, "");
 											} else if (watchedDocType === "PASAPORTE") {
 												e.target.value = e.target.value

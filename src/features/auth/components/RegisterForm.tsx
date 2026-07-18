@@ -79,14 +79,7 @@ export function RegisterForm() {
 	};
 
 	const docType = watch("document_type");
-	const docPlaceholder =
-		docType === "DNI"
-			? "12345678"
-			: docType === "CE"
-				? "000123456"
-				: docType === "RUC"
-					? "20123456789"
-					: "AB123456";
+	const docPlaceholder = docType === "DNI" ? "12345678" : docType === "CE" ? "000123456" : "AB123456";
 
 	const axiosError = error as AxiosError<{ detail: string; type?: string }> | null;
 	const isUnclaimedConflict = isError && axiosError?.response?.data?.type === "UnclaimedAccountExistsError";
@@ -208,7 +201,6 @@ export function RegisterForm() {
 								<option value="DNI">DNI</option>
 								<option value="CE">C.E.</option>
 								<option value="PASAPORTE">Pasaporte</option>
-								<option value="RUC">RUC</option>
 							</select>
 						</div>
 					</div>
@@ -222,7 +214,7 @@ export function RegisterForm() {
 								className={inputClass(fieldState("document_number"), "pr-8")}
 								{...docRegister}
 								onChange={(e) => {
-									if (docType === "DNI" || docType === "CE" || docType === "RUC") {
+									if (docType === "DNI" || docType === "CE") {
 										e.target.value = e.target.value.replace(/\D/g, "");
 									} else if (docType === "PASAPORTE") {
 										e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, "");
@@ -243,7 +235,6 @@ export function RegisterForm() {
 								{docType === "DNI" && "8 dígitos numéricos"}
 								{docType === "CE" && "9 dígitos numéricos"}
 								{docType === "PASAPORTE" && "6–12 caracteres"}
-								{docType === "RUC" && "11 dígitos, empieza con 10, 15, 16, 17 o 20"}
 							</p>
 						)}
 					</div>
