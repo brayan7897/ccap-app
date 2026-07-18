@@ -36,7 +36,7 @@ export const registerSchema = z
     password: z.string().min(8, "Mínimo 8 caracteres").max(128, "Contraseña demasiado larga"),
     first_name: nameField("Nombre"),
     last_name: nameField("Apellido"),
-    document_type: z.enum(["DNI", "CE", "PASAPORTE"]),
+    document_type: z.enum(["DNI", "CE", "PASAPORTE", "RUC"]),
     document_number: z.string().trim().min(1, "Número de documento requerido").max(20, "Número de documento inválido"),
     phone_number: phoneField,
     professional_career: z.string().trim().max(100, "Carrera/Profesión muy larga").optional().nullable(),
@@ -62,6 +62,13 @@ export const registerSchema = z
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         message: "El pasaporte debe tener entre 6 y 12 caracteres alfanuméricos",
+        path: ["document_number"],
+      });
+    }
+    if (document_type === "RUC" && !/^(10|15|16|17|20)\d{9}$/.test(document_number)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "El RUC debe tener 11 dígitos numéricos y empezar con 10, 15, 16, 17 o 20",
         path: ["document_number"],
       });
     }

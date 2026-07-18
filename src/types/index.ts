@@ -1,7 +1,7 @@
 // ── Shared TypeScript interfaces ─────────────────────────────────────────────
 // Aligned with the ccap-api backend models (api_routes.md).
 
-export type DocumentType = "DNI" | "CE" | "PASAPORTE";
+export type DocumentType = "DNI" | "CE" | "PASAPORTE" | "RUC";
 export type CourseLevel = "BASIC" | "INTERMEDIATE" | "ADVANCED";
 export type LessonType = "VIDEO" | "PDF" | "TEXT";
 export type EnrollmentStatus = "ACTIVE" | "COMPLETED" | "CANCELLED";
