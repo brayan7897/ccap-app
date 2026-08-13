@@ -89,7 +89,7 @@ export default function DashboardLayout({
 						{/* Logo */}
 						<div className="flex items-center h-full">
 							<Link href="/dashboard" className="flex items-center gap-2">
-								<Logo className="h-6 w-auto text-foreground hover:text-primary transition-colors min-w-[100px]" />
+								<Logo className="h-8 sm:h-10 w-auto text-foreground hover:text-primary transition-colors min-w-[100px]" />
 							</Link>
 						</div>
 
