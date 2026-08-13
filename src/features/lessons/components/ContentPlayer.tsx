@@ -65,25 +65,22 @@ export function ContentPlayer({ resources, isLoading }: ContentPlayerProps) {
 
 			// NOTE: this is Google Drive's own embedded player (Same-Origin Policy
 			// blocks styling anything inside the iframe, including its native
-			// controls — a fully custom <video>-based player was tried but Drive's
-			// direct-stream endpoint gets blocked by Chrome's Opaque Response
-			// Blocking, even proxied). What we *can* control is the frame around
-			// it: capped width so it doesn't dominate the page, a brand-colored
-			// ring/shadow for contrast against the page and a smooth hover
-			// transition instead of a flat black box.
+			// controls — play/skip/timestamp/volume/speed/fullscreen icons stay
+			// Google's default look no matter what). What we *can* control is the
+			// frame around it: full width like before, a brand-colored ring/shadow
+			// for contrast against the page and a smooth hover transition instead
+			// of a flat black box.
 			return (
-				<div className="w-full max-w-3xl mx-auto">
-					<div className="relative w-full aspect-video bg-black rounded-2xl overflow-hidden border border-border/60 shadow-lg shadow-primary/5 ring-1 ring-secondary/15 transition-all duration-300 ease-out hover:shadow-xl hover:shadow-secondary/10 hover:ring-secondary/30">
-						{/* Overlay to block the Google Drive pop-out button (cannot be removed via JS/CSS inside iframe) */}
-						<div className="absolute top-0 right-0 w-15 h-15 bg-transparent z-10" />
-						<iframe
-							src={src}
-							className="w-full h-full border-none"
-							allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
-							allowFullScreen
-							title={title}
-						/>
-					</div>
+				<div className="relative w-full aspect-video bg-black rounded-2xl overflow-hidden border border-border/60 shadow-lg shadow-primary/5 ring-1 ring-secondary/15 transition-all duration-300 ease-out hover:shadow-xl hover:shadow-secondary/10 hover:ring-secondary/30">
+					{/* Overlay to block the Google Drive pop-out button (cannot be removed via JS/CSS inside iframe) */}
+					<div className="absolute top-0 right-0 w-15 h-15 bg-transparent z-10" />
+					<iframe
+						src={src}
+						className="w-full h-full border-none"
+						allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
+						allowFullScreen
+						title={title}
+					/>
 				</div>
 			);
 		}
