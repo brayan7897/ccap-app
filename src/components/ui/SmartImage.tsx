@@ -1,9 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import Image, { type ImageProps } from "next/image";
 import { shimmerBlurDataURL } from "@/lib/image-placeholder";
 import { cn } from "@/lib/utils";
+
+// useLayoutEffect warns when it runs during SSR (this component is a client
+// component, but Next still renders it once on the server for the initial
+// HTML) — fall back to useEffect there since the cache check is meaningless
+// server-side anyway (no DOM, nothing can already be "cached").
+const useIsomorphicLayoutEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
 export interface SmartImageProps
 	extends Omit<ImageProps, "src" | "placeholder" | "blurDataURL" | "onLoad" | "onError"> {
@@ -30,21 +36,27 @@ export function SmartImage({
 	placeholderSize,
 	...rest
 }: SmartImageProps) {
+	const imgRef = useRef<HTMLImageElement>(null);
 	const [loaded, setLoaded] = useState(false);
 	const [errored, setErrored] = useState(false);
 
-	// Reset on src change — callers like the avatar-URL live preview swap src
-	// on every keystroke, and without this the fade/fallback state would
-	// carry over from the previous image.
-	useEffect(() => {
-		setLoaded(false);
+	// Reset on src change (also handles callers like the avatar-URL live
+	// preview, which swap src on every keystroke) — but first check whether
+	// the browser already has this exact image decoded (e.g. the same course
+	// thumbnail shown moments ago in a card). useLayoutEffect runs before the
+	// browser paints, so when it's cached this flips `loaded` to true before
+	// anything is drawn — no shimmer, no fade, it just appears. naturalWidth
+	// guards against a broken image the browser still marks "complete".
+	useIsomorphicLayoutEffect(() => {
 		setErrored(false);
+		setLoaded(!!(imgRef.current?.complete && imgRef.current.naturalWidth > 0));
 	}, [src]);
 
 	if (!src || errored) return <>{fallback}</>;
 
 	return (
 		<Image
+			ref={imgRef}
 			src={src}
 			alt={alt}
 			placeholder="blur"

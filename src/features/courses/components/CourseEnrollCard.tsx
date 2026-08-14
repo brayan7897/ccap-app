@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -18,7 +17,7 @@ import {
 } from "lucide-react";
 import { useMemo } from "react";
 import { Button } from "@/components/ui/button";
-import { shimmerBlurDataURL } from "@/lib/image-placeholder";
+import { SmartImage } from "@/components/ui/SmartImage";
 import type { Course } from "@/types";
 import { useUser, useRequestAccess } from "@/features/auth/hooks/useAuth";
 import { useEnroll } from "../hooks/useCourses";
@@ -260,20 +259,18 @@ export function CourseEnrollCard({ course }: CourseEnrollCardProps) {
 		<div className="rounded-3xl bg-card border border-border/60 shadow-xl overflow-hidden sticky top-24">
 			{/* Thumbnail */}
 			<div className="relative aspect-video w-full bg-muted">
-				{course.thumbnail_url ? (
-					<Image
-						src={course.thumbnail_url}
-						alt={course.title}
-						fill
-						placeholder="blur"
-						blurDataURL={shimmerBlurDataURL()}
-						className="object-cover"
-					/>
-				) : (
-					<div className="flex h-full items-center justify-center text-muted-foreground bg-muted/50">
-						<BookOpen className="h-12 w-12 opacity-50" />
-					</div>
-				)}
+				<SmartImage
+					src={course.thumbnail_url}
+					alt={course.title}
+					fill
+					sizes="(max-width: 1280px) 100vw, 420px"
+					className="object-cover"
+					fallback={
+						<div className="flex h-full items-center justify-center text-muted-foreground bg-muted/50">
+							<BookOpen className="h-12 w-12 opacity-50" />
+						</div>
+					}
+				/>
 			</div>
 
 			<div className="p-6 md:p-8">

@@ -29,6 +29,7 @@ export function CourseInstructor({ instructor }: CourseInstructorProps) {
 						src={instructor.avatar_url}
 						alt={`${instructor.first_name} ${instructor.last_name}`}
 						fill
+						sizes="96px"
 						placeholderSize={{ w: 96, h: 96 }}
 						className="object-cover"
 						fallback={
