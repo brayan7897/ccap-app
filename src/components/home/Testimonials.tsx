@@ -3,6 +3,7 @@
 import { useRef, useState, useEffect } from "react";
 import { MessageSquareQuote, Star, ChevronLeft, ChevronRight } from "lucide-react";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
+import { SmartImage } from "@/components/ui/SmartImage";
 
 export interface Testimonial {
 	quote: string;
@@ -125,12 +126,17 @@ export function Testimonials({ testimonials }: { testimonials: Testimonial[] }) 
 
 									{/* Footer: User Info */}
 									<div className="flex items-center gap-4">
-										<div className="w-12 h-12 rounded-full bg-secondary text-secondary-foreground flex items-center justify-center overflow-hidden shrink-0 shadow-sm border border-secondary/20">
-											{testimonial.image ? (
-												<img src={testimonial.image} alt={testimonial.name} className="w-full h-full object-cover" />
-											) : (
-												<span className="font-black text-lg">{testimonial.name.charAt(0)}</span>
-											)}
+										<div className="relative w-12 h-12 rounded-full bg-secondary text-secondary-foreground flex items-center justify-center overflow-hidden shrink-0 shadow-sm border border-secondary/20">
+											<SmartImage
+												src={testimonial.image}
+												alt={testimonial.name}
+												fill
+												sizes="48px"
+												className="object-cover"
+												fallback={
+													<span className="font-black text-lg">{testimonial.name.charAt(0)}</span>
+												}
+											/>
 										</div>
 										<div className="flex flex-col">
 											<span className="font-extrabold text-[14px] md:text-[15px] text-foreground leading-none mb-1 group-hover:text-secondary transition-colors">{testimonial.name}</span>

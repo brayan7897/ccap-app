@@ -3,6 +3,7 @@
 import { ExternalLink, Download, FileText, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { SmartImage } from "@/components/ui/SmartImage";
 import type { Resource } from "@/types";
 
 interface ContentPlayerProps {
@@ -142,12 +143,14 @@ export function ContentPlayer({ resources, isLoading }: ContentPlayerProps) {
 			const src = drive_file_id ? getDriveViewUrl(drive_file_id) : external_url;
 			if (!src) return <EmptySlot />;
 			return (
-				<div className="rounded-xl overflow-hidden border border-border/50">
-					{/* eslint-disable-next-line @next/next/no-img-element */}
-					<img
+				<div className="relative w-full h-[70vh] rounded-xl overflow-hidden border border-border/50 bg-muted/20">
+					<SmartImage
 						src={src}
 						alt={title}
-						className="w-full object-contain max-h-[70vh]"
+						fill
+						sizes="100vw"
+						className="object-contain"
+						fallback={<EmptySlot />}
 					/>
 				</div>
 			);

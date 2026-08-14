@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import {
 	BookOpen,
@@ -11,7 +10,7 @@ import {
 import type { CourseLevel } from "@/types";
 import { useEnrollmentsStore } from "@/store/enrollments-store";
 import { useAuthStore } from "@/store/auth-store";
-import { shimmerBlurDataURL } from "@/lib/image-placeholder";
+import { SmartImage } from "@/components/ui/SmartImage";
 
 /* ── Props ─────────────────────────────────────────────────────────────────── */
 export interface CourseCardProps {
@@ -74,23 +73,18 @@ export function CourseCard({
 			className="group flex flex-col bg-card border border-border/60 rounded-lg overflow-hidden hover:border-border hover:shadow-[0_0_0_1px_rgba(0,0,0,0.05),0_8px_24px_-4px_rgba(0,0,0,0.10)] dark:hover:shadow-[0_0_0_1px_rgba(255,255,255,0.08),0_8px_24px_-4px_rgba(0,0,0,0.40)] transition-all duration-300 hover:-translate-y-1 h-full relative w-full max-w-sm mx-auto">
 			{/* Thumbnail */}
 			<div className="relative aspect-16/10 w-full overflow-hidden bg-muted">
-				{thumbnail_url ? (
-					<>
-						<Image
-							src={thumbnail_url}
-							alt={title}
-							fill
-							sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-							placeholder="blur"
-							blurDataURL={shimmerBlurDataURL()}
-							className="object-cover transition-transform duration-700 group-hover:scale-105"
-						/>
-					</>
-				) : (
-					<div className="flex h-full items-center justify-center text-muted-foreground bg-muted/50">
-						<BookOpen className="h-12 w-12 opacity-50" />
-					</div>
-				)}
+				<SmartImage
+					src={thumbnail_url}
+					alt={title}
+					fill
+					sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+					className="object-cover transition-transform duration-700 group-hover:scale-105"
+					fallback={
+						<div className="flex h-full items-center justify-center text-muted-foreground bg-muted/50">
+							<BookOpen className="h-12 w-12 opacity-50" />
+						</div>
+					}
+				/>
 
 				{/* Enrolled badge */}
 				{showEnrolledBadge && (

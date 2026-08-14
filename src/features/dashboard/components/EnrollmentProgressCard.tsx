@@ -5,6 +5,7 @@ import Link from "next/link";
 import { PlayCircle, CheckCircle, BookOpen } from "lucide-react";
 import { useCourse } from "@/features/courses/hooks/useCourses";
 import type { EnrollmentWithCourse } from "@/features/dashboard/services/dashboard.service";
+import { SmartImage } from "@/components/ui/SmartImage";
 
 interface Props {
 	enrollment: EnrollmentWithCourse;
@@ -60,18 +61,18 @@ export function EnrollmentProgressCard({ enrollment }: Props) {
 		<div className="group flex flex-col rounded-2xl border border-border bg-card overflow-hidden hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300">
 			{/* Thumbnail */}
 			<div className="relative aspect-video w-full bg-muted overflow-hidden">
-				{thumbnail ? (
-					// eslint-disable-next-line @next/next/no-img-element
-					<img
-						src={thumbnail}
-						alt={course_title ?? "Course Cover"}
-						className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-					/>
-				) : (
-					<div className="flex h-full items-center justify-center">
-						<BookOpen className="w-10 h-10 text-muted-foreground/40" />
-					</div>
-				)}
+				<SmartImage
+					src={thumbnail}
+					alt={course_title ?? "Course Cover"}
+					fill
+					sizes="(max-width: 768px) 100vw, 400px"
+					className="object-cover transition-transform duration-500 group-hover:scale-105"
+					fallback={
+						<div className="flex h-full items-center justify-center">
+							<BookOpen className="w-10 h-10 text-muted-foreground/40" />
+						</div>
+					}
+				/>
 
 				{/* Status badge */}
 				<div

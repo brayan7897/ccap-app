@@ -52,6 +52,11 @@ const nextConfig: NextConfig = {
     return config;
   },
   images: {
+    // Course thumbnails, certificates, category art, and payment-method
+    // logos rarely change (a re-upload usually gets a new URL/key too), so
+    // this can safely be far above Next's default — fixes images feeling
+    // like they "don't cache" between navigations.
+    minimumCacheTTL: 2678400, // 31 days
     remotePatterns: [
       {
         protocol: 'https',
@@ -90,6 +95,13 @@ const nextConfig: NextConfig = {
         hostname: '*.r2.cloudflarestorage.com',
         port: '',
         pathname: '/**',
+      },
+      // Google Drive-hosted IMAGE lesson resources (getDriveViewUrl()).
+      {
+        protocol: 'https',
+        hostname: 'drive.google.com',
+        port: '',
+        pathname: '/uc',
       },
     ],
   },

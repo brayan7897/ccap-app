@@ -28,6 +28,7 @@ import { ContentPlayer } from "@/features/lessons/components/ContentPlayer";
 import { LessonNavSidebar } from "@/features/lessons/components/LessonNavSidebar";
 import { Button } from "@/components/ui/button";
 import { InactiveAccountBanner } from "@/components/ui/InactiveAccountBanner";
+import { SmartImage } from "@/components/ui/SmartImage";
 import { useUser } from "@/features/auth/hooks/useAuth";
 import { useMyEnrollments } from "@/features/dashboard/hooks/useDashboard";
 import type { CourseDetail } from "@/types";
@@ -419,18 +420,20 @@ export default function LessonViewerPage() {
 						{/* Instructor Info */}
 						{course.instructor ? (
 							<div className="flex flex-col sm:flex-row gap-5 p-6 rounded-2xl border border-border/50 bg-card/50 shadow-sm">
-								{course.instructor.avatar_url ? (
-									// eslint-disable-next-line @next/next/no-img-element
-									<img
+								<div className="relative w-20 h-20 rounded-full shrink-0 border border-border overflow-hidden">
+									<SmartImage
 										src={course.instructor.avatar_url}
 										alt={course.instructor.first_name}
-										className="w-20 h-20 rounded-full object-cover shrink-0 border border-border"
+										fill
+										sizes="80px"
+										className="object-cover"
+										fallback={
+											<div className="w-20 h-20 rounded-full bg-muted flex items-center justify-center">
+												<UserCircle className="w-10 h-10 text-muted-foreground" />
+											</div>
+										}
 									/>
-								) : (
-									<div className="w-20 h-20 rounded-full bg-muted flex items-center justify-center shrink-0 border border-border">
-										<UserCircle className="w-10 h-10 text-muted-foreground" />
-									</div>
-								)}
+								</div>
 								<div>
 									<h3 className="text-xl font-extrabold text-foreground mb-1">
 										{course.instructor.first_name} {course.instructor.last_name}

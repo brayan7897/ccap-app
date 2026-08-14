@@ -3,6 +3,7 @@
 import { useRef, useState, useEffect } from "react";
 import { ShieldCheck, User, ChevronLeft, ChevronRight } from "lucide-react";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
+import { SmartImage } from "@/components/ui/SmartImage";
 
 export interface Teacher {
 	name: string;
@@ -159,16 +160,16 @@ export function TeachersCarousel({ teachers }: { teachers: Teacher[] }) {
 
 										{/* Large Image */}
 										<div className="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 shrink-0 rounded-full bg-primary/5 group-hover:bg-primary/10 flex items-center justify-center overflow-hidden border-4 border-card shadow-md group-hover:shadow-lg transition-all duration-500 z-10 relative">
-											{teacher.image ? (
-												// eslint-disable-next-line @next/next/no-img-element
-												<img
-													src={teacher.image}
-													alt={teacher.name}
-													className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-												/>
-											) : (
-												<User className="w-12 h-12 text-primary/40 group-hover:text-primary group-hover:scale-110 transition-all duration-500" />
-											)}
+											<SmartImage
+												src={teacher.image}
+												alt={teacher.name}
+												fill
+												sizes="128px"
+												className="object-cover group-hover:scale-110 transition-transform duration-700"
+												fallback={
+													<User className="w-12 h-12 text-primary/40 group-hover:text-primary group-hover:scale-110 transition-all duration-500" />
+												}
+											/>
 										</div>
 
 										{/* Text Content */}

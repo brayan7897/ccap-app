@@ -1,8 +1,7 @@
-import Image from "next/image";
 import Link from "next/link";
 import { Award, ExternalLink, Calendar, BookOpen, User } from "lucide-react";
 import type { CertificateWithCourse } from "../services/dashboard.service";
-import { shimmerBlurDataURL } from "@/lib/image-placeholder";
+import { SmartImage } from "@/components/ui/SmartImage";
 
 interface Props {
 	certificate: CertificateWithCourse;
@@ -41,21 +40,18 @@ export function CertificateCard({ certificate }: Props) {
 		<div className="relative flex flex-col rounded-2xl border border-border bg-card overflow-hidden hover:border-gold/40 hover:shadow-lg hover:shadow-gold/5 transition-all duration-300 group">
 			{/* Thumbnail with overlays */}
 			<div className="relative aspect-video w-full bg-muted overflow-hidden">
-				{course?.thumbnail_url ? (
-					<Image
-						src={course.thumbnail_url}
-						alt={courseTitle}
-						fill
-						sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-						placeholder="blur"
-						blurDataURL={shimmerBlurDataURL()}
-						className="object-cover transition-transform duration-500 group-hover:scale-105"
-					/>
-				) : (
-					<div className="flex h-full items-center justify-center bg-gold/5">
-						<Award className="w-12 h-12 text-gold/30" />
-					</div>
-				)}
+				<SmartImage
+					src={course?.thumbnail_url}
+					alt={courseTitle}
+					fill
+					sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+					className="object-cover transition-transform duration-500 group-hover:scale-105"
+					fallback={
+						<div className="flex h-full items-center justify-center bg-gold/5">
+							<Award className="w-12 h-12 text-gold/30" />
+						</div>
+					}
+				/>
 
 				{/* Category badge — category color confined to the dot per system rule */}
 				{(course?.category_name || course?.category?.name) && (

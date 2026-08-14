@@ -28,6 +28,7 @@ import {
 	useChangePassword,
 } from "@/features/auth/hooks/useAuth";
 import { EmailChangeCard } from "@/features/auth/components/EmailChangeCard";
+import { SmartImage } from "@/components/ui/SmartImage";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -240,8 +241,9 @@ function ReadOnlyField({
 }
 
 function AvatarPreview({ url, name }: { url: string; name: string }) {
-	const [broken, setBroken] = useState(false);
-	const isValid = /^https:\/\/.+/.test(url) && !broken;
+	// SmartImage handles its own broken-image fallback internally (onError →
+	// swaps to `fallback`), so this only needs the cheap format pre-check.
+	const isValid = /^https:\/\/.+/.test(url);
 	const initials = name
 		.split(" ")
 		.filter(Boolean)
@@ -249,27 +251,22 @@ function AvatarPreview({ url, name }: { url: string; name: string }) {
 		.map((w) => w[0].toUpperCase())
 		.join("");
 
-	useEffect(() => {
-		setBroken(false);
-	}, [url]);
-
 	return (
 		<div className="relative w-24 h-24 rounded-full ring-4 ring-primary/20 overflow-hidden bg-muted flex items-center justify-center shrink-0">
-			{isValid ? (
-				// eslint-disable-next-line @next/next/no-img-element
-				<img
-					src={url}
-					alt="Foto de perfil"
-					className="w-full h-full object-cover"
-					onError={() => setBroken(true)}
-				/>
-			) : (
-				<span className="text-2xl font-black text-ring select-none">
-					{initials || (
-						<UserRound className="w-10 h-10 text-muted-foreground" />
-					)}
-				</span>
-			)}
+			<SmartImage
+				unoptimized
+				src={isValid ? url : ""}
+				alt="Foto de perfil"
+				fill
+				className="object-cover"
+				fallback={
+					<span className="text-2xl font-black text-ring select-none">
+						{initials || (
+							<UserRound className="w-10 h-10 text-muted-foreground" />
+						)}
+					</span>
+				}
+			/>
 			<div className="absolute bottom-0 right-0 bg-ring text-white dark:text-background rounded-full p-1 shadow">
 				<Camera className="w-3.5 h-3.5" />
 			</div>

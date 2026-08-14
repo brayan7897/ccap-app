@@ -1,6 +1,5 @@
-import Image from "next/image";
 import { User as UserIcon, Award, Star, Users } from "lucide-react";
-import { shimmerBlurDataURL } from "@/lib/image-placeholder";
+import { SmartImage } from "@/components/ui/SmartImage";
 
 interface CourseInstructorProps {
 	instructor?: {
@@ -26,20 +25,18 @@ export function CourseInstructor({ instructor }: CourseInstructorProps) {
 			<div className="flex flex-col sm:flex-row gap-6 items-start">
 				{/* Avatar */}
 				<div className="relative w-24 h-24 rounded-full overflow-hidden border-2 border-ring/20 shrink-0 shadow-md">
-					{instructor.avatar_url ? (
-						<Image
-							src={instructor.avatar_url}
-							alt={`${instructor.first_name} ${instructor.last_name}`}
-							fill
-							placeholder="blur"
-							blurDataURL={shimmerBlurDataURL(96, 96)}
-							className="object-cover"
-						/>
-					) : (
-						<div className="w-full h-full bg-muted flex items-center justify-center text-muted-foreground">
-							<UserIcon className="w-10 h-10" />
-						</div>
-					)}
+					<SmartImage
+						src={instructor.avatar_url}
+						alt={`${instructor.first_name} ${instructor.last_name}`}
+						fill
+						placeholderSize={{ w: 96, h: 96 }}
+						className="object-cover"
+						fallback={
+							<div className="w-full h-full bg-muted flex items-center justify-center text-muted-foreground">
+								<UserIcon className="w-10 h-10" />
+							</div>
+						}
+					/>
 				</div>
 
 				{/* Info */}
