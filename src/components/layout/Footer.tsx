@@ -108,7 +108,16 @@ export function Footer() {
 
 				{/* Bottom bar */}
 				<div className="border-t border-white/10 py-6 flex flex-col sm:flex-row items-center justify-center text-xs text-white/50 text-center">
-					<p>© {new Date().getFullYear()} CCAP Global. Todos los derechos reservados.</p>
+					<p>
+						© {new Date().getFullYear()} CCAP Global. Todos los derechos reservados.
+						{" · "}
+						<a
+							href="mailto:brayan79tarazona@gmail.com"
+							className="text-white/30 hover:text-white/50 transition-colors"
+						>
+							Desarrollado por Brayan Tarazona Arratea
+						</a>
+					</p>
 				</div>
 			</div>
 		</footer>
