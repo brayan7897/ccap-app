@@ -33,14 +33,23 @@ export const loginSchema = z.object({
 export const registerSchema = z
   .object({
     email: z.string().trim().email("Email inválido").max(254, "Email inválido"),
-    password: z.string().min(8, "Mínimo 8 caracteres").max(128, "Contraseña demasiado larga"),
+    // Same policy the backend now enforces (previously unvalidated on both
+    // sides despite the placeholder text promising it) and that the "change
+    // password" screen already validates: 8-128 chars, lower + upper + digit.
+    password: z
+      .string()
+      .min(8, "Mínimo 8 caracteres")
+      .max(128, "Contraseña demasiado larga")
+      .regex(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
+        "Debe tener mayúsculas, minúsculas y un número",
+      ),
     first_name: nameField("Nombre"),
     last_name: nameField("Apellido"),
     document_type: z.enum(["DNI", "CE", "PASAPORTE"]),
     document_number: z.string().trim().min(1, "Número de documento requerido").max(20, "Número de documento inválido"),
     phone_number: phoneField,
     professional_career: z.string().trim().max(100, "Carrera/Profesión muy larga").optional().nullable(),
-    role_id: z.string().uuid("ID de rol inválido").optional(),
   })
   .superRefine(({ document_type, document_number }, ctx) => {
     // Validate document_number format per selected document type
