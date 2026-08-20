@@ -32,13 +32,12 @@ export function CookieConsentBanner() {
       <div
         role="dialog"
         aria-label="Preferencias de cookies"
-        className="fixed inset-x-0 bottom-0 z-50 p-4">
-        <div className="mx-auto flex max-w-3xl flex-col gap-4 rounded-2xl border border-border bg-card p-5 shadow-lg sm:flex-row sm:items-center">
-          <Cookie className="hidden h-8 w-8 shrink-0 text-primary sm:block" />
-          <p className="flex-1 text-xs text-muted-foreground leading-relaxed sm:text-sm">
-            Usamos cookies necesarias para el funcionamiento de la plataforma (sesión,
-            preferencias) y, si lo aceptas, cookies de análisis para mejorar el servicio.
-            Puedes revisar los detalles en nuestra{" "}
+        className="fixed inset-x-0 bottom-0 z-50 border-t border-border bg-card/95 shadow-lg backdrop-blur supports-backdrop-filter:bg-card/85">
+        <div className="container mx-auto flex max-w-7xl flex-col gap-3 px-4 py-3 sm:flex-row sm:items-center lg:px-8">
+          <Cookie className="hidden h-6 w-6 shrink-0 text-primary md:block" />
+          <p className="flex-1 text-xs text-muted-foreground leading-snug sm:text-sm">
+            Usamos cookies necesarias para el funcionamiento de la plataforma y, si lo
+            aceptas, cookies de análisis para mejorar el servicio. Más detalles en la{" "}
             <Link href="/privacy" className="underline hover:text-foreground">
               Política de Privacidad
             </Link>
