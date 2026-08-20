@@ -5,6 +5,8 @@ import { Toaster } from "sonner";
 import { QueryProvider } from "@/components/providers/QueryProvider";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import FloatingWhatsAppButton from "@/components/ui/WhatsAppButton";
+import { CookieConsentBanner } from "@/components/ui/CookieConsentBanner";
+import { GoogleAnalytics } from "@/components/analytics/GoogleAnalytics";
 import "./globals.css";
 
 const dmSans = DM_Sans({
@@ -130,22 +132,7 @@ export default function RootLayout({
 					src="https://accounts.google.com/gsi/client"
 					strategy="afterInteractive"
 				/>
-				{process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID && (
-					<>
-						<Script
-							src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID}`}
-							strategy="afterInteractive"
-						/>
-						<Script id="ga4-init" strategy="afterInteractive">
-							{`
-								window.dataLayer = window.dataLayer || [];
-								function gtag(){dataLayer.push(arguments);}
-								gtag('js', new Date());
-								gtag('config', '${process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID}');
-							`}
-						</Script>
-					</>
-				)}
+				<GoogleAnalytics measurementId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID} />
 				<QueryProvider>
 					<ThemeProvider>
 						{children}
@@ -156,6 +143,7 @@ export default function RootLayout({
 							closeButton
 							toastOptions={{ duration: 4000 }}
 						/>
+						<CookieConsentBanner />
 					</ThemeProvider>
 				</QueryProvider>
 			</body>

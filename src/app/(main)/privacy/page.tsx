@@ -55,8 +55,19 @@ const SECTIONS = [
 	{
 		title: "6. Cookies",
 		body: [
-			"Nuestro sitio web puede utilizar cookies para mejorar la experiencia de navegación, analizar estadísticas y optimizar el funcionamiento de la plataforma.",
-			"El usuario puede configurar su navegador para rechazarlas.",
+			"Utilizamos cookies y almacenamiento local necesarios para el funcionamiento de la plataforma, y cookies de análisis opcionales que solo se activan si el usuario las acepta.",
+			"Al ingresar al sitio se solicita tu consentimiento mediante un aviso de cookies. Puedes cambiar tu elección en cualquier momento desde 'Preferencias de cookies', en el pie de página.",
+		],
+		list: [
+			"ccap-auth-token (cookie propia) — mantiene la sesión iniciada — 7 días",
+			"access_token (almacenamiento local) — sesión del usuario — hasta cerrar sesión",
+			"ccap-ui (almacenamiento local) — preferencia de tema claro/oscuro — persistente",
+			"Google Sign-In (terceros) — cookies de Google al iniciar sesión con esa cuenta",
+			"Google Drive (terceros) — reproducción de videos y PDF de cursos matriculados",
+			"Google Analytics (terceros, opcional) — estadísticas de uso, solo si aceptas cookies de análisis",
+		],
+		after: [
+			"También puedes configurar tu navegador para bloquear cookies, aunque esto podría afectar el funcionamiento de algunas secciones del sitio.",
 		],
 	},
 	{

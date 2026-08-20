@@ -1,6 +1,9 @@
+"use client";
+
 import Link from "next/link";
 import { Mail, Facebook, Instagram, Youtube, Phone } from "lucide-react";
 import { Logo } from "@/components/ui/Logo";
+import { useCookieConsentStore } from "@/store/cookie-consent-store";
 
 const NAV_LINKS = [
 	{ href: "/", label: "Inicio" },
@@ -16,6 +19,8 @@ const LEGAL_LINKS = [
 ];
 
 export function Footer() {
+	const openCookiePreferences = useCookieConsentStore((s) => s.openPreferences);
+
 	return (
 		<footer className="w-full bg-primary text-white/70 border-t border-white/10 transition-colors">
 			<div className="container mx-auto px-4 lg:px-8 max-w-6xl">
@@ -101,6 +106,14 @@ export function Footer() {
 									</Link>
 								</li>
 							))}
+							<li>
+								<button
+									type="button"
+									onClick={openCookiePreferences}
+									className="hover:text-white transition-colors text-left">
+									Preferencias de cookies
+								</button>
+							</li>
 						</ul>
 					</div>
 
