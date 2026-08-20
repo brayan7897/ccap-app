@@ -23,6 +23,7 @@ import {
 	useMyCertificates,
 } from "@/features/dashboard/hooks/useDashboard";
 import { useCourses } from "@/features/courses/hooks/useCourses";
+import { useCompanyInfo } from "@/features/site/hooks/useCompanyInfo";
 import { DashboardStatCard } from "@/features/dashboard/components/DashboardStatCard";
 import { EnrollmentProgressCard } from "@/features/dashboard/components/EnrollmentProgressCard";
 import {
@@ -72,6 +73,20 @@ export default function DashboardHomePage() {
 	const { data: certificates, isLoading: loadingCerts } = useMyCertificates();
 	const { data: courses, isLoading: loadingCourses } = useCourses(0, 6);
 	const requestAccessMutation = useRequestAccess();
+	const { data: companyInfo } = useCompanyInfo();
+
+	// Support contact info — pulled from the same admin-managed CompanyInfo used
+	// across the rest of the site (about page, course WhatsApp CTA), instead of
+	// being hardcoded here with its own number that could drift from the real one.
+	const supportWaLink = useMemo(() => {
+		const rawPhone = companyInfo?.phone_number?.replace(/\D/g, "") ?? "";
+		const waNumber = rawPhone
+			? rawPhone.startsWith("51") ? rawPhone : `51${rawPhone}`
+			: "51905517549";
+		const waMessage = "Hola, necesito ayuda con mi cuenta en la plataforma.";
+		return `https://wa.me/${waNumber}?text=${encodeURIComponent(waMessage)}`;
+	}, [companyInfo?.phone_number]);
+	const supportEmail = companyInfo?.email || "soporte@ccapglobal.com";
 
 	const missingText = useMemo(() => {
 		const missingDoc = !user?.document_number?.trim();
@@ -404,7 +419,7 @@ export default function DashboardHomePage() {
 						</div>
 						<div className="grid grid-cols-2 gap-2 lg:grid-cols-1 lg:gap-3">
 							<a
-								href="https://wa.me/51945115998"
+								href={supportWaLink}
 								target="_blank"
 								rel="noopener noreferrer"
 								className="flex items-center justify-center lg:justify-start gap-2.5 px-3 py-3 lg:px-4 lg:py-3.5 bg-muted/50 border border-border hover:border-green-500/50 hover:bg-green-500/10 rounded-xl transition-all duration-200 group">
@@ -414,7 +429,7 @@ export default function DashboardHomePage() {
 								</span>
 							</a>
 							<a
-								href="mailto:soporte@ccapglobal.com"
+								href={`mailto:${supportEmail}`}
 								className="flex items-center justify-center lg:justify-start gap-2.5 px-3 py-3 lg:px-4 lg:py-3.5 bg-muted/50 border border-border hover:border-ring/40 hover:bg-ring/5 rounded-xl transition-all duration-200 group">
 								<Mail className="w-4 h-4 text-ring shrink-0 group-hover:scale-110 transition-transform" />
 								<span className="text-sm font-semibold text-foreground group-hover:text-ring">
